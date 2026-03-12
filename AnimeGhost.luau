@@ -1,60 +1,90 @@
 local runService = game:GetService("RunService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
+local coreGui = game:GetService("CoreGui")
 local players = game:GetService("Players")
 local player = players.LocalPlayer
 
 local Framework = require(replicatedStorage.Framework.Library)
+local Abbreviate = Framework:GetService("AbbreviateService")
 
 local scriptSettings = {
 	PlayerTab = {
 		AutoClick = false,
 		AutoAscension = false,
 		AutoRewards = false,
+		AutoAchievments = false,
 	},
 }
 
 -- Rewards
 local TimeRewardData = Framework:GetData("TimeRewardData")
-
-local ServerRewards = Framework.Replicated.Server.WeeklyRewards
-local WeeklyRewardsGui = Framework:GetGuiFrame("WeeklyRewards")
 local WeeklyRewardData = Framework:GetData("WeeklyRewardData")
 local WeeklyRewardService = Framework:GetService("WeeklyRewardService")
-local WeeklyRewardsGui = Framework:GetGuiFrame("WeeklyRewards")
-
-local currentType = WeeklyRewardsGui:GetAttribute("Type")
-local rewardDataEncoded = ServerRewards:GetAttribute(currentType)
-local rewardList = Framework:Decode(rewardDataEncoded)
-local currentDay = WeeklyRewardService.CurrentDay()
---local weeklyTime = weeklyFolder:GetAttribute("TimeLeft")
 
 -- Ascension
+
+local nextAscension = "Calculing..."
+
 local RebirthData = Framework:GetData("RebirthData")
 local RebirthGui = Framework:GetGuiFrame("Rebirth")
 
-local id = RebirthGui:GetAttribute("Id")
-local type = RebirthGui:GetAttribute("Type")
+-- Achievements
+local AchievementData = Framework:GetData("AchievementData")
 
-local rebirthType = RebirthData[id].Types[type]
+local function GetCurrentTier(typeName)
+	local completed = 0
 
-local nextLevel = Framework.PlayerData.Rebirth[("%s_%s"):format(id, type)] + 1
+	for id, _ in Framework.PlayerData.Achievements do
+		if id:match(typeName) then
+			completed += 1
+		end
+	end
 
-local function GetRebirthState()
-	local id = RebirthGui:GetAttribute("Id")
-	local type = RebirthGui:GetAttribute("Type")
+	local nextTier = completed + 1
 
-	local level = Framework.PlayerData.Rebirth[("%s_%s"):format(id, type)]
+	if AchievementData[typeName .. nextTier] then
+		return typeName .. nextTier, nextTier
+	else
+		return typeName .. completed, completed
+	end
+end
 
-	local maxLevel = RebirthData[id].Types[type].MaxLevel
+local function GetAchievementTypes()
+	local types = {}
 
-	return {
+	for key, _ in AchievementData do
+		local name = string.gsub(key, "%d+", "")
 
-		IsMaxed = level == maxLevel,
+		if not table.find(types, name) then
+			table.insert(types, name)
+		end
+	end
 
-		CanSingleSkip = level < maxLevel,
+	return types
+end
 
-		CanMultiSkip = level < maxLevel - 4,
-	}
+local function GetClaimableAchievements()
+	local claimable = {}
+
+	for _, typeName in GetAchievementTypes() do
+		local id = GetCurrentTier(typeName)
+
+		local data = AchievementData[id]
+
+		local stat = Framework.PlayerData.TotalStats[data.DataUsed] or 0
+
+		local goal = data.Goal
+
+		stat = math.min(stat, goal)
+
+		local claimed = Framework.PlayerData.Achievements[id] or false
+
+		if goal <= stat and not claimed then
+			claimable[id] = true
+		end
+	end
+
+	return claimable
 end
 
 -- functions
@@ -64,16 +94,35 @@ local function autoClicker()
 end
 
 local function autoAscension()
-	local rebirthState = GetRebirthState()
+	for key, level in pairs(Framework.PlayerData.Rebirth) do
+		local id, type = key:match("(.+)_(.+)")
+		local rebirthType = RebirthData[id].Types[type]
 
-	if rebirthType.Levels[nextLevel] and not rebirthState.IsMaxed then
-		local currency = rebirthType.Currency
-		local playerMoney = Framework.PlayerData[currency]
-		local price = rebirthType.Levels[nextLevel].Price
+		local nextLevel = level + 1
+		local levelData = rebirthType.Levels[nextLevel]
 
-		if price <= playerMoney then
-			Framework.Remote:Fire("RebirthSystem", "Ascension", "Normal")
+		if levelData then
+			local currency = rebirthType.Currency
+			local playerMoney = Framework.PlayerData[currency]
+			local price = levelData.Price
+
+			nextAscension = `Next Ascension - ID: {id} Type: {type} Price: {Abbreviate:FormatNumber(price)}`
+			if playerMoney >= price then
+				Framework.Remote:Fire("RebirthSystem", "Release", id, type)
+			end
 		end
+	end
+end
+
+local function removeCutscene()
+	local oldRequire = require
+
+	require = function(module)
+		if module == Framework.Modules.Client.Controllers.CutsceneController.Ascension then
+			return function() end
+		end
+
+		return oldRequire(module)
 	end
 end
 
@@ -90,7 +139,7 @@ local function autoRewards()
 			for index, reward in pairs(config.Rewards) do
 				if not data.Claimed[index] and reward.Time < time then
 					Framework.Remote:Fire("TimeRewardSystem", "Claim", typeName, index)
-					--                   print("Claiming reward", typeName, index)
+					--print("Claiming reward", typeName, index)
 				end
 			end
 
@@ -108,6 +157,16 @@ local function autoRewards()
 			if not playerData.Claimed[tostring(currentDay)] and WeeklyRewardService.HOUR_TIME <= playerData.Time then
 				Framework.Remote:Fire("WeeklyRewardSystem", "Claim", typeName, currentDay)
 			end
+		end
+	end
+end
+
+local function autoAchievements()
+	for _, typeName in GetAchievementTypes() do
+		local id = GetCurrentTier(typeName)
+
+		if GetClaimableAchievements()[id] then
+			Framework.Remote:Fire("AchievementSystem", "Claim", id)
 		end
 	end
 end
@@ -168,7 +227,7 @@ mainPlayer:AddParagraph({
 	Content = "\nHere you can find various features related to the player, such as auto-clicker and auto-rewards.",
 })
 
-local autoClick = Tabs.Player:AddToggle("AutoClick", {
+local autoClick = mainPlayer:AddToggle("AutoClick", {
 	Title = "Auto Click",
 	Default = false,
 	Callback = function(state)
@@ -176,21 +235,52 @@ local autoClick = Tabs.Player:AddToggle("AutoClick", {
 	end,
 })
 
-local autoAscend = Tabs.Player:AddToggle("AutoAscencion", {
+local autoAscend = mainPlayer:AddToggle("AutoAscencion", {
 	Title = "Auto Ascension",
+	Description = nextAscension,
 	Default = false,
 	Callback = function(state)
 		scriptSettings.PlayerTab.AutoAscension = state
 	end,
 })
 
-local autoReward = Tabs.Player:AddToggle("AutoRewards", {
+for _, desc in pairs(coreGui:WaitForChild("ScreenGui"):GetDescendants()) do
+	if desc.ClassName == "TextLabel" and desc.Parent.ClassName == "Frame" then
+		if desc.Text == "Calculing..." then
+			while true do
+				task.wait(1)
+				desc.Text = nextAscension
+			end
+		end
+	end
+end
+
+local removeCuts = mainPlayer:AddButton({
+	Title = "Remove Ascension Cutscene",
+	Callback = function()
+		removeCutscene()
+	end,
+})
+
+local mainPlayer2 = Tabs.Player:AddSection("")
+
+local autoReward = mainPlayer2:AddToggle("AutoRewards", {
 	Title = "Auto Rewards",
 	Default = false,
 	Callback = function(state)
 		scriptSettings.PlayerTab.AutoRewards = state
 	end,
 })
+
+local autoAchievement = mainPlayer2:AddToggle("AutoAchievements", {
+	Title = "Auto Collect Achievements",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.PlayerTab.AutoAchievements = state
+	end,
+})
+
+-- Spawn functions
 
 task.spawn(function()
 	local rewardTimer = 0
@@ -201,16 +291,19 @@ task.spawn(function()
 		if scriptSettings.PlayerTab.AutoClick then
 			autoClicker()
 		end
-
-		if scriptSettings.PlayerTab.AutoAscension then
-			autoAscension()
-		end
-
 		rewardTimer += dt
 		if rewardTimer >= 1 then
 			rewardTimer = 0
 			if scriptSettings.PlayerTab.AutoRewards then
 				autoRewards()
+			end
+
+			if scriptSettings.PlayerTab.AutoAscension then
+				autoAscension()
+			end
+
+			if scriptSettings.PlayerTab.AutoAchievements then
+				autoAchievements()
 			end
 		end
 	end
