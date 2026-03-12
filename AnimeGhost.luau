@@ -1,6 +1,6 @@
 local specAG = {}
 
-specAG.version = "1.0.0" 
+specAG.version = "1.0.0"
 
 local runService = game:GetService("RunService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
@@ -19,50 +19,38 @@ local weeklyFolder = replicatedStorage.Server.WeeklyRewards
 -- functions
 
 function specAG.autoClicker(enabled: boolean)
-    while enabled do task.wait()
-        Framework.Remote:Fire("ClickSystem","Execute",Framework.Target)
+	while enabled do
+		task.wait()
+		Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
+	end
 end
 
 function specAG.autoRewards(enabled: boolean)
-    while enabled do task.wait(1)
+	while enabled do
+		task.wait(1)
 
-        for typeName,config in pairs(TimeRewardData) do
-            local data = PlayerData.TimeRewards[typeName]
+		for typeName, config in pairs(TimeRewardData) do
+			local data = PlayerData.TimeRewards[typeName]
 
-            if data then
-                local time = data.Time
+			if data then
+				local time = data.Time
 
-                for index,reward in pairs(config.Rewards) do
-                    if not data.Claimed[index] and reward.Time < time then
-                        Framework.Remote:Fire(
-                            "TimeRewardSystem",
-                            "Claim",
-                            typeName,
-                            index
-                        )
-                    end
-                end
+				for index, reward in pairs(config.Rewards) do
+					if not data.Claimed[index] and reward.Time < time then
+						Framework.Remote:Fire("TimeRewardSystem", "Claim", typeName, index)
+					end
+				end
 
-                if time >= config.ResetTime then
-                    Framework.Remote:Fire(
-                        "TimeRewardSystem",
-                        "Reset",
-                        typeName
-                    )
-                end
-            end
-        end
-    end
+				if time >= config.ResetTime then
+					Framework.Remote:Fire("TimeRewardSystem", "Reset", typeName)
+				end
+			end
+		end
+	end
 end
-
 
 -- Achievements
 -- local Tiers = player.PlayerGui.CenterGUI.Achievements.Main.Content.Tiers
-
-
-
-
-
 
 --[[local function autoAchievements()
     for _, claim in pairs(Tiers:GetDescendants()) do
