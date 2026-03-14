@@ -1,8 +1,10 @@
+local EncodingService = game:GetService("EncodingService")
+local HttpService = game:GetService("HttpService")
 local runService = game:GetService("RunService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
-local players = game:GetService("Players")
-local player = players.LocalPlayer
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
 
 local descLabel
 
@@ -19,22 +21,85 @@ local scriptSettings = {
 		AutoAscension = false,
 		AutoRewards = false,
 		AutoAchievments = false,
+		AutoChests = false,
+	},
+	GachaTab = {
+		SelectedGacha = "",
+		SelectedTarget = { "" },
+		GachaDelay = 0.1,
+		AutoGacha = false,
+	},
+	GamemodesTab = {
+		SelectedGamemode = { "" },
+		SelectedRaid = "",
+		SelectedDungeon = "",
+		SelectedInfinity = "",
+
+		SelectedRaidDifficulty = "",
+		SelectedDungeonDifficulty = "",
+		SelectedInfinityDifficulty = "",
+
+		RaidToLeave = 0,
+		DungeonToLeave = 0,
+		InfinityToLeave = 0,
+
+		AutoJoinPublicGamemode = false,
+		AutoJoinSelectedGamemode = false,
+		AutoCreateGamemode = false,
+		AutoLeaveGamemode = false,
+		AutoFarmMobs = false,
 	},
 }
 
--- Rewards
+-- GetData
 local TimeRewardData = Framework:GetData("TimeRewardData")
 local WeeklyRewardData = Framework:GetData("WeeklyRewardData")
 local WeeklyRewardService = Framework:GetService("WeeklyRewardService")
-
--- Ascension
-
-local nextAscension = "Calculing..."
 local RebirthData = Framework:GetData("RebirthData")
-local RebirthGui = Framework:GetGuiFrame("Rebirth")
+local AchievementData = Framework:GetData("AchievementData")
+local ChestData = Framework:GetData("ChestData")
+local GachaData = Framework:GetData("GachaData")
+local GamemodeData = Framework:GetData("GamemodeData")
+
+-- Gacha
+local Gachas = {}
+local Targets = {}
+
+for id in pairs(GachaData) do
+	table.insert(Gachas, id)
+end
+
+-- Gamemodes
+local PlayersInGamemodes = {}
+local Gamemodes = {}
+
+local RaidData = {}
+local DungeonData = {}
+local InfinityData = { "Infinity Castle" }
+
+for id in pairs(GamemodeData) do
+	table.insert(Gamemodes, id)
+end
+
+for players, names in pairs(Players:GetPlayers()) do
+	table.insert(PlayersInGamemodes, names.Name)
+end
+
+for raids, value in pairs(GamemodeData["Raid"]) do
+	table.insert(RaidData, raids)
+end
+
+for dungeons, value in pairs(GamemodeData["Dungeon"]) do
+	table.insert(DungeonData, dungeons)
+end
+
+--[[for targetId in pairs(GachaData[selectedGacha].Targets) do
+    table.insert(Targets,targetId)
+end]]
+-- Ascension
+local nextAscension = "Calculing..."
 
 -- Achievements
-local AchievementData = Framework:GetData("AchievementData")
 
 local function GetCurrentTier(typeName)
 	local completed = 0
@@ -97,6 +162,10 @@ local lastClickTime = tick()
 local comboIndex = 0
 
 -- functions
+
+local function autoGachas(Gacha: string, Target)
+	Framework.Remote:Fire("GachaSystem", "Spin", Gacha, "Normal", {}, Target)
+end
 
 local function autoClicker()
 	Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
@@ -177,11 +246,6 @@ local function autoAscension()
 	end
 end
 
---[[                   while scriptSettings.PlayerTab.AutoAscension do
-                            task.wait(1)
-                            desc.Text = nextAscension
-                        end]]
-
 local function removeCutscene()
 	local oldRequire = require
 
@@ -191,6 +255,20 @@ local function removeCutscene()
 		end
 
 		return oldRequire(module)
+	end
+end
+
+local function removeGachaAnimation()
+	local mod = require(Framework.Modules.Services.GachaService)
+
+	mod.SetupAnimation = function()
+		return
+	end
+	mod.QuitAnimation = function()
+		return
+	end
+	mod.StartAnimation = function()
+		return
 	end
 end
 
@@ -237,6 +315,19 @@ local function autoAchievements()
 			Framework.Remote:Fire("AchievementSystem", "Claim", id)
 		end
 	end
+end
+
+local function autoChests()
+	for chestId, chestConfig in pairs(ChestData) do
+		if chestConfig.CanClaim(Framework.LocalPlayer) then
+			Framework.Remote:Fire("ChestSystem", "Claim", chestId)
+		end
+	end
+end
+
+local function autoJoinGamemode()
+	-- Example: Auto join "Survival" gamemode
+	Framework.Remote:Fire("GameModeSystem", "Join", scriptSettings.GamemodesTab.SelectedGamemode)
 end
 
 local function changeDescriptionName()
@@ -303,6 +394,8 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
 	About = Window:AddTab({ Title = "About", Icon = "clipboard" }),
 	Player = Window:AddTab({ Title = "Player", Icon = "smile-plus" }),
+	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
+	Gamemode = Window:AddTab({ Title = "Gamemodes", Icon = "gamepad-2" }),
 	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
 
@@ -323,7 +416,7 @@ mainAbout:AddParagraph({
 })
 
 -- PLAYER
-local mainPlayer = Tabs.Player:AddSection("")
+local mainPlayer = Tabs.Player:AddSection("Main")
 mainPlayer:AddParagraph({
 	Title = "Player Features",
 	Content = "\nHere you can find various features related to the player, such as auto-clicker and auto-rewards.",
@@ -361,7 +454,7 @@ local removeCuts = mainPlayer:AddButton({
 	end,
 })
 
-local mainPlayer2 = Tabs.Player:AddSection("")
+local mainPlayer2 = Tabs.Player:AddSection("Auto Collect")
 
 local autoReward = mainPlayer2:AddToggle("AutoRewards", {
 	Title = "Auto Collect Rewards",
@@ -379,12 +472,237 @@ local autoAchievement = mainPlayer2:AddToggle("AutoAchievements", {
 	end,
 })
 
+local autoChest = mainPlayer2:AddToggle("AutoChests", {
+	Title = "Auto Collect Chest",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.PlayerTab.AutoChests = state
+	end,
+})
+
+-- GACHA
+local mainGacha = Tabs.Gachas:AddSection("Main")
+mainGacha:AddParagraph({
+	Title = "Gacha Features",
+	Content = "\nHere you can find various features related to gacha mechanics.",
+})
+
+local selectGacha = mainGacha:AddDropdown("selectGacha", {
+	Title = "Select Gacha",
+	Description = "Select a gacha to spin",
+	Values = Gachas,
+	Multi = false,
+	Default = "Psychic Power",
+})
+
+local selectGachaTarget = mainGacha:AddDropdown("selectGachaTarget", {
+	Title = "Select Target",
+	Description = "Select your target for spin",
+	Values = Targets,
+	Multi = true,
+	Default = { "Choose a target" },
+})
+
+local autoGacha = mainGacha:AddToggle("autoGacha", {
+	Title = "Auto Gacha",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.GachaTab.AutoGacha = state
+	end,
+})
+
+local gachaSettings = Tabs.Gachas:AddSection("Settings")
+
+local gachaDelay = gachaSettings:AddSlider("gachaDelay", {
+	Title = "Spin Delay",
+	Description = "Set the delay between each spin (in seconds)",
+	Default = 0.1,
+	Min = 0.1,
+	Max = 5,
+	Rounding = 0.1,
+	Callback = function(Value)
+		scriptSettings.GachaTab.GachaDelay = Value
+	end,
+})
+
+local removeGachaAnim = gachaSettings:AddButton({
+	Title = "Remove Gacha Animation",
+	Callback = function()
+		removeGachaAnimation()
+	end,
+})
+
+-- GAMEMODE
+local mainGamemode = Tabs.Gamemode:AddSection("Main")
+mainGamemode:AddParagraph({
+	Title = "Gamemode Features",
+	Content = "\nHere you can find various features related to gamemodes.",
+})
+
+local selectGamemode = mainGamemode:AddDropdown("selectGamemode", {
+	Title = "Select Gamemode",
+	Description = "Select a gamemode to play",
+	Values = Gamemodes,
+	Multi = true,
+	Default = { "Choose a gamemode" },
+})
+
+local autoFarmGamemodeMobs = mainGamemode:AddToggle("AutoFarmMobs", {
+	Title = "Auto Farm Mobs",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.GamemodesTab.AutoFarmMobs = state
+	end,
+})
+
+local mapsGamemode = Tabs.Gamemode:AddSection("Maps")
+
+local selectRaid = mapsGamemode:AddDropdown("selectRaid", {
+	Title = "Select Raid",
+	Description = "Select an raid map",
+	Values = RaidData,
+	Multi = false,
+	Default = "Choose an raid map",
+})
+
+local selectDungeon = mapsGamemode:AddDropdown("selectDungeon", {
+	Title = "Select Dungeon",
+	Description = "Select an dungeon map",
+	Values = DungeonData,
+	Multi = false,
+	Default = "Choose an dungeon map",
+})
+
+local selectInfinity = mapsGamemode:AddDropdown("selectInfinity", {
+	Title = "Select Infinity",
+	Description = "Select an infinity map",
+	Values = InfinityData,
+	Multi = false,
+	Default = "Choose an infinity map",
+})
+
+local leaveGamemode = Tabs.Gamemode:AddSection("Leave in")
+
+local raidLeaveIn = leaveGamemode:AddInput("raidLeaveIn", {
+	Title = "Raid Leave In",
+	Default = "",
+	Placeholder = "e.g 30",
+	Numeric = true,
+	Finished = false,
+	Callback = function(Value)
+		scriptSettings.GamemodesTab.RaidToLeave = Value
+	end,
+})
+
+local dungeonLeaveIn = leaveGamemode:AddInput("dungeonLeaveIn", {
+	Title = "Dungeon Leave In",
+	Default = "",
+	Placeholder = "e.g 30",
+	Numeric = true,
+	Finished = false,
+	Callback = function(Value)
+		scriptSettings.GamemodesTab.DungeonToLeave = Value
+	end,
+})
+
+local infinityLeaveIn = leaveGamemode:AddInput("infinityLeaveIn", {
+	Title = "Infinity Leave In",
+	Default = "",
+	Placeholder = "e.g 30",
+	Numeric = true,
+	Finished = false,
+	Callback = function(Value)
+		scriptSettings.GamemodesTab.InfinityToLeave = Value
+	end,
+})
+
+local autoLeaves = leaveGamemode:AddToggle("autoLeave", {
+	Title = "Auto Leave Gamemode",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.GamemodesTab.AutoLeaveGamemode = state
+	end,
+})
+
+local playerGamemode = Tabs.Gamemode:AddSection("Player Settings")
+
+local selectPlayersToJoin = playerGamemode:AddDropdown("selectPlayersToJoin", {
+	Title = "Select Player's Party to Join",
+	Description = "Select players to join the gamemode",
+	Values = PlayersInGamemodes,
+	Multi = true,
+	Default = { "Choose a player" },
+})
+
+local refreshPlayers = playerGamemode:AddButton({
+	Title = "Refresh Players List",
+	Callback = function()
+		table.clear(PlayersInGamemodes)
+
+		for players, names in pairs(Players:GetPlayers()) do
+			table.insert(PlayersInGamemodes, names.Name)
+		end
+
+		selectPlayersToJoin:SetValue(PlayersInGamemodes)
+	end,
+})
+
+local autoJoinSelected = playerGamemode:AddToggle("autoJoinSelected", {
+	Title = "Auto Join Gamemode (Selected Players)",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.GamemodesTab.AutoJoinSelectedGamemode = state
+	end,
+})
+
+local autoJoinPublic = playerGamemode:AddToggle("autoJoinPublic", {
+	Title = "Auto Join Gamemode (Public)",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.GamemodesTab.AutoJoinPublicGamemode = state
+	end,
+})
+
+local autoCreateGamemode = playerGamemode:AddToggle("autoCreateGamemode", {
+	Title = "Auto Create Gamemode",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.GamemodesTab.AutoCreateGamemode = state
+	end,
+})
+
 -- Spawn functions
+selectGacha:OnChanged(function(Value)
+	table.clear(Targets)
+	scriptSettings.GachaTab.SelectedGacha = Value
+
+	for targetId in pairs(GachaData[Value].Targets) do
+		if not table.find(Targets, targetId) then
+			table.insert(Targets, targetId)
+		end
+	end
+
+	selectGachaTarget:SetValue(Targets)
+end)
+
+selectGachaTarget:OnChanged(function(Value)
+	scriptSettings.GachaTab.SelectedTarget = Value
+end)
 
 task.spawn(function()
 	while true do
 		task.wait(1)
 		changeDescriptionName()
+	end
+end)
+
+task.spawn(function()
+	while true do
+		task.wait(scriptSettings.GachaTab.GachaDelay)
+
+		if scriptSettings.GachaTab.AutoGacha and scriptSettings.GachaTab.SelectedGacha ~= "" then
+			autoGachas(scriptSettings.GachaTab.SelectedGacha, scriptSettings.GachaTab.SelectedTarget)
+		end
 	end
 end)
 
@@ -417,6 +735,10 @@ task.spawn(function()
 
 			if scriptSettings.PlayerTab.AutoAchievements then
 				autoAchievements()
+			end
+
+			if scriptSettings.PlayerTab.AutoChests then
+				autoChests()
 			end
 		end
 	end
