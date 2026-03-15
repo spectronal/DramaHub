@@ -4,7 +4,8 @@ local runService = game:GetService("RunService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
+local TeamCreateData = game:GetService("TeamCreateData")
+local LocalPlayer = Players.LocalPlayer
 
 local descLabel
 
@@ -38,6 +39,8 @@ local scriptSettings = {
 		SelectedRaidDifficulty = "",
 		SelectedDungeonDifficulty = "",
 		SelectedInfinityDifficulty = "",
+
+		SelectedPlayersToJoin = { "" },
 
 		RaidToLeave = 0,
 		DungeonToLeave = 0,
@@ -73,29 +76,52 @@ end
 local PlayersInGamemodes = {}
 local Gamemodes = {}
 
+local GamemodePriority = {
+	"Raid",
+	"Dungeon",
+	"Infinity Castle",
+}
+
 local RaidData = {}
 local DungeonData = {}
-local InfinityData = { "Infinity Castle" }
+local InfinityData = {}
 
-for id in pairs(GamemodeData) do
-	table.insert(Gamemodes, id)
+local WaveData
+local WaveLabel = LocalPlayer.PlayerGui:WaitForChild("Mode").Content.Start.Label
+
+local function setupGamemodeData()
+	for id in pairs(GamemodeData) do
+		table.insert(Gamemodes, id)
+	end
+
+	for players, names in pairs(Players:GetPlayers()) do
+		table.insert(PlayersInGamemodes, names.Name)
+	end
+
+	for raids, value in pairs(GamemodeData["Raid"]) do
+		table.insert(RaidData, raids)
+	end
+
+	for dungeons, value in pairs(GamemodeData["Dungeon"]) do
+		table.insert(DungeonData, dungeons)
+	end
+
+	for infinity, value in pairs(GamemodeData["Infinity Castle"]) do
+		table.insert(InfinityData, infinity)
+	end
+
+	for game, gamemode in pairs(game:GetDescendants()) do
+		if gamemode:IsA("Folder") and gamemode.name == "Gamemode" and gamemode.Parent.Name == "_MAP" then
+			gamemode:SetAttribute("IsInGamemode", false)
+			gamemode:SetAttribute("GamemodeType", "")
+			gamemode:SetAttribute("NextGamemode", "")
+			gamemode:SetAttribute("Wave", 1)
+		end
+	end
 end
 
-for players, names in pairs(Players:GetPlayers()) do
-	table.insert(PlayersInGamemodes, names.Name)
-end
+setupGamemodeData()
 
-for raids, value in pairs(GamemodeData["Raid"]) do
-	table.insert(RaidData, raids)
-end
-
-for dungeons, value in pairs(GamemodeData["Dungeon"]) do
-	table.insert(DungeonData, dungeons)
-end
-
---[[for targetId in pairs(GachaData[selectedGacha].Targets) do
-    table.insert(Targets,targetId)
-end]]
 -- Ascension
 local nextAscension = "Calculing..."
 
@@ -325,9 +351,91 @@ local function autoChests()
 	end
 end
 
-local function autoJoinGamemode()
-	-- Example: Auto join "Survival" gamemode
-	Framework.Remote:Fire("GameModeSystem", "Join", scriptSettings.GamemodesTab.SelectedGamemode)
+local function getGamemodeWave()
+	local waveText = tonumber(WaveLabel.Text:match(">(%d+)<"))
+
+	local gamemode = workspace["_MAP"]:FindFirstChild("Gamemode")
+
+	if gamemode then
+		gamemode:SetAttribute("Wave", waveText)
+	end
+end
+
+WaveLabel:GetPropertyChangedSignal("Text"):Connect(function()
+	getGamemodeWave()
+end)
+
+local function getNextGamemode(current)
+	for index, mode in ipairs(GamemodePriority) do
+		if mode == current then
+			return GamemodePriority[index + 1]
+		end
+	end
+
+	return GamemodePriority[1]
+end
+
+local function autoJoinGamemode(gamemode, select: "Private" | "Public")
+	if gamemode:GetAttribute("IsInGamemode") and LocalPlayer:GetAttribute("InMode") then
+		return
+	else
+		gamemode:SetAttribute("IsInGamemode", false)
+	end
+
+	if select == "Private" then
+		for playerName, key in pairs(scriptSettings.GamemodesTab.SelectedPlayersToJoin) do
+			local player = Players[playerName]
+			if player:GetAttribute("Mode") then
+				local modeText = player:GetAttribute("Mode")
+				if scriptSettings.GamemodesTab.SelectedGamemode[modeText] then
+					Framework.Remote:Fire("GamemodeSystem", "Join", modeText, player.UserId)
+
+					if LocalPlayer:GetAttribute("InMode") then
+						gamemode:SetAttribute("GamemodeType", modeText)
+						gamemode:SetAttribute("IsInGamemode", true)
+					else
+						gamemode:SetAttribute("GamemodeType", "")
+						gamemode:SetAttribute("IsInGamemode", false)
+					end
+				end
+			end
+		end
+	elseif select == "Public" then
+		for playerName, key in pairs(Players:GetPlayers()) do
+			local player = Players[playerName]
+
+			if player:GetAttribute("Mode") then
+				local modeText = player:GetAttribute("Mode")
+
+				if scriptSettings.GamemodesTab.SelectedGamemode[modeText] then
+					Framework.Remote:Fire("GamemodeSystem", "Join", modeText, player.UserId)
+
+					if LocalPlayer:GetAttribute("InMode") then
+						gamemode:SetAttribute("GamemodeType", modeText)
+						gamemode:SetAttribute("IsInGamemode", true)
+					else
+						gamemode:SetAttribute("GamemodeType", "")
+						gamemode:SetAttribute("IsInGamemode", false)
+					end
+				end
+			end
+		end
+	end
+end
+
+local function autoLeaveGamemode()
+	-- Example: Auto leave gamemode when certain conditions are met
+	Framework.Remote:Fire("GameModeSystem", "Leave")
+end
+
+local function autoCreateGamemode()
+	-- Example: Auto create a gamemode with specific settings
+	Framework.Remote:Fire(
+		"GameModeSystem",
+		"Create",
+		scriptSettings.GamemodesTab.SelectedGamemode,
+		scriptSettings.GamemodesTab.Selecte
+	)
 end
 
 local function changeDescriptionName()
@@ -362,6 +470,16 @@ local function changeDescriptionName()
 	end
 end
 
+local function refreshPlayersList(selectPlayersToJoin)
+	table.clear(PlayersInGamemodes)
+
+	for players, names in pairs(Players:GetPlayers()) do
+		table.insert(PlayersInGamemodes, names.Name)
+	end
+
+	selectPlayersToJoin:SetValue(PlayersInGamemodes)
+end
+
 -- UI
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
@@ -372,6 +490,26 @@ local InterfaceManager = loadstring(
 )()
 
 coreGui:FindFirstChild("ScreenGui").Name = "FluentUI"
+
+LocalPlayer:GetAttributeChangedSignal("Mode"):Connect(function()
+	local sucess, playerNameFromId = pcall(function()
+		return Players:GetNameFromUserIdAsync(string.match(LocalPlayer:GetAttribute("InMode"), "%d+"))
+	end)
+
+	if scriptSettings.GamemodesTab.SelectedGamemode[LocalPlayer:GetAttribute("Mode")] then
+		Fluent:Notify({
+			Title = "Gamemode System",
+			Content = "Joined " .. playerNameFromId .. "'s " .. (LocalPlayer:GetAttribute("Mode") or "No Mode"),
+			Duration = 3,
+		})
+	else
+		Fluent:Notify({
+			Title = "Gamemode System",
+			Content = "You left the gamemode",
+			Duration = 3,
+		})
+	end
+end)
 
 Fluent:Notify({
 	Title = "Drama Hub | Development Build",
@@ -581,6 +719,32 @@ local selectInfinity = mapsGamemode:AddDropdown("selectInfinity", {
 	Default = "Choose an infinity map",
 })
 
+local diffGamemode = Tabs.Gamemode:AddSection("Difficulties")
+
+local selectRaidDiff = diffGamemode:AddDropdown("selectRaidDiff", {
+	Title = "Select Raid Difficulty",
+	Description = "Select a difficulty for raids",
+	Values = { "Easy", "Medium", "Hard" },
+	Multi = false,
+	Default = "Choose a difficulty",
+})
+
+local selectDungeonDiff = diffGamemode:AddDropdown("selectDungeonDiff", {
+	Title = "Select Dungeon Difficulty",
+	Description = "Select a difficulty for dungeons",
+	Values = { "Easy", "Medium", "Hard" },
+	Multi = false,
+	Default = "Choose a difficulty",
+})
+
+local selectInfinityDiff = diffGamemode:AddDropdown("selectInfinityDiff", {
+	Title = "Select Infinity Difficulty",
+	Description = "Select a difficulty for infinity castle",
+	Values = { "Easy" },
+	Multi = false,
+	Default = "Choose a difficulty",
+})
+
 local leaveGamemode = Tabs.Gamemode:AddSection("Leave in")
 
 local raidLeaveIn = leaveGamemode:AddInput("raidLeaveIn", {
@@ -631,19 +795,13 @@ local selectPlayersToJoin = playerGamemode:AddDropdown("selectPlayersToJoin", {
 	Description = "Select players to join the gamemode",
 	Values = PlayersInGamemodes,
 	Multi = true,
-	Default = { "Choose a player" },
+	Default = {},
 })
 
 local refreshPlayers = playerGamemode:AddButton({
 	Title = "Refresh Players List",
 	Callback = function()
-		table.clear(PlayersInGamemodes)
-
-		for players, names in pairs(Players:GetPlayers()) do
-			table.insert(PlayersInGamemodes, names.Name)
-		end
-
-		selectPlayersToJoin:SetValue(PlayersInGamemodes)
+		refreshPlayersList(selectPlayersToJoin)
 	end,
 })
 
@@ -689,11 +847,12 @@ selectGachaTarget:OnChanged(function(Value)
 	scriptSettings.GachaTab.SelectedTarget = Value
 end)
 
-task.spawn(function()
-	while true do
-		task.wait(1)
-		changeDescriptionName()
-	end
+selectGamemode:OnChanged(function(Value)
+	scriptSettings.GamemodesTab.SelectedGamemode = Value
+end)
+
+selectPlayersToJoin:OnChanged(function(Value)
+	scriptSettings.GamemodesTab.SelectedPlayersToJoin = Value
 end)
 
 task.spawn(function()
@@ -722,6 +881,14 @@ task.spawn(function()
 			autoClickerWithAnimation()
 		end
 
+		if scriptSettings.GamemodesTab.AutoJoinPublicGamemode then
+			autoJoinGamemode(workspace["_MAP"].Gamemode, "Public")
+		end
+
+		if scriptSettings.GamemodesTab.AutoJoinSelectedGamemode then
+			autoJoinGamemode(game.workspace["_MAP"].Gamemode, "Private")
+		end
+
 		rewardTimer += dt
 		if rewardTimer >= 1 then
 			rewardTimer = 0
@@ -740,6 +907,7 @@ task.spawn(function()
 			if scriptSettings.PlayerTab.AutoChests then
 				autoChests()
 			end
+			--changeDescriptionName()
 		end
 	end
 end)
