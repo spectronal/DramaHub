@@ -1,9 +1,9 @@
 -- DramaHub: Anime Ghost
--- Version: 1.0.6
--- Update Logs: Implemented new WaveLeave, AutoCreateGamemode, AutoJoinGamemode, GamemodeNotifier systems
--- Errors: So much lag, new patch fixing this in 10/15 hours
+-- Version: 1.0.7
+-- Update Logs: Added new gamemode cooldown verification and new internal debounce functons, fixed gamemode notifier, fixed gamemode prioritys, fixed extreme lag when gamemode is on
+-- Errors: 0 (ig)
+-- Expected for 1.0.8: Gamemode Auto Farm Mobs, Gamemode Save Position/Return world selected and some status mode for qol
 
-local EncodingService = game:GetService("EncodingService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -78,16 +78,16 @@ end
 local PlayersInGamemodes = {}
 local Gamemodes = {}
 
-local GamemodePriority = {
-	"Raid",
-	"Dungeon",
-	"Infinity Castle",
-}
-
 local PriorityMap = {
 	["Raid"] = 1,
 	["Dungeon"] = 2,
 	["Infinity Castle"] = 3,
+}
+
+local cooldowns = {
+	Raid = 0,
+	Dungeon = 0,
+	["Infinity Castle"] = 0,
 }
 
 local RaidData = {}
@@ -97,8 +97,30 @@ local InfinityData = {}
 local gamemodeFold = workspace:WaitForChild("_MAP"):WaitForChild("Gamemode")
 local gamemodeServer = replicatedStorage:WaitForChild("Server").Gamemode
 local WaveData
-local sucess, playerNameFromId = pcall(function()
-	return Players:GetNameFromUserIdAsync(string.match(LocalPlayer:GetAttribute("InMode"), "%d+"))
+
+local lastJoin = 0
+local lastCreate = 0
+local JOIN_COOLDOWN = 2 -- segundos
+
+Framework.Remote:Connect(function(data)
+	if data[1] == "Notify" then
+		local msg = tostring(data[2])
+		local m, s = msg:match("(%d+)m%s*(%d+)s")
+		if not (m and s) then
+			return
+		end
+
+		local total = tonumber(m) * 60 + tonumber(s)
+
+		-- detecta qual modo
+		if msg:find("Raid") then
+			cooldowns.Raid = tick() + total
+		elseif msg:find("Dungeon") then
+			cooldowns.Dungeon = tick() + total
+		elseif msg:find("Infinity Castle") then
+			cooldowns["Infinity Castle"] = tick() + total
+		end
+	end
 end)
 
 local function setupGamemodeData()
@@ -120,15 +142,6 @@ local function setupGamemodeData()
 
 	for infinity, value in pairs(GamemodeData["Infinity Castle"]) do
 		table.insert(InfinityData, infinity)
-	end
-
-	for game, gamemode in pairs(game:GetDescendants()) do
-		if gamemode:IsA("Folder") and gamemode.name == "Gamemode" and gamemode.Parent.Name == "_MAP" then
-			gamemode:SetAttribute("IsInGamemode", false)
-			gamemode:SetAttribute("GamemodeType", "")
-			gamemode:SetAttribute("NextGamemode", "")
-			gamemode:SetAttribute("Wave", 1)
-		end
 	end
 end
 
@@ -382,6 +395,56 @@ local function inMode()
 	return playersFolder:GetAttribute(tostring(LocalPlayer.UserId)) ~= nil
 end
 
+local function isOnCooldown(mode)
+	local remaining = (cooldowns[mode] or 0) - tick()
+
+	if remaining > 0 then
+		print(mode, "ainda em cooldown:", remaining)
+	end
+
+	return remaining > 0.5
+end
+
+local function getCooldownRemaining(mode)
+	if not cooldowns[mode] then
+		return 0
+	end
+	return math.max(0, cooldowns[mode] - tick())
+end
+
+local function formatTime(t)
+	local m = math.floor(t / 60)
+	local s = math.floor(t % 60)
+	return string.format("%02dm %02ds", m, s)
+end
+
+local function printCooldowns()
+	for mode, time in pairs(cooldowns) do
+		local remaining = getCooldownRemaining(mode)
+		print(mode, "->", formatTime(remaining))
+	end
+end
+
+local function getPlayerMode(typeMode: "ModeId" | "Mode" | "StatusMode")
+	for _, mode in pairs(gamemodeServer:GetChildren()) do
+		if mode:IsA("Folder") then
+			local playersFolder = mode:FindFirstChild("Players")
+
+			if playersFolder and playersFolder:GetAttribute(tostring(LocalPlayer.UserId)) then
+				if typeMode == "ModeId" then
+					return mode:GetAttribute("ModeId")
+				elseif typeMode == "Mode" then
+					return mode.Name
+				elseif typeMode == "StatusMode" then
+					return mode:GetAttribute("Status")
+				end
+			end
+		end
+	end
+
+	return nil
+end
+
 local function autoJoinGamemode(gamemode, select: "Private" | "Public")
 	if inMode() then
 		return
@@ -417,6 +480,11 @@ local function autoCreateGamemodes()
 		return
 	end
 
+	if tick() - lastCreate < 2 then
+		return
+	end
+	lastCreate = tick()
+
 	local chosen
 	local bestPriority = math.huge
 
@@ -424,7 +492,7 @@ local function autoCreateGamemodes()
 		if enabled then
 			local priority = PriorityMap[gamemode]
 
-			if priority and priority < bestPriority then
+			if priority and priority < bestPriority and not isOnCooldown(gamemode) then
 				bestPriority = priority
 				chosen = gamemode
 			end
@@ -432,11 +500,15 @@ local function autoCreateGamemodes()
 	end
 
 	if not chosen then
+		print("Todos os modos em cooldown:")
+		printCooldowns()
 		return
 	end
 
 	local key = string.gsub("Selected" .. chosen, " ", "")
 	local difficulty = string.gsub("Selected" .. chosen .. "Difficulty", " ", "")
+
+	print("Criando:", chosen)
 
 	Framework.Remote:Fire(
 		"GamemodeSystem",
@@ -445,6 +517,10 @@ local function autoCreateGamemodes()
 		scriptSettings.GamemodesTab[key],
 		scriptSettings.GamemodesTab[difficulty]
 	)
+
+	task.wait(1)
+
+	Framework.Remote:Fire("GamemodeSystem", "Start", getPlayerMode("ModeId"), LocalPlayer.UserId)
 end
 
 local function autoLeaveGamemode()
@@ -452,17 +528,22 @@ local function autoLeaveGamemode()
 		return
 	end
 
-	for _, mode in pairs(gamemodeServer:GetChildren()) do
-		if mode.Name == LocalPlayer:GetAttribute("InMode") then
-			local Wave = tonumber(mode:GetAttribute("Stage"))
-			local CurrentMode = string.gsub(mode:GetAttribute("ModeId"), " ", "")
+	local modeName = getPlayerMode("Mode")
+	if not modeName then
+		return
+	end
 
-			local MaxWave = tonumber(scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
+	local mode = gamemodeServer:FindFirstChild(modeName)
+	if not mode then
+		return
+	end
 
-			if MaxWave ~= 0 and Wave >= MaxWave then
-				Framework.Remote:Fire("TeleportSystem", "To", 7)
-			end
-		end
+	local Wave = tonumber(mode:GetAttribute("Stage"))
+	local CurrentMode = string.gsub(mode:GetAttribute("ModeId"), " ", "")
+	local MaxWave = tonumber(scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
+
+	if MaxWave ~= 0 and Wave >= MaxWave then
+		Framework.Remote:Fire("TeleportSystem", "To", 7)
 	end
 end
 
@@ -498,20 +579,6 @@ local function changeDescriptionName()
 	end
 end
 
-local function getPlayerMode()
-	for _, mode in pairs(gamemodeServer:GetChildren()) do
-		if mode:IsA("Folder") then
-			local playersFolder = mode:FindFirstChild("Players")
-
-			if playersFolder and playersFolder:GetAttribute(tostring(LocalPlayer.UserId)) then
-				return string.gsub(mode:GetAttribute("ModeId"), " ", "")
-			end
-		end
-	end
-
-	return nil
-end
-
 local function refreshPlayersList(selectPlayersToJoin)
 	table.clear(PlayersInGamemodes)
 
@@ -538,8 +605,9 @@ local lastMode = nil
 
 local function gamemodeNotifier()
 	local isIn = inMode()
-	local mode = getPlayerMode()
+	local mode = getPlayerMode("ModeId")
 
+	local ownerName = "Unknown"
 	if lastInMode and not isIn then
 		Fluent:Notify({
 			Title = "Gamemode System",
@@ -549,7 +617,17 @@ local function gamemodeNotifier()
 	end
 
 	if not lastInMode and isIn then
-		local ownerId = Players[playerNameFromId].UserId
+		local ownerId = tonumber(string.match(LocalPlayer:GetAttribute("InMode") or "", "%d+"))
+
+		if ownerId then
+			local success, result = pcall(function()
+				return Players:GetNameFromUserIdAsync(ownerId)
+			end)
+
+			if success then
+				ownerName = result
+			end
+		end
 
 		if ownerId == LocalPlayer.UserId then
 			Fluent:Notify({
@@ -560,7 +638,7 @@ local function gamemodeNotifier()
 		else
 			Fluent:Notify({
 				Title = "Gamemode System",
-				Content = "Joined " .. playerNameFromId .. "'s " .. mode,
+				Content = "Joined " .. ownerName .. "'s " .. mode,
 				Duration = 2,
 			})
 		end
