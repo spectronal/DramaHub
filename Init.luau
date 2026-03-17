@@ -1,3 +1,9 @@
+-- DramaHub: Anime Ghost
+-- Version: 1.0.6
+-- Update Logs: Implemented new WaveLeave, AutoCreateGamemode, AutoJoinGamemode, GamemodeNotifier systems
+-- Errors: So much lag, new patch fixing this in 10/15 hours
+
+local EncodingService = game:GetService("EncodingService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -89,8 +95,8 @@ local DungeonData = {}
 local InfinityData = {}
 
 local gamemodeFold = workspace:WaitForChild("_MAP"):WaitForChild("Gamemode")
+local gamemodeServer = replicatedStorage:WaitForChild("Server").Gamemode
 local WaveData
-local WaveLabel = LocalPlayer.PlayerGui:WaitForChild("Mode").Content.Start.Label
 local sucess, playerNameFromId = pcall(function()
 	return Players:GetNameFromUserIdAsync(string.match(LocalPlayer:GetAttribute("InMode"), "%d+"))
 end)
@@ -357,25 +363,28 @@ local function autoChests()
 	end
 end
 
-local function getGamemodeWave()
-	local waveText = tonumber(WaveLabel.Text:match(">(%d+)<"))
-
-	local gamemode = workspace["_MAP"]:FindFirstChild("Gamemode")
-
-	if gamemode then
-		gamemode:SetAttribute("Wave", waveText)
+local function inMode()
+	local modeName = LocalPlayer:GetAttribute("InMode")
+	if not modeName then
+		return false
 	end
+
+	local mode = gamemodeServer:FindFirstChild(modeName)
+	if not mode then
+		return false
+	end
+
+	local playersFolder = mode:FindFirstChild("Players")
+	if not playersFolder then
+		return false
+	end
+
+	return playersFolder:GetAttribute(tostring(LocalPlayer.UserId)) ~= nil
 end
 
-WaveLabel:GetPropertyChangedSignal("Text"):Connect(function()
-	getGamemodeWave()
-end)
-
 local function autoJoinGamemode(gamemode, select: "Private" | "Public")
-	if gamemode:GetAttribute("IsInGamemode") and LocalPlayer:GetAttribute("InMode") then
+	if inMode() then
 		return
-	else
-		gamemode:SetAttribute("IsInGamemode", false)
 	end
 
 	if select == "Private" then
@@ -383,37 +392,20 @@ local function autoJoinGamemode(gamemode, select: "Private" | "Public")
 			local player = Players[playerName]
 			if player:GetAttribute("Mode") then
 				local modeText = player:GetAttribute("Mode")
+
 				if scriptSettings.GamemodesTab.SelectedGamemode[modeText] then
 					Framework.Remote:Fire("GamemodeSystem", "Join", modeText, player.UserId)
-
-					if LocalPlayer:GetAttribute("InMode") then
-						gamemode:SetAttribute("GamemodeType", modeText)
-						gamemode:SetAttribute("IsInGamemode", true)
-					else
-						gamemode:SetAttribute("GamemodeType", "")
-						gamemode:SetAttribute("IsInGamemode", false)
-					end
 				end
 			end
 		end
 	elseif select == "Public" then
 		for key, playerName in pairs(Players:GetPlayers()) do
-			print(playerName, key)
 			local player = Players[playerName.Name]
-
 			if player:GetAttribute("Mode") then
 				local modeText = player:GetAttribute("Mode")
 
 				if scriptSettings.GamemodesTab.SelectedGamemode[modeText] then
 					Framework.Remote:Fire("GamemodeSystem", "Join", modeText, player.UserId)
-
-					if LocalPlayer:GetAttribute("InMode") then
-						gamemode:SetAttribute("GamemodeType", modeText)
-						gamemode:SetAttribute("IsInGamemode", true)
-					else
-						gamemode:SetAttribute("GamemodeType", "")
-						gamemode:SetAttribute("IsInGamemode", false)
-					end
 				end
 			end
 		end
@@ -421,10 +413,8 @@ local function autoJoinGamemode(gamemode, select: "Private" | "Public")
 end
 
 local function autoCreateGamemodes()
-	if gamemodeFold:GetAttribute("IsInGamemode") and LocalPlayer:GetAttribute("InMode") then
+	if inMode() then
 		return
-	else
-		gamemodeFold:SetAttribute("IsInGamemode", false)
 	end
 
 	local chosen
@@ -455,28 +445,26 @@ local function autoCreateGamemodes()
 		scriptSettings.GamemodesTab[key],
 		scriptSettings.GamemodesTab[difficulty]
 	)
-
-	if LocalPlayer:GetAttribute("InMode") then
-		gamemodeFold:SetAttribute("GamemodeType", chosen)
-		gamemodeFold:SetAttribute("IsInGamemode", true)
-	else
-		gamemodeFold:SetAttribute("GamemodeType", "")
-		gamemodeFold:SetAttribute("IsInGamemode", false)
-	end
 end
 
-gamemodeFold:GetAttributeChangedSignal("Wave"):Connect(function()
-	local currentGamemode = gamemodeFold:GetAttribute("GamemodeType")
-	local waveAttribute = gamemodeFold:GetAttribute("Wave")
-	local leaveIn = scriptSettings.GamemodesTab[currentGamemode .. "ToLeave"]
-
-	print(currentGamemode)
-	print(leaveIn)
-
-	if leaveIn ~= 0 and waveAttribute >= leaveIn then
-		Framework.Remote:Fire("GamemodeSystem", "Leave", Players[playerNameFromId].UserId)
+local function autoLeaveGamemode()
+	if not inMode() then
+		return
 	end
-end)
+
+	for _, mode in pairs(gamemodeServer:GetChildren()) do
+		if mode.Name == LocalPlayer:GetAttribute("InMode") then
+			local Wave = tonumber(mode:GetAttribute("Stage"))
+			local CurrentMode = string.gsub(mode:GetAttribute("ModeId"), " ", "")
+
+			local MaxWave = tonumber(scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
+
+			if MaxWave ~= 0 and Wave >= MaxWave then
+				Framework.Remote:Fire("TeleportSystem", "To", 7)
+			end
+		end
+	end
+end
 
 local function changeDescriptionName()
 	for _, desc in ipairs(coreGui:WaitForChild("FluentUI"):GetDescendants()) do
@@ -510,6 +498,20 @@ local function changeDescriptionName()
 	end
 end
 
+local function getPlayerMode()
+	for _, mode in pairs(gamemodeServer:GetChildren()) do
+		if mode:IsA("Folder") then
+			local playersFolder = mode:FindFirstChild("Players")
+
+			if playersFolder and playersFolder:GetAttribute(tostring(LocalPlayer.UserId)) then
+				return string.gsub(mode:GetAttribute("ModeId"), " ", "")
+			end
+		end
+	end
+
+	return nil
+end
+
 local function refreshPlayersList(selectPlayersToJoin)
 	table.clear(PlayersInGamemodes)
 
@@ -531,33 +533,42 @@ local InterfaceManager = loadstring(
 
 coreGui:FindFirstChild("ScreenGui").Name = "FluentUI"
 
-LocalPlayer:GetAttributeChangedSignal("Mode"):Connect(function()
-	local mode = LocalPlayer:GetAttribute("Mode")
-	local ownerId = Players[playerNameFromId].UserId
+local lastInMode = false
+local lastMode = nil
 
-	if not mode or mode == "" then
+local function gamemodeNotifier()
+	local isIn = inMode()
+	local mode = getPlayerMode()
+
+	if lastInMode and not isIn then
 		Fluent:Notify({
 			Title = "Gamemode System",
 			Content = "You left the gamemode",
-			Duration = 3,
+			Duration = 2,
 		})
-		return
 	end
 
-	if ownerId == LocalPlayer.UserId then
-		Fluent:Notify({
-			Title = "Gamemode System",
-			Content = "You created a " .. mode .. " gamemode",
-			Duration = 3,
-		})
-	else
-		Fluent:Notify({
-			Title = "Gamemode System",
-			Content = "Joined " .. playerNameFromId .. "'s " .. mode,
-			Duration = 3,
-		})
+	if not lastInMode and isIn then
+		local ownerId = Players[playerNameFromId].UserId
+
+		if ownerId == LocalPlayer.UserId then
+			Fluent:Notify({
+				Title = "Gamemode System",
+				Content = "You created a " .. mode .. " gamemode",
+				Duration = 2,
+			})
+		else
+			Fluent:Notify({
+				Title = "Gamemode System",
+				Content = "Joined " .. playerNameFromId .. "'s " .. mode,
+				Duration = 2,
+			})
+		end
 	end
-end)
+
+	lastInMode = isIn
+	lastMode = mode
+end
 
 Fluent:Notify({
 	Title = "Drama Hub | Development Build",
@@ -965,11 +976,16 @@ task.spawn(function()
 			autoJoinGamemode(gamemodeFold, "Private")
 		end
 
+		if scriptSettings.GamemodesTab.AutoLeaveGamemode then
+			autoLeaveGamemode()
+		end
+
+		gamemodeNotifier()
+
 		rewardTimer += dt
 		if rewardTimer >= 1 then
 			rewardTimer = 0
 			if scriptSettings.GamemodesTab.AutoCreateGamemode then
-				print("a")
 				autoCreateGamemodes()
 			end
 
