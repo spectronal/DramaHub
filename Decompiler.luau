@@ -33,7 +33,8 @@ local CastSkillButton = Framework:GetSideButton("CastSkill")
 workspace:WaitForChild("_PETS")
 
 --// Variables
-local lastClickTime = tick()
+local lastClickTime = ti
+ck()
 local comboIndex = 0
 
 local ClickJanitor = Janitor.new()
