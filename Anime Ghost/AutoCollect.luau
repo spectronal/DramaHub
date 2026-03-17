@@ -3,7 +3,7 @@ local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local descLabel
+local descL abel
 
 local Framework = require(replicatedStorage.Framework.Library)
 local Abbreviate = Framework:GetService("AbbreviateService")

@@ -5,7 +5,8 @@ local LocalPlayer = Players.LocalPlayer
 
 local Framework = require(replicatedStorage.Framework.Library)
 local Abbreviate = Framework:GetService("AbbreviateService")
-local MultiplierService = Framework:GetService("MultiplierService")
+local MultiplierSe
+rvice = Framework:GetService("MultiplierService")
 local DebounceService = Framework:GetService("DebounceService")
 local AnimationService = Framework:GetService("AnimationService")
 

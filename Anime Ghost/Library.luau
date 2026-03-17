@@ -15,7 +15,7 @@ LocalPlayer:GetAttributeChangedSignal("Mode"):Connect(function()
 
 	if not mode or mode == "" then
 		Fluent:Notify({
-			Title = "Gamemode System",
+			Title = "Gamemode System ",
 			Content = "You left the gamemode",
 			Duration = 3,
 		})
