@@ -9,7 +9,8 @@ local Framework = require(replicatedStorage.Framework.Library)
 local Abbreviate = Framework:GetService("AbbreviateService")
 local MultiplierService = Framework:GetService("MultiplierService")
 local DebounceService = Framework:GetService("DebounceService")
-local AnimationService = Framework:GetService("AnimationService")
+local AnimationServ
+ice = Framework:GetService("AnimationService")
 
 -- AutoClicker with animation
 local lastClickTime = tick()
