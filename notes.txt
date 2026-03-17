@@ -57,7 +57,7 @@ local function autoCreateGamemodes()
 	local selected = {}
 
 	for gamemode, key in pairs(scriptSettings.GamemodesTab.SelectedGamemode) do
-		table.insert(selected, gamemode)
+		table.insert(selected, ga memode)
 	end
 
 	if #selected == 0 then return end
