@@ -9,7 +9,7 @@ return function(Shared)
 			Framework.Remote:Fire("RewardSystem", "ClaimAll")
 		end
 
-		if state.Settings.PlayerTab.AutoAchievments then
+		if state.Settings.PlayerTab.AutoAchievements then
 			Framework.Remote:Fire("AchievementSystem", "ClaimAll")
 		end
 

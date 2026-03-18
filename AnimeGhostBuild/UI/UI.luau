@@ -1,12 +1,15 @@
 return function(Shared)
+	warn("ANTES DO STATE")
 	local State = Shared.State
-
+	warn("DEPOIS DO STATE")
 	local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/main/source.lua"))()
 	local SaveManager =
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/main/addons/SaveManager.lua"))()
 	local InterfaceManager = loadstring(
 		game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/main/addons/InterfaceManager.lua")
 	)()
+
+	warn("DEPOIS DA UI")
 
 	local Window = Fluent:CreateWindow({
 		Title = "Drama Hub",
@@ -57,7 +60,7 @@ return function(Shared)
 		Title = "Auto Achievements",
 		Default = false,
 		Callback = function(v)
-			State.Settings.PlayerTab.AutoAchievments = v
+			State.Settings.PlayerTab.AutoAchievements = v
 		end,
 	})
 

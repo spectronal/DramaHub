@@ -6,7 +6,7 @@ return function()
 				AutoClickAnimation = false,
 				AutoAscension = false,
 				AutoRewards = false,
-				AutoAchievments = false,
+				AutoAchievements = false,
 				AutoChests = false,
 			},
 			GachaTab = {
