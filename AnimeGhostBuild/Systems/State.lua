@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-=======
--- Systems/State.lua
--- Shared state, settings and data containers used across all modules
--- Loaded via: loadstring(game:HttpGet(URL))()
-
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 getgenv().DH = getgenv().DH or {}
 getgenv().DH.State = {}
 
@@ -16,13 +9,7 @@ local LocalPlayer = Players.LocalPlayer
 
 local Framework = require(replicatedStorage.Framework.Library)
 
-<<<<<<< HEAD
 -- Script Settings
-=======
--- ════════════════════════════════════════
--- Script Settings
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 State.scriptSettings = {
 	PlayerTab = {
@@ -70,13 +57,7 @@ State.scriptSettings = {
 	},
 }
 
-<<<<<<< HEAD
 -- Framework Data
-=======
--- ════════════════════════════════════════
--- Framework Data
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 State.Framework = Framework
 State.TimeRewardData = Framework:GetData("TimeRewardData")
@@ -89,13 +70,7 @@ State.GachaData = Framework:GetData("GachaData")
 State.GamemodeData = Framework:GetData("GamemodeData")
 State.MapData = Framework:GetData("MapData")
 
-<<<<<<< HEAD
 -- Gacha State
-=======
--- ════════════════════════════════════════
--- Gacha State
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 State.Gachas = {}
 State.Targets = {}
@@ -104,13 +79,7 @@ for id in pairs(State.GachaData) do
 	table.insert(State.Gachas, id)
 end
 
-<<<<<<< HEAD
 -- Gamemode State
-=======
--- ════════════════════════════════════════
--- Gamemode State
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 State.PlayersInGamemodes = {}
 State.Gamemodes = {}
@@ -136,24 +105,12 @@ State.gamemodeFold = workspace:WaitForChild("_MAP"):WaitForChild("Gamemode")
 State.gamemodeServer = replicatedStorage:WaitForChild("Server").Gamemode
 State.lastCreate = 0
 
-<<<<<<< HEAD
 -- Auto Click State
-=======
--- ════════════════════════════════════════
--- Auto Click State
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 State.lastClickTime = tick()
 State.comboIndex = 0
 
-<<<<<<< HEAD
 -- Auto Farm State
-=======
--- ════════════════════════════════════════
--- Auto Farm State
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 State.enemiesFolder = workspace["_ENEMIES"].Server
 State.PlayerRootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
@@ -163,23 +120,11 @@ State.stuckTime = 0
 State.lastTeleport = 0
 State.teleportCooldown = 0.5
 
-<<<<<<< HEAD
 -- Description / UI State
 
 State.Descriptions = {}
 
 -- Gamemode Notifier State
-=======
--- ════════════════════════════════════════
--- Description / UI State
--- ════════════════════════════════════════
-
-State.Descriptions = {}
-
--- ════════════════════════════════════════
--- Gamemode Notifier State
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 State.lastInMode = false
 State.lastMode = nil

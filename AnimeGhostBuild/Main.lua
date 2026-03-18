@@ -1,4 +1,3 @@
--- Main.lua
 -- DramaHub: Anime Ghost
 -- Version: 1.0.85
 -- Update Logs: for Gamemode: Added Auto Farm Mobs, Save Position/Return World and Status Mode (QOL), for general: Added custom DramaHub Roles, Result UI is not appearing anymore and new Hub notifiers (QOL)
@@ -20,30 +19,16 @@ local URLS = {
 	Gacha = BASE_URL .. "/Core/Gacha.lua",
 }
 
-<<<<<<< HEAD
 -- Loader
 
-=======
--- ════════════════════════════════════════
--- Loader
--- ════════════════════════════════════════
-
--- State deve ser carregado primeiro, os outros dependem dele
--- Utils deve vir antes de Gamemode (usado no setupGamemodeData)
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 local loadOrder = {
 	"State",
 	"Utils",
 	"Player",
 	"Rewards",
 	"Gacha",
-<<<<<<< HEAD
 	"Gamemode",
 	"Farm",
-=======
-	"Gamemode", -- depende de Utils já carregado
-	"Farm", -- depende de Gamemode já carregado
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 }
 
 for _, name in ipairs(loadOrder) do
@@ -52,18 +37,10 @@ for _, name in ipairs(loadOrder) do
 	end)
 
 	if not ok then
-<<<<<<< HEAD
 		warn("[DramaHub] Failed to load module '" .. name .. "': " .. tostring(err))
 	end
 end
 
-=======
-		warn("[DramaHub] Falha ao carregar módulo '" .. name .. "': " .. tostring(err))
-	end
-end
-
--- Atalhos locais para os módulos (via getgenv)
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 local State = getgenv().DH.State
 local Utils = getgenv().DH.Utils
 local Player = getgenv().DH.Player
@@ -72,13 +49,7 @@ local Farm = getgenv().DH.Farm
 local Gamemode = getgenv().DH.Gamemode
 local Gacha = getgenv().DH.Gacha
 
-<<<<<<< HEAD
 -- Services
-=======
--- ════════════════════════════════════════
--- Services
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
@@ -87,14 +58,6 @@ local LocalPlayer = Players.LocalPlayer
 
 local Framework = State.Framework
 
-<<<<<<< HEAD
-=======
--- ════════════════════════════════════════
--- One-time Setup
--- ════════════════════════════════════════
-
--- Esconde PlayerBillboards
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 for _, f in pairs(getgc(true)) do
 	if typeof(f) == "function" and islclosure(f) then
 		local success, constants = pcall(debug.getconstants, f)
@@ -107,23 +70,11 @@ for _, f in pairs(getgc(true)) do
 	end
 end
 
-<<<<<<< HEAD
 LocalPlayer.PlayerGui.Results.Content.Visible = false
 
 Gamemode.setupGamemodeData()
 
 -- UI
-=======
--- Esconde Results UI
-LocalPlayer.PlayerGui.Results.Content.Visible = false
-
--- Popula listas de gamemode e roles
-Gamemode.setupGamemodeData()
-
--- ════════════════════════════════════════
--- UI: Fluent
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager =
@@ -136,13 +87,7 @@ coreGui:FindFirstChild("ScreenGui").Name = "DramaHub"
 coreGui:FindFirstChild("DramaHub").DisplayOrder = 9999
 coreGui:FindFirstChild("DramaHub").Parent = LocalPlayer.PlayerGui
 
-<<<<<<< HEAD
 -- Notifiers
-=======
--- ════════════════════════════════════════
--- Notificações iniciais
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 Fluent:Notify({
 	Title = "Drama Hub | Development Build",
@@ -166,13 +111,7 @@ else
 	})
 end
 
-<<<<<<< HEAD
 -- Window & Tabs
-=======
--- ════════════════════════════════════════
--- Window & Tabs
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local Window = Fluent:CreateWindow({
 	Title = "Drama Hub | Development Build",
@@ -202,13 +141,7 @@ InterfaceManager:SetLibrary(Fluent)
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
-<<<<<<< HEAD
 -- Tab: About
-=======
--- ════════════════════════════════════════
--- Tab: About
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local mainAbout = Tabs.About:AddSection("Drama Hub")
 mainAbout:AddParagraph({
@@ -216,13 +149,7 @@ mainAbout:AddParagraph({
 	Content = "\nThis is a development build of Drama Hub, an all-in-one script for Anime Ghost. \nThis build is not intended for public use and may contain bugs or unfinished features.\n\nCreated by spectronal",
 })
 
-<<<<<<< HEAD
 -- Tab: Player
-=======
--- ════════════════════════════════════════
--- Tab: Player
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local mainPlayer = Tabs.Player:AddSection("Main")
 mainPlayer:AddParagraph({
@@ -288,13 +215,7 @@ mainPlayer2:AddToggle("AutoChests", {
 	end,
 })
 
-<<<<<<< HEAD
 -- Tab: Gachas
-=======
--- ════════════════════════════════════════
--- Tab: Gachas
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local mainGacha = Tabs.Gachas:AddSection("Main")
 mainGacha:AddParagraph({
@@ -347,13 +268,7 @@ gachaSettings:AddButton({
 	end,
 })
 
-<<<<<<< HEAD
 -- Tab: Gamemodes
-=======
--- ════════════════════════════════════════
--- Tab: Gamemodes
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local mainGamemode = Tabs.Gamemode:AddSection("Main")
 mainGamemode:AddParagraph({
@@ -556,13 +471,7 @@ playerGamemode2:AddToggle("autoJoinPublic", {
 	end,
 })
 
-<<<<<<< HEAD
 -- Dropdown OnChanged Handlers
-=======
--- ════════════════════════════════════════
--- Dropdown OnChanged Handlers
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 selectGacha:OnChanged(function(Value)
 	table.clear(State.Targets)
@@ -617,13 +526,7 @@ saveWorldToTp:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.WorldToTeleport = Value
 end)
 
-<<<<<<< HEAD
 -- Description helpers (Ascension)
-=======
--- ════════════════════════════════════════
--- Description helpers (Ascension)
--- ════════════════════════════════════════
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local Abbreviate = Framework:GetService("AbbreviateService")
 
@@ -656,16 +559,8 @@ local function changeDescriptionPlayerStatus()
 	Gamemode.changeDescriptionPlayerStatus(Player.setDescription)
 end
 
-<<<<<<< HEAD
 -- Loops
 
-=======
--- ════════════════════════════════════════
--- Game Loops
--- ════════════════════════════════════════
-
--- Loop 1: Gacha + Farm Mobs
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 task.spawn(function()
 	while true do
 		task.wait(State.scriptSettings.GachaTab.GachaDelay)
@@ -680,10 +575,6 @@ task.spawn(function()
 	end
 end)
 
-<<<<<<< HEAD
-=======
--- Loop 2: Per-frame + 1s interval
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 task.spawn(function()
 	local rewardTimer = 0
 
@@ -743,7 +634,6 @@ task.spawn(function()
 		end
 	end
 end)
-<<<<<<< HEAD
 
 task.spawn(function()
 	while true do
@@ -757,5 +647,3 @@ task.spawn(function()
 		end
 	end
 end)
-=======
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4

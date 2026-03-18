@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-=======
--- Core/Gacha.lua
--- Auto Gacha and gacha animation removal
--- Loaded via: loadstring(game:HttpGet(URL))()
-
->>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 getgenv().DH = getgenv().DH or {}
 getgenv().DH.Gacha = {}
 
