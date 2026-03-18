@@ -8,7 +8,6 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
 local Framework = require(replicatedStorage.Framework.Library)
-
 -- Script Settings
 
 State.scriptSettings = {
@@ -57,9 +56,14 @@ State.scriptSettings = {
 	},
 }
 
+State.Framework = Framework
+
+-- Framework Services/Packages
+State.GuiService = Framework:GetService("GuiService")
+State.Janitor = Framework:GetPackage("Janitor")
+
 -- Framework Data
 
-State.Framework = Framework
 State.TimeRewardData = Framework:GetData("TimeRewardData")
 State.WeeklyRewardData = Framework:GetData("WeeklyRewardData")
 State.WeeklyRewardService = Framework:GetService("WeeklyRewardService")
@@ -69,6 +73,8 @@ State.ChestData = Framework:GetData("ChestData")
 State.GachaData = Framework:GetData("GachaData")
 State.GamemodeData = Framework:GetData("GamemodeData")
 State.MapData = Framework:GetData("MapData")
+
+-- Get Screen
 
 -- Gacha State
 

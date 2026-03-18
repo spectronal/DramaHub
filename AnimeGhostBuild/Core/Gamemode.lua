@@ -11,6 +11,10 @@ local LocalPlayer = Players.LocalPlayer
 local Framework = State.Framework
 local Abbreviate = Framework:GetService("AbbreviateService")
 
+local Janitor = State.Janitor
+local GuiService = State.GuiService
+local newJanitor = Janitor.new()
+
 -- Setup
 
 function Gamemode.setupGamemodeData()
@@ -99,6 +103,15 @@ local function formatTime(t)
 	local m = math.floor(t / 60)
 	local s = math.floor(t % 60)
 	return string.format("%d:%02d", m, s)
+end
+
+-- Ui Handler
+local function enableUI()
+	task.wait(1.2)
+	if LocalPlayer:WaitForChild("PlayerGui").Results.Content.Visible == true then
+		GuiService.SetScreens(true, { "SideGUI", "Utils" }, true)
+		newJanitor:Cleanup()
+	end
 end
 
 -- Mode Queries
@@ -249,6 +262,7 @@ function Gamemode.autoLeaveGamemode()
 	local MaxWave = tonumber(State.scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
 
 	if MaxWave ~= 0 and Wave >= MaxWave or not LocalPlayer:GetAttribute("InMode") then
+		enableUI()
 		if State.scriptSettings.GamemodesTab.SavedPosition ~= nil then
 			Gamemode.teleportPlayerToPosition()
 		else

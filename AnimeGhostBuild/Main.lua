@@ -70,8 +70,6 @@ for _, f in pairs(getgc(true)) do
 	end
 end
 
-LocalPlayer.PlayerGui.Results.Content.Visible = false
-
 Gamemode.setupGamemodeData()
 
 -- UI
