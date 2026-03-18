@@ -1,15 +1,16 @@
 -- DramaHub: Anime Ghost
--- Version: 1.0.7
--- Update Logs: Added new gamemode cooldown verification and new internal debounce functons, fixed gamemode notifier, fixed gamemode prioritys, fixed extreme lag when gamemode is on
--- Errors: 0 (ig)
--- Expected for 1.0.8: Gamemode Auto Farm Mobs, Gamemode Save Position/Return world selected and some status mode for qol
+-- Version: 1.0.8
+-- Update Logs: for Gamemode: Added Auto Farm Mobs, Save Position/Return World and Status Mode (QOL), for general: Added custom DramaHub Roles, Result UI is not appearing anymore and new Hub notifiers (QOL)
+-- Errors: 1.5 (1: Warriors is not focusing in the main enemy in gamemodes, idk how i'll fix it | 0.5: I think the general performance is bad, i'll fix it tomorrow)
+-- Expected for 1.0.9: New Farm Tab (with autofarm for all the maps + autofarm mobs with scroll hatch), New Scroll Tab (Scroll Farm for all the maps btw), New Section of Equip best in Gamemode Tab, and for end, new Exchange Tab (for potions and tokens)
+
+DRAMAHUB_VERSION = "DEVELOPMENT BUILD"
+AUTHOR = 10544785935
 
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-
-local descLabel
 
 local Framework = require(replicatedStorage.Framework.Library)
 local Abbreviate = Framework:GetService("AbbreviateService")
@@ -53,6 +54,13 @@ local scriptSettings = {
 		AutoCreateGamemode = false,
 		AutoLeaveGamemode = false,
 		AutoFarmMobs = false,
+		WorldToTeleport = 0,
+		SavedPosition = nil,
+	},
+	Roles = {
+		["DRAMAHUB DEVELOPER"] = Color3.new(1, 0, 0),
+		["DRAMAHUB PREMIUM"] = Color3.new(1, 0.682353, 0),
+		["DRAMAHUB USER"] = Color3.new(0, 0.882353, 1),
 	},
 }
 
@@ -65,6 +73,7 @@ local AchievementData = Framework:GetData("AchievementData")
 local ChestData = Framework:GetData("ChestData")
 local GachaData = Framework:GetData("GachaData")
 local GamemodeData = Framework:GetData("GamemodeData")
+local MapData = Framework:GetData("MapData")
 
 -- Gacha
 local Gachas = {}
@@ -90,6 +99,7 @@ local cooldowns = {
 	["Infinity Castle"] = 0,
 }
 
+local MapsNum = {}
 local RaidData = {}
 local DungeonData = {}
 local InfinityData = {}
@@ -100,7 +110,17 @@ local WaveData
 
 local lastJoin = 0
 local lastCreate = 0
-local JOIN_COOLDOWN = 2 -- segundos
+local JOIN_COOLDOWN = 2
+
+-- AutoClicker with animation
+local lastClickTime = tick()
+local comboIndex = 0
+
+-- Auto Farm Mobs
+local enemiesFolder = workspace["_ENEMIES"].Server
+
+-- Roles
+local RoleLabel = workspace._CHARACTERS[LocalPlayer.Name].GUI.Role
 
 Framework.Remote:Connect(function(data)
 	if data[1] == "Notify" then
@@ -123,7 +143,46 @@ Framework.Remote:Connect(function(data)
 	end
 end)
 
+local function Color3ToHex(color)
+	local r = math.clamp(math.floor(color.R * 255), 0, 255)
+	local g = math.clamp(math.floor(color.G * 255), 0, 255)
+	local b = math.clamp(math.floor(color.B * 255), 0, 255)
+	return string.format("%02X%02X%02X", r, g, b)
+end
+
+for _, f in pairs(getgc(true)) do
+	if typeof(f) == "function" and islclosure(f) then
+		local success, constants = pcall(debug.getconstants, f)
+
+		if success and constants and table.find(constants, "PlayerBillboards") then
+			local old = f
+
+			hookfunction(f, function(...)
+				return nil
+			end)
+		end
+	end
+end
+
+LocalPlayer.PlayerGui.Results.Content.Visible = false
+
 local function setupGamemodeData()
+	for role, color in pairs(scriptSettings.Roles) do
+		print(role)
+
+		if DRAMAHUB_VERSION == "DEVELOPMENT BUILD" then
+			RoleLabel.RichText = true
+
+			if LocalPlayer.UserId == AUTHOR then
+				if role == "DRAMAHUB DEVELOPER" then
+					RoleLabel.Text = string.format("<font color='#%s'>[%s]</font>", Color3ToHex(color), role)
+				end
+			else
+				RoleLabel.Text = string.format("<font color='#%s'>[%s]</font>", Color3ToHex(color), role)
+			end
+		end
+	end
+
 	for id in pairs(GamemodeData) do
 		table.insert(Gamemodes, id)
 	end
@@ -143,80 +202,13 @@ local function setupGamemodeData()
 	for infinity, value in pairs(GamemodeData["Infinity Castle"]) do
 		table.insert(InfinityData, infinity)
 	end
+
+	for maps, value in ipairs(MapData) do
+		table.insert(MapsNum, maps)
+	end
 end
 
 setupGamemodeData()
-
--- Ascension
-local nextAscension = "Calculing..."
-
--- Achievements
-
-local function GetCurrentTier(typeName)
-	local completed = 0
-
-	for id, _ in Framework.PlayerData.Achievements do
-		if id:match(typeName) then
-			completed += 1
-		end
-	end
-
-	local nextTier = completed + 1
-
-	if AchievementData[typeName .. nextTier] then
-		return typeName .. nextTier, nextTier
-	else
-		return typeName .. completed, completed
-	end
-end
-
-local function GetAchievementTypes()
-	local types = {}
-
-	for key, _ in AchievementData do
-		local name = string.gsub(key, "%d+", "")
-
-		if not table.find(types, name) then
-			table.insert(types, name)
-		end
-	end
-
-	return types
-end
-
-local function GetClaimableAchievements()
-	local claimable = {}
-
-	for _, typeName in GetAchievementTypes() do
-		local id = GetCurrentTier(typeName)
-
-		local data = AchievementData[id]
-
-		local stat = Framework.PlayerData.TotalStats[data.DataUsed] or 0
-
-		local goal = data.Goal
-
-		stat = math.min(stat, goal)
-
-		local claimed = Framework.PlayerData.Achievements[id] or false
-
-		if goal <= stat and not claimed then
-			claimable[id] = true
-		end
-	end
-
-	return claimable
-end
-
--- AutoClicker with animation
-local lastClickTime = tick()
-local comboIndex = 0
-
--- functions
-
-local function autoGachas(Gacha: string, Target)
-	Framework.Remote:Fire("GachaSystem", "Spin", Gacha, "Normal", {}, Target)
-end
 
 local function autoClicker()
 	Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
@@ -275,6 +267,66 @@ local function autoClickerWithAnimation()
 			)
 		end
 	end
+end
+
+local function GetCurrentTier(typeName)
+	local completed = 0
+
+	for id, _ in Framework.PlayerData.Achievements do
+		if id:match(typeName) then
+			completed += 1
+		end
+	end
+
+	local nextTier = completed + 1
+
+	if AchievementData[typeName .. nextTier] then
+		return typeName .. nextTier, nextTier
+	else
+		return typeName .. completed, completed
+	end
+end
+
+local function GetAchievementTypes()
+	local types = {}
+
+	for key, _ in AchievementData do
+		local name = string.gsub(key, "%d+", "")
+
+		if not table.find(types, name) then
+			table.insert(types, name)
+		end
+	end
+
+	return types
+end
+
+local function GetClaimableAchievements()
+	local claimable = {}
+
+	for _, typeName in GetAchievementTypes() do
+		local id = GetCurrentTier(typeName)
+
+		local data = AchievementData[id]
+
+		local stat = Framework.PlayerData.TotalStats[data.DataUsed] or 0
+
+		local goal = data.Goal
+
+		stat = math.min(stat, goal)
+
+		local claimed = Framework.PlayerData.Achievements[id] or false
+
+		if goal <= stat and not claimed then
+			claimable[id] = true
+		end
+	end
+
+	return claimable
+end
+
+local function autoGachas(Gacha: string, Target)
+	Framework.Remote:Fire("GachaSystem", "Spin", Gacha, "Normal", {}, Target)
 end
 
 local function autoAscension()
@@ -376,6 +428,18 @@ local function autoChests()
 	end
 end
 
+local function savePlayerPosition()
+	local RootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
+	scriptSettings.GamemodesTab.SavedPosition = RootPart.Position
+end
+
+local function teleportPlayerToPosition()
+	local RootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
+	Framework.Remote:Fire("TeleportSystem", "To", scriptSettings.GamemodesTab.WorldToTeleport)
+	task.wait(1)
+	RootPart.CFrame = CFrame.new(scriptSettings.GamemodesTab.SavedPosition)
+end
+
 local function inMode()
 	local modeName = LocalPlayer:GetAttribute("InMode")
 	if not modeName then
@@ -413,16 +477,27 @@ local function getCooldownRemaining(mode)
 end
 
 local function formatTime(t)
+	if inMode() then
+		return "Running"
+	end
+
+	if t <= 0 then
+		return "Ready"
+	end
 	local m = math.floor(t / 60)
 	local s = math.floor(t % 60)
-	return string.format("%02dm %02ds", m, s)
+	return string.format("%d:%02d", m, s)
 end
 
-local function printCooldowns()
-	for mode, time in pairs(cooldowns) do
+local function getCooldownsText()
+	local parts = {}
+
+	for mode, _ in pairs(cooldowns) do
 		local remaining = getCooldownRemaining(mode)
-		print(mode, "->", formatTime(remaining))
+		table.insert(parts, `{mode} : {formatTime(remaining)}`)
 	end
+
+	return table.concat(parts, " | ")
 end
 
 local function getPlayerMode(typeMode: "ModeId" | "Mode" | "StatusMode")
@@ -500,15 +575,11 @@ local function autoCreateGamemodes()
 	end
 
 	if not chosen then
-		print("Todos os modos em cooldown:")
-		printCooldowns()
 		return
 	end
 
 	local key = string.gsub("Selected" .. chosen, " ", "")
 	local difficulty = string.gsub("Selected" .. chosen .. "Difficulty", " ", "")
-
-	print("Criando:", chosen)
 
 	Framework.Remote:Fire(
 		"GamemodeSystem",
@@ -542,40 +613,165 @@ local function autoLeaveGamemode()
 	local CurrentMode = string.gsub(mode:GetAttribute("ModeId"), " ", "")
 	local MaxWave = tonumber(scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
 
-	if MaxWave ~= 0 and Wave >= MaxWave then
-		Framework.Remote:Fire("TeleportSystem", "To", 7)
+	if MaxWave ~= 0 and Wave >= MaxWave or not LocalPlayer:GetAttribute("InMode") then
+		if scriptSettings.GamemodesTab.SavedPosition ~= nil then
+			teleportPlayerToPosition()
+		else
+			Framework.Remote:Fire("TeleportSystem", "To", "Lobby")
+		end
 	end
 end
 
-local function changeDescriptionName()
-	for _, desc in ipairs(coreGui:WaitForChild("FluentUI"):GetDescendants()) do
-		if desc.ClassName == "TextLabel" and desc.Parent.ClassName == "Frame" then
-			if desc.Text == "Calculing..." then
-				desc.Name = "description"
-				descLabel = desc
-				break
-			end
+local PlayerRootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
+
+local currentMob = nil
+local lastHP = nil
+local stuckTime = 0
+
+local lastTeleport = 0
+local teleportCooldown = 0.5
+
+local function isFarFromMob(mob)
+	if not mob then
+		return false
+	end
+	return (PlayerRootPart.Position - mob.Position).Magnitude > 8
+end
+
+local function teleportToMob(mob)
+	if not mob then
+		return
+	end
+
+	if tick() - lastTeleport >= teleportCooldown then
+		if isFarFromMob(mob) then
+			--local offset = mob.CFrame.RightVector * -6
+			local height = Vector3.new(0, 6, 0)
+
+			PlayerRootPart.CFrame = CFrame.new(mob.Position + height)
+			lastTeleport = tick()
+		end
+	end
+end
+
+local function getNextMob()
+	local mobsList = {}
+
+	for _, mob in pairs(enemiesFolder:WaitForChild("Gamemode"):GetDescendants()) do
+		if
+			mob:IsA("Part")
+			and mob.Parent
+			and mob.Parent.Name == getPlayerMode("Mode")
+			and mob:GetAttribute("Order")
+		then
+			table.insert(mobsList, mob)
 		end
 	end
 
-	for key, level in pairs(Framework.PlayerData.Rebirth) do
-		local id, type = key:match("(.+)_(.+)")
-		local rebirthType = RebirthData[id].Types[type]
+	for _, warriors in pairs(workspace["_WARRIORS"]:GetDescendants()) do
+		if warriors:IsA("Model") and warriors.Parent:IsA("Folder") then
+			local warriorRootPart = warriors.HumanoidRootPart
 
-		local nextLevel = level + 1
-		local levelData = rebirthType.Levels[nextLevel]
-
-		if levelData then
-			local currency = rebirthType.Currency
-			local playerMoney = Framework.PlayerData[currency]
-			local price = levelData.Price
-
-			nextAscension = `Remains {Abbreviate:Number(price - playerMoney)} {currency} for Level: {nextLevel}`
-			descLabel.Text = nextAscension
-		else
-			nextAscension = "Max Ascension reached"
-			descLabel.Text = nextAscension
+			warriorRootPart.Position = Vector3.new(workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart.Position)
 		end
+	end
+
+	table.sort(mobsList, function(a, b)
+		return a:GetAttribute("Order") < b:GetAttribute("Order")
+	end)
+
+	return mobsList[1]
+end
+
+function autoFarmEnemies()
+	if not currentMob or not currentMob.Parent then
+		currentMob = getNextMob()
+		lastHP = nil
+		stuckTime = 0
+
+		if currentMob then
+			teleportToMob(currentMob)
+		else
+			return
+		end
+	end
+
+	Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
+
+	teleportToMob(currentMob)
+
+	local currentHP = currentMob:GetAttribute("HP")
+
+	if lastHP then
+		if currentHP == lastHP then
+			stuckTime += 1
+		else
+			stuckTime = 0
+		end
+
+		if stuckTime >= 5 then
+			teleportToMob(currentMob)
+			stuckTime = 0
+		end
+	end
+
+	lastHP = currentHP
+end
+
+local Descriptions = {}
+
+local function registerDescriptions()
+	for _, obj in ipairs(LocalPlayer.PlayerGui:WaitForChild("DramaHub"):GetDescendants()) do
+		if obj:IsA("TextLabel") then
+			if obj.Text:find("Calculing...") then
+				obj.Name = "AscensionDescription"
+				Descriptions["Ascension"] = obj
+			elseif obj.Text:find("StatusMode") then
+				obj.Name = "PlayerStatusDescription"
+				Descriptions["PlayerStatus"] = obj
+			end
+		end
+	end
+end
+
+local function setDescription(name, text)
+	local label = Descriptions[name]
+	if label then
+		label.Text = text
+	end
+end
+
+local function changeDescription(description: "Ascension" | "PlayerStatus")
+	registerDescriptions()
+
+	if description == "Ascension" then
+		for key, level in pairs(Framework.PlayerData.Rebirth) do
+			local id, type = key:match("(.+)_(.+)")
+			local rebirthType = RebirthData[id].Types[type]
+
+			local nextLevel = level + 1
+			local levelData = rebirthType.Levels[nextLevel]
+
+			if levelData then
+				local currency = rebirthType.Currency
+				local playerMoney = Framework.PlayerData[currency]
+				local price = levelData.Price
+
+				setDescription(
+					"Ascension",
+					`Remains {Abbreviate:Number(price - playerMoney)} {currency} for Level: {nextLevel}`
+				)
+			else
+				setDescription("Ascension", "Max Ascension reached")
+			end
+		end
+	elseif description == "PlayerStatus" then
+		setDescription(
+			"PlayerStatus",
+			`Priority: Raid > Dungeon > Infinity Castle \n \nCooldowns: {getCooldownsText()} \n \nSaved Position: World: {tostring(
+				scriptSettings.GamemodesTab.WorldToTeleport
+			)} / {tostring(scriptSettings.GamemodesTab.SavedPosition)}`
+		)
 	end
 end
 
@@ -598,7 +794,9 @@ local InterfaceManager = loadstring(
 	game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua")
 )()
 
-coreGui:FindFirstChild("ScreenGui").Name = "FluentUI"
+coreGui:FindFirstChild("ScreenGui").Name = "DramaHub"
+coreGui:FindFirstChild("DramaHub").DisplayOrder = 9999
+coreGui:FindFirstChild("DramaHub").Parent = LocalPlayer.PlayerGui
 
 local lastInMode = false
 local lastMode = nil
@@ -656,6 +854,20 @@ Fluent:Notify({
 
 task.wait(2.2)
 
+if LocalPlayer.UserId == AUTHOR then
+	Fluent:Notify({
+		Title = "Drama Hub | Owner Acess",
+		Content = "Welcome back spectronal!",
+		Duration = 2,
+	})
+else
+	Fluent:Notify({
+		Title = "Drama Hub | Premium Acess",
+		Content = "Welcome back " .. LocalPlayer.Name,
+		Duration = 2,
+	})
+end
+
 local Window = Fluent:CreateWindow({
 	Title = "Drama Hub | Development Build",
 	SubTitle = "by spectronal",
@@ -668,9 +880,11 @@ local Window = Fluent:CreateWindow({
 
 local Tabs = {
 	About = Window:AddTab({ Title = "About", Icon = "clipboard" }),
+	Farm = Window:AddTab({ Title = "Farm", Icon = "bot" }),
 	Player = Window:AddTab({ Title = "Player", Icon = "smile-plus" }),
-	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
 	Gamemode = Window:AddTab({ Title = "Gamemodes", Icon = "gamepad-2" }),
+	Scroll = Window:AddTab({ Title = "Scroll", Icon = "scroll" }),
+	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
 	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
 
@@ -715,7 +929,7 @@ local autoClick = mainPlayer:AddToggle("AutoClick", {
 
 local autoAscend = mainPlayer:AddToggle("AutoAscencion", {
 	Title = "Auto Ascension",
-	Description = nextAscension,
+	Description = "Calculing...",
 	Default = false,
 	Callback = function(state)
 		scriptSettings.PlayerTab.AutoAscension = state
@@ -859,7 +1073,7 @@ local selectInfinity = mapsGamemode:AddDropdown("selectInfinity", {
 local diffGamemode = Tabs.Gamemode:AddSection("Difficulties")
 
 local selectRaidDiff = diffGamemode:AddDropdown("selectRaidDiff", {
-	Title = "Select Raid Difficulty",
+	Title = "Select Raid Diff",
 	Description = "Select a difficulty for raids",
 	Values = { "Easy", "Medium", "Hard" },
 	Multi = false,
@@ -867,7 +1081,7 @@ local selectRaidDiff = diffGamemode:AddDropdown("selectRaidDiff", {
 })
 
 local selectDungeonDiff = diffGamemode:AddDropdown("selectDungeonDiff", {
-	Title = "Select Dungeon Difficulty",
+	Title = "Select Dungeon Diff",
 	Description = "Select a difficulty for dungeons",
 	Values = { "Easy", "Medium", "Hard" },
 	Multi = false,
@@ -875,7 +1089,7 @@ local selectDungeonDiff = diffGamemode:AddDropdown("selectDungeonDiff", {
 })
 
 local selectInfinityDiff = diffGamemode:AddDropdown("selectInfinityDiff", {
-	Title = "Select Infinity Difficulty",
+	Title = "Select Infinity Diff",
 	Description = "Select a difficulty for infinity castle",
 	Values = { "Easy" },
 	Multi = false,
@@ -889,7 +1103,7 @@ local raidLeaveIn = leaveGamemode:AddInput("raidLeaveIn", {
 	Default = 0,
 	Placeholder = "e.g 30",
 	Numeric = true,
-	Finished = false,
+	Finished = true,
 	Callback = function(Value)
 		scriptSettings.GamemodesTab.RaidToLeave = Value
 	end,
@@ -900,7 +1114,7 @@ local dungeonLeaveIn = leaveGamemode:AddInput("dungeonLeaveIn", {
 	Default = 0,
 	Placeholder = "e.g 30",
 	Numeric = true,
-	Finished = false,
+	Finished = true,
 	Callback = function(Value)
 		scriptSettings.GamemodesTab.DungeonToLeave = Value
 	end,
@@ -911,7 +1125,7 @@ local infinityLeaveIn = leaveGamemode:AddInput("infinityLeaveIn", {
 	Default = 0,
 	Placeholder = "e.g 30",
 	Numeric = true,
-	Finished = false,
+	Finished = true,
 	Callback = function(Value)
 		scriptSettings.GamemodesTab.InfinityCastleToLeave = Value
 	end,
@@ -925,9 +1139,49 @@ local autoLeaves = leaveGamemode:AddToggle("autoLeave", {
 	end,
 })
 
-local playerGamemode = Tabs.Gamemode:AddSection("Player Settings")
+local playerGamemode = Tabs.Gamemode:AddSection("Settings")
 
-local selectPlayersToJoin = playerGamemode:AddDropdown("selectPlayersToJoin", {
+playerGamemode:AddParagraph({
+	Title = "Status",
+	Content = "StatusMode",
+})
+
+local saveWorldToTp = playerGamemode:AddDropdown("WorldToTp", {
+	Title = "World To Teleport",
+	Description = "Select a world to back",
+	Values = MapsNum,
+	Multi = false,
+	Default = "",
+})
+
+local savePos = playerGamemode:AddButton({
+	Title = "Save Position",
+	Callback = function()
+		savePlayerPosition()
+
+		Fluent:Notify({
+			Title = "Saved Position!",
+			Content = "Position: " .. tostring(scriptSettings.GamemodesTab.SavedPosition) .. " | World: " .. tostring(
+				scriptSettings.GamemodesTab.WorldToTeleport
+			),
+			Duration = 2,
+		})
+	end,
+
+	changeDescription("PlayerStatus"),
+})
+
+local autoCreateGamemod = playerGamemode:AddToggle("AutoCreateGamemode", {
+	Title = "Auto Create Gamemode",
+	Default = false,
+	Callback = function(state)
+		scriptSettings.GamemodesTab.AutoCreateGamemode = state
+	end,
+})
+
+local playerGamemode2 = Tabs.Gamemode:AddSection("")
+
+local selectPlayersToJoin = playerGamemode2:AddDropdown("selectPlayersToJoin", {
 	Title = "Select Player's Party to Join",
 	Description = "Select players to join the gamemode",
 	Values = PlayersInGamemodes,
@@ -935,14 +1189,14 @@ local selectPlayersToJoin = playerGamemode:AddDropdown("selectPlayersToJoin", {
 	Default = {},
 })
 
-local refreshPlayers = playerGamemode:AddButton({
+local refreshPlayers = playerGamemode2:AddButton({
 	Title = "Refresh Players List",
 	Callback = function()
 		refreshPlayersList(selectPlayersToJoin)
 	end,
 })
 
-local autoJoinSelected = playerGamemode:AddToggle("autoJoinSelected", {
+local autoJoinSelected = playerGamemode2:AddToggle("autoJoinSelected", {
 	Title = "Auto Join Gamemode (Selected Players)",
 	Default = false,
 	Callback = function(state)
@@ -950,19 +1204,11 @@ local autoJoinSelected = playerGamemode:AddToggle("autoJoinSelected", {
 	end,
 })
 
-local autoJoinPublic = playerGamemode:AddToggle("autoJoinPublic", {
+local autoJoinPublic = playerGamemode2:AddToggle("autoJoinPublic", {
 	Title = "Auto Join Gamemode (Public)",
 	Default = false,
 	Callback = function(state)
 		scriptSettings.GamemodesTab.AutoJoinPublicGamemode = state
-	end,
-})
-
-local autoCreateGamemode = playerGamemode:AddToggle("autoCreateGamemode", {
-	Title = "Auto Create Gamemode",
-	Default = false,
-	Callback = function(state)
-		scriptSettings.GamemodesTab.AutoCreateGamemode = state
 	end,
 })
 
@@ -1020,12 +1266,20 @@ selectPlayersToJoin:OnChanged(function(Value)
 	scriptSettings.GamemodesTab.SelectedPlayersToJoin = Value
 end)
 
+saveWorldToTp:OnChanged(function(Value)
+	scriptSettings.GamemodesTab.WorldToTeleport = Value
+end)
+
 task.spawn(function()
 	while true do
 		task.wait(scriptSettings.GachaTab.GachaDelay)
 
 		if scriptSettings.GachaTab.AutoGacha and scriptSettings.GachaTab.SelectedGacha ~= "" then
 			autoGachas(scriptSettings.GachaTab.SelectedGacha, scriptSettings.GachaTab.SelectedTarget)
+		end
+
+		if scriptSettings.GamemodesTab.AutoFarmMobs then
+			autoFarmEnemies()
 		end
 	end
 end)
@@ -1082,7 +1336,8 @@ task.spawn(function()
 			if scriptSettings.PlayerTab.AutoChests then
 				autoChests()
 			end
-			--changeDescriptionName()
+			changeDescription("Ascension")
+			changeDescription("PlayerStatus")
 		end
 	end
 end)
