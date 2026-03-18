@@ -1,5 +1,5 @@
 -- DramaHub: Anime Ghost
--- Version: 1.0.8
+-- Version: 1.0.85
 -- Update Logs: for Gamemode: Added Auto Farm Mobs, Save Position/Return World and Status Mode (QOL), for general: Added custom DramaHub Roles, Result UI is not appearing anymore and new Hub notifiers (QOL)
 -- Errors: 1.5 (1: Warriors is not focusing in the main enemy in gamemodes, idk how i'll fix it | 0.5: I think the general performance is bad, i'll fix it tomorrow)
 -- Expected for 1.0.9: New Farm Tab (with autofarm for all the maps + autofarm mobs with scroll hatch), New Scroll Tab (Scroll Farm for all the maps btw), New Section of Equip best in Gamemode Tab, and for end, new Exchange Tab (for potions and tokens)
@@ -106,11 +106,8 @@ local InfinityData = {}
 
 local gamemodeFold = workspace:WaitForChild("_MAP"):WaitForChild("Gamemode")
 local gamemodeServer = replicatedStorage:WaitForChild("Server").Gamemode
-local WaveData
 
-local lastJoin = 0
 local lastCreate = 0
-local JOIN_COOLDOWN = 2
 
 -- AutoClicker with animation
 local lastClickTime = tick()
