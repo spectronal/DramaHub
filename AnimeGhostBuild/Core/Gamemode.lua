@@ -1,7 +1,3 @@
--- Core/Gamemode.lua
--- Gamemode: join, create, leave, cooldowns, notifier, position save/return
--- Loaded via: loadstring(game:HttpGet(URL))()
-
 getgenv().DH = getgenv().DH or {}
 getgenv().DH.Gamemode = {}
 
@@ -15,9 +11,7 @@ local LocalPlayer = Players.LocalPlayer
 local Framework = State.Framework
 local Abbreviate = Framework:GetService("AbbreviateService")
 
--- ════════════════════════════════════════
 -- Setup
--- ════════════════════════════════════════
 
 function Gamemode.setupGamemodeData()
 	local Utils = getgenv().DH.Utils
@@ -60,9 +54,7 @@ function Gamemode.setupGamemodeData()
 	end
 end
 
--- ════════════════════════════════════════
 -- Cooldown Listener
--- ════════════════════════════════════════
 
 Framework.Remote:Connect(function(data)
 	if data[1] == "Notify" then
@@ -84,9 +76,7 @@ Framework.Remote:Connect(function(data)
 	end
 end)
 
--- ════════════════════════════════════════
--- Cooldown Helpers (local)
--- ════════════════════════════════════════
+-- Cooldown Helpers
 
 local function isOnCooldown(mode)
 	local remaining = (State.cooldowns[mode] or 0) - tick()
@@ -115,9 +105,7 @@ local function formatTime(t)
 	return string.format("%d:%02d", m, s)
 end
 
--- ════════════════════════════════════════
 -- Mode Queries
--- ════════════════════════════════════════
 
 function Gamemode.inMode()
 	local modeName = LocalPlayer:GetAttribute("InMode")
@@ -158,9 +146,7 @@ function Gamemode.getPlayerMode(typeMode)
 	return nil
 end
 
--- ════════════════════════════════════════
 -- Cooldown Text
--- ════════════════════════════════════════
 
 function Gamemode.getCooldownsText()
 	local parts = {}
@@ -173,9 +159,7 @@ function Gamemode.getCooldownsText()
 	return table.concat(parts, " | ")
 end
 
--- ════════════════════════════════════════
 -- Join / Create / Leave
--- ════════════════════════════════════════
 
 function Gamemode.autoJoinGamemode(gamemode, select)
 	if Gamemode.inMode() then
@@ -277,9 +261,7 @@ function Gamemode.autoLeaveGamemode()
 	end
 end
 
--- ════════════════════════════════════════
 -- Position Save / Return
--- ════════════════════════════════════════
 
 function Gamemode.savePlayerPosition()
 	local RootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
@@ -293,9 +275,7 @@ function Gamemode.teleportPlayerToPosition()
 	RootPart.CFrame = CFrame.new(State.scriptSettings.GamemodesTab.SavedPosition)
 end
 
--- ════════════════════════════════════════
 -- Notifier
--- ════════════════════════════════════════
 
 function Gamemode.gamemodeNotifier(Fluent)
 	local isIn = Gamemode.inMode()
@@ -342,9 +322,7 @@ function Gamemode.gamemodeNotifier(Fluent)
 	State.lastMode = mode
 end
 
--- ════════════════════════════════════════
 -- Description: PlayerStatus
--- ════════════════════════════════════════
 
 function Gamemode.changeDescriptionPlayerStatus(setDescription)
 	setDescription(

@@ -1,7 +1,3 @@
--- Core/Farm.lua
--- Auto Farm Mobs (Gamemode enemies)
--- Loaded via: loadstring(game:HttpGet(URL))()
-
 getgenv().DH = getgenv().DH or {}
 getgenv().DH.Farm = {}
 
@@ -13,9 +9,7 @@ local LocalPlayer = Players.LocalPlayer
 
 local Framework = State.Framework
 
--- ════════════════════════════════════════
 -- Helpers
--- ════════════════════════════════════════
 
 local function isFarFromMob(mob)
 	if not mob then
@@ -67,9 +61,7 @@ local function getNextMob()
 	return mobsList[1]
 end
 
--- ════════════════════════════════════════
 -- Auto Farm
--- ════════════════════════════════════════
 
 function Farm.autoFarmEnemies()
 	if not State.currentMob or not State.currentMob.Parent then

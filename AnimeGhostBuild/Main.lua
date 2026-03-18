@@ -20,20 +20,16 @@ local URLS = {
 	Gacha = BASE_URL .. "/Core/Gacha.lua",
 }
 
--- ════════════════════════════════════════
 -- Loader
--- ════════════════════════════════════════
 
--- State deve ser carregado primeiro, os outros dependem dele
--- Utils deve vir antes de Gamemode (usado no setupGamemodeData)
 local loadOrder = {
 	"State",
 	"Utils",
 	"Player",
 	"Rewards",
 	"Gacha",
-	"Gamemode", -- depende de Utils já carregado
-	"Farm", -- depende de Gamemode já carregado
+	"Gamemode",
+	"Farm",
 }
 
 for _, name in ipairs(loadOrder) do
@@ -42,11 +38,10 @@ for _, name in ipairs(loadOrder) do
 	end)
 
 	if not ok then
-		warn("[DramaHub] Falha ao carregar módulo '" .. name .. "': " .. tostring(err))
+		warn("[DramaHub] Failed to load module '" .. name .. "': " .. tostring(err))
 	end
 end
 
--- Atalhos locais para os módulos (via getgenv)
 local State = getgenv().DH.State
 local Utils = getgenv().DH.Utils
 local Player = getgenv().DH.Player
@@ -55,9 +50,7 @@ local Farm = getgenv().DH.Farm
 local Gamemode = getgenv().DH.Gamemode
 local Gacha = getgenv().DH.Gacha
 
--- ════════════════════════════════════════
 -- Services
--- ════════════════════════════════════════
 
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
@@ -66,11 +59,6 @@ local LocalPlayer = Players.LocalPlayer
 
 local Framework = State.Framework
 
--- ════════════════════════════════════════
--- One-time Setup
--- ════════════════════════════════════════
-
--- Esconde PlayerBillboards
 for _, f in pairs(getgc(true)) do
 	if typeof(f) == "function" and islclosure(f) then
 		local success, constants = pcall(debug.getconstants, f)
@@ -83,15 +71,11 @@ for _, f in pairs(getgc(true)) do
 	end
 end
 
--- Esconde Results UI
 LocalPlayer.PlayerGui.Results.Content.Visible = false
 
--- Popula listas de gamemode e roles
 Gamemode.setupGamemodeData()
 
--- ════════════════════════════════════════
--- UI: Fluent
--- ════════════════════════════════════════
+-- UI
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager =
@@ -104,9 +88,7 @@ coreGui:FindFirstChild("ScreenGui").Name = "DramaHub"
 coreGui:FindFirstChild("DramaHub").DisplayOrder = 9999
 coreGui:FindFirstChild("DramaHub").Parent = LocalPlayer.PlayerGui
 
--- ════════════════════════════════════════
--- Notificações iniciais
--- ════════════════════════════════════════
+-- Notifiers
 
 Fluent:Notify({
 	Title = "Drama Hub | Development Build",
@@ -130,9 +112,7 @@ else
 	})
 end
 
--- ════════════════════════════════════════
 -- Window & Tabs
--- ════════════════════════════════════════
 
 local Window = Fluent:CreateWindow({
 	Title = "Drama Hub | Development Build",
@@ -162,9 +142,7 @@ InterfaceManager:SetLibrary(Fluent)
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
--- ════════════════════════════════════════
 -- Tab: About
--- ════════════════════════════════════════
 
 local mainAbout = Tabs.About:AddSection("Drama Hub")
 mainAbout:AddParagraph({
@@ -172,9 +150,7 @@ mainAbout:AddParagraph({
 	Content = "\nThis is a development build of Drama Hub, an all-in-one script for Anime Ghost. \nThis build is not intended for public use and may contain bugs or unfinished features.\n\nCreated by spectronal",
 })
 
--- ════════════════════════════════════════
 -- Tab: Player
--- ════════════════════════════════════════
 
 local mainPlayer = Tabs.Player:AddSection("Main")
 mainPlayer:AddParagraph({
@@ -240,9 +216,7 @@ mainPlayer2:AddToggle("AutoChests", {
 	end,
 })
 
--- ════════════════════════════════════════
 -- Tab: Gachas
--- ════════════════════════════════════════
 
 local mainGacha = Tabs.Gachas:AddSection("Main")
 mainGacha:AddParagraph({
@@ -295,9 +269,7 @@ gachaSettings:AddButton({
 	end,
 })
 
--- ════════════════════════════════════════
 -- Tab: Gamemodes
--- ════════════════════════════════════════
 
 local mainGamemode = Tabs.Gamemode:AddSection("Main")
 mainGamemode:AddParagraph({
@@ -500,9 +472,7 @@ playerGamemode2:AddToggle("autoJoinPublic", {
 	end,
 })
 
--- ════════════════════════════════════════
 -- Dropdown OnChanged Handlers
--- ════════════════════════════════════════
 
 selectGacha:OnChanged(function(Value)
 	table.clear(State.Targets)
@@ -557,9 +527,7 @@ saveWorldToTp:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.WorldToTeleport = Value
 end)
 
--- ════════════════════════════════════════
 -- Description helpers (Ascension)
--- ════════════════════════════════════════
 
 local Abbreviate = Framework:GetService("AbbreviateService")
 
@@ -592,11 +560,8 @@ local function changeDescriptionPlayerStatus()
 	Gamemode.changeDescriptionPlayerStatus(Player.setDescription)
 end
 
--- ════════════════════════════════════════
--- Game Loops
--- ════════════════════════════════════════
+-- Loops
 
--- Loop 1: Gacha + Farm Mobs
 task.spawn(function()
 	while true do
 		task.wait(State.scriptSettings.GachaTab.GachaDelay)
@@ -611,7 +576,6 @@ task.spawn(function()
 	end
 end)
 
--- Loop 2: Per-frame + 1s interval
 task.spawn(function()
 	local rewardTimer = 0
 
@@ -668,6 +632,19 @@ task.spawn(function()
 
 			changeDescriptionAscension()
 			changeDescriptionPlayerStatus()
+		end
+	end
+end)
+
+task.spawn(function()
+	while true do
+		task.wait(600)
+		local character = LocalPlayer.Character
+		if character then
+			local humanoid = character:FindFirstChildOfClass("Humanoid")
+			if humanoid then
+				humanoid.Jump = true
+			end
 		end
 	end
 end)

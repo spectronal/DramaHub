@@ -1,7 +1,3 @@
--- Core/Utils.lua
--- General utility / helper functions
--- Loaded via: loadstring(game:HttpGet(URL))()
-
 getgenv().DH = getgenv().DH or {}
 getgenv().DH.Utils = {}
 
