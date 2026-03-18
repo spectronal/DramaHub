@@ -81,7 +81,6 @@ end)
 local function isOnCooldown(mode)
 	local remaining = (State.cooldowns[mode] or 0) - tick()
 	if remaining > 0 then
-		print(mode, "ainda em cooldown:", remaining)
 	end
 	return remaining > 0.5
 end
@@ -94,9 +93,6 @@ local function getCooldownRemaining(mode)
 end
 
 local function formatTime(t)
-	if Gamemode.inMode() then
-		return "Running"
-	end
 	if t <= 0 then
 		return "Ready"
 	end

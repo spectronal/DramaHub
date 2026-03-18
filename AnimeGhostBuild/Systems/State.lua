@@ -118,7 +118,7 @@ State.currentMob = nil
 State.lastHP = nil
 State.stuckTime = 0
 State.lastTeleport = 0
-State.teleportCooldown = 0.5
+State.teleportCooldown = 0.2
 
 -- Description / UI State
 
