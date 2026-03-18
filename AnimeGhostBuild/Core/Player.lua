@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+-- Core/Player.lua
+-- Auto Click, Auto Ascension, Cutscene removal, Descriptions
+-- Loaded via: loadstring(game:HttpGet(URL))()
+
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 getgenv().DH = getgenv().DH or {}
 getgenv().DH.Player = {}
 
@@ -13,7 +20,13 @@ local MultiplierService = Framework:GetService("MultiplierService")
 local DebounceService = Framework:GetService("DebounceService")
 local AnimationService = Framework:GetService("AnimationService")
 
+<<<<<<< HEAD
 -- Auto Clicker
+=======
+-- ════════════════════════════════════════
+-- Auto Clicker
+-- ════════════════════════════════════════
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 function Player.autoClicker()
 	Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
@@ -68,7 +81,13 @@ function Player.autoClickerWithAnimation()
 	end
 end
 
+<<<<<<< HEAD
 -- Auto Ascension
+=======
+-- ════════════════════════════════════════
+-- Auto Ascension
+-- ════════════════════════════════════════
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 function Player.autoAscension()
 	for key, level in pairs(Framework.PlayerData.Rebirth) do
@@ -102,7 +121,13 @@ function Player.removeCutscene()
 	end
 end
 
+<<<<<<< HEAD
 -- Descriptions
+=======
+-- ════════════════════════════════════════
+-- Descriptions
+-- ════════════════════════════════════════
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 function Player.registerDescriptions()
 	for _, obj in ipairs(LocalPlayer.PlayerGui:WaitForChild("DramaHub"):GetDescendants()) do

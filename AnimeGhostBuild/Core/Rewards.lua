@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+-- Core/Rewards.lua
+-- Auto Rewards, Auto Achievements, Auto Chests
+-- Loaded via: loadstring(game:HttpGet(URL))()
+
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 getgenv().DH = getgenv().DH or {}
 getgenv().DH.Rewards = {}
 
@@ -6,7 +13,13 @@ local State = getgenv().DH.State
 
 local Framework = State.Framework
 
+<<<<<<< HEAD
 -- Achievement Functions
+=======
+-- ════════════════════════════════════════
+-- Achievement Helpers
+-- ════════════════════════════════════════
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 local function GetCurrentTier(typeName)
 	local completed = 0
@@ -61,7 +74,13 @@ local function GetClaimableAchievements()
 	return claimable
 end
 
+<<<<<<< HEAD
 -- Auto Rewards
+=======
+-- ════════════════════════════════════════
+-- Auto Rewards
+-- ════════════════════════════════════════
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 function Rewards.autoRewards()
 	local PlayerData = Framework.PlayerData
@@ -100,7 +119,13 @@ function Rewards.autoRewards()
 	end
 end
 
+<<<<<<< HEAD
 -- Auto Achievements
+=======
+-- ════════════════════════════════════════
+-- Auto Achievements
+-- ════════════════════════════════════════
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 function Rewards.autoAchievements()
 	for _, typeName in GetAchievementTypes() do
@@ -112,7 +137,13 @@ function Rewards.autoAchievements()
 	end
 end
 
+<<<<<<< HEAD
 -- Auto Chests
+=======
+-- ════════════════════════════════════════
+-- Auto Chests
+-- ════════════════════════════════════════
+>>>>>>> a7c92498be86213c075e5800ff42019ea1fb1cb4
 
 function Rewards.autoChests()
 	for chestId, chestConfig in pairs(State.ChestData) do
