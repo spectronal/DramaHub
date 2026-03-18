@@ -47,13 +47,6 @@ local function getNextMob()
 		end
 	end
 
-	for _, warriors in pairs(workspace["_WARRIORS"]:GetDescendants()) do
-		if warriors:IsA("Model") and warriors.Parent:IsA("Folder") then
-			local warriorRootPart = warriors.HumanoidRootPart
-			warriorRootPart.Position = Vector3.new(workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart.Position)
-		end
-	end
-
 	table.sort(mobsList, function(a, b)
 		return a:GetAttribute("Order") < b:GetAttribute("Order")
 	end)
