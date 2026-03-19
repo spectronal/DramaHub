@@ -6,7 +6,7 @@ local SUPPORTED_GAMES = {
 }
 
 local gameId = game.PlaceId
-local notify = game:GetService("StarterGui")
+local CoreGui = game:GetService("StarterGui")
 local url = SUPPORTED_GAMES[gameId]
 
 CoreGui:SetCore("SendNotification", {
