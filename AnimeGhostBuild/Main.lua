@@ -7,16 +7,17 @@
 DRAMAHUB_VERSION = "DEVELOPMENT BUILD"
 AUTHOR = 10544785935
 
-local BASE_URL = "https://raw.githubusercontent.com/spectronal/DramaHub/refs/heads/main/AnimeGhostBuild"
+local BASE_URL = "https://dramahub.up.railway.app/script"
+local SCRIPT_TOKEN = "SPECTRONAL_DRAMAHUB_PRIVATETOKEN"
 
 local URLS = {
-	State = BASE_URL .. "/Systems/State.lua",
-	Utils = BASE_URL .. "/Core/Utils.lua",
-	Player = BASE_URL .. "/Core/Player.lua",
-	Rewards = BASE_URL .. "/Core/Rewards.lua",
-	Farm = BASE_URL .. "/Core/Farm.lua",
-	Gamemode = BASE_URL .. "/Core/Gamemode.lua",
-	Gacha = BASE_URL .. "/Core/Gacha.lua",
+	State = BASE_URL .. "/state?token=" .. SCRIPT_TOKEN,
+	Utils = BASE_URL .. "/utils?token=" .. SCRIPT_TOKEN,
+	Player = BASE_URL .. "/player?token=" .. SCRIPT_TOKEN,
+	Rewards = BASE_URL .. "/rewards?token=" .. SCRIPT_TOKEN,
+	Farm = BASE_URL .. "/farm?token=" .. SCRIPT_TOKEN,
+	Gamemode = BASE_URL .. "/gamemode?token=" .. SCRIPT_TOKEN,
+	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
 }
 
 -- Loader
@@ -108,6 +109,12 @@ else
 		Duration = 2,
 	})
 end
+
+Fluent:Notify({
+	Title = "Anti AFK System",
+	Content = "DramaHub have a internal anti afk system, so you can be afk without worry",
+	Duration = 5,
+})
 
 -- Window & Tabs
 
@@ -542,10 +549,17 @@ local function changeDescriptionAscension()
 			local playerMoney = Framework.PlayerData[currency]
 			local price = levelData.Price
 
-			Player.setDescription(
-				"Ascension",
-				`Remains {Abbreviate:Number(price - playerMoney)} {currency} for Level: {nextLevel}`
-			)
+			local function remains()
+				if price - playerMoney <= 0 then
+					return "Can ascend"
+				elseif price - playerMoney > 0 then
+					return Abbreviate:Number(price - playerMoney)
+				end
+
+				return
+			end
+
+			Player.setDescription("Ascension", `Remains {remains()} {currency} for Level: {nextLevel}`)
 		else
 			Player.setDescription("Ascension", "Max Ascension reached")
 		end
@@ -635,7 +649,7 @@ end)
 
 task.spawn(function()
 	while true do
-		task.wait(600)
+		task.wait(300)
 		local character = LocalPlayer.Character
 		if character then
 			local humanoid = character:FindFirstChildOfClass("Humanoid")
