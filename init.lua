@@ -34,5 +34,9 @@ local ok, err = pcall(function()
 end)
 
 if not ok then
-    warn("[DramaHub] Fail to load: " .. tostring(err))
+	CoreGui:SetCore("SendNotification", {
+	Title = "DramaHub | Fatal Error";
+	Text = tostring(err) .. " | Contact us in Discord";
+	Duration = 3;
+})
 end
