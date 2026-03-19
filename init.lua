@@ -2,7 +2,7 @@ local BASE_URL     = "https://dramahub.up.railway.app"
 local SCRIPT_TOKEN = "SPECTRONAL_DRAMAHUB_PRIVATETOKEN"
 
 local SUPPORTED_GAMES = {
-    [12345678] = BASE_URL .. "/script/main?token=" .. SCRIPT_TOKEN, -- Anime Ghost
+    [101640913672688] = BASE_URL .. "/script/main?token=" .. SCRIPT_TOKEN, -- Anime Ghost
 }
 
 local gameId = game.PlaceId
