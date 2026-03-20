@@ -3,6 +3,7 @@ getgenv().DH.Farm = {}
 
 local Farm = getgenv().DH.Farm
 local State = getgenv().DH.State
+local Gamemode = getgenv().DH.Gamemode
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -34,7 +35,6 @@ end
 
 local function getNextMob(from: "Gamemode" | "Game")
 	local mobsList = {}
-	local Gamemode = getgenv().DH.Gamemode
 
 	if from == "Gamemode" then
 		for _, mob in pairs(State.enemiesFolder:WaitForChild("Gamemode"):GetDescendants()) do
@@ -76,7 +76,7 @@ function Farm.autoFarmEnemies(type: "Gamemode" | "Game")
 	if not State.currentMob or not State.currentMob.Parent then
 		if type == "Gamemode" then
 			State.currentMob = getNextMob("Gamemode")
-		elseif type == "Game" then
+		elseif type == "Game" and not Gamemode.InMode() then
 			State.currentMob = getNextMob("Game")
 		end
 
