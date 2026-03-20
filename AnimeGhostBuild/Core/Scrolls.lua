@@ -17,7 +17,8 @@ local function teleportToScroll()
 			local distance = (State.PlayerRootPart.Position - model.Range.Position).Magnitude
 
 			if distance > 15 then
-				State.PlayerRootPart.Position = Vector3.new(model.Range.Position)
+				local height = Vector3.new(0, 6, 0)
+				State.PlayerRootPart.CFrame = CFrame.new(model.Range.Position + height)
 			end
 		end
 	end
