@@ -13,12 +13,12 @@ local mapFolder = workspace["_MAP"]
 local function teleportToScroll()
 	for _, model in pairs(mapFolder:GetDescendants()) do
 		if model:IsA("Model") and model.Name == State.scriptSettings.ScrollsTab.SelectedScroll then
-			print(model.Name)
-			local distance = (State.PlayerRootPart.Position - model.Range.Position).Magnitude
+			local scrollModel = model.Parent:FindFirstChild(model)
+			local distance = (State.PlayerRootPart.Position - scrollModel.Range.Position).Magnitude
 
-			if distance > 30 then
+			if distance > 15 then
 				local height = Vector3.new(0, 6, 0)
-				State.PlayerRootPart.CFrame = CFrame.new(model.Range.Position + height)
+				State.PlayerRootPart.CFrame = CFrame.new(scrollModel.Range.Position + height)
 			end
 		end
 	end
