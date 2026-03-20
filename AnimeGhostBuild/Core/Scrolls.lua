@@ -16,6 +16,7 @@ local mapFolder = workspace["_MAP"]
 local function teleportToScroll()
 	for _, model in pairs(mapFolder:GetDescendants()) do
 		if model:IsA("Model") and model.Name == Selected then
+			print(model.Name)
 			local distance = (PlayerRoot.Position - model.Range).Magnitude
 
 			if distance > 10 then
