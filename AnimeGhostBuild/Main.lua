@@ -658,7 +658,11 @@ task.spawn(function()
 		end
 
 		if State.scriptSettings.GamemodesTab.AutoFarmMobs then
-			Farm.autoFarmEnemies()
+			Farm.autoFarmEnemies("Gamemode")
+		end
+
+		if State.scriptSettings.FarmTab.AutoFarm then
+			Farm.autoFarmEnemies("Game")
 		end
 	end
 end)
