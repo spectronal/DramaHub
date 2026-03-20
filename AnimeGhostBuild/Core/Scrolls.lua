@@ -16,7 +16,7 @@ local function teleportToScroll()
 			print(model.Name)
 			local distance = (State.PlayerRootPart.Position - model.Range.Position).Magnitude
 
-			if distance > 15 then
+			if distance > 30 then
 				local height = Vector3.new(0, 6, 0)
 				State.PlayerRootPart.CFrame = CFrame.new(model.Range.Position + height)
 			end
@@ -35,7 +35,6 @@ function Scrolls.autoOpen()
 		Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
 	else
 		teleportToScroll()
-		task.wait(2)
 		Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
 	end
 end
