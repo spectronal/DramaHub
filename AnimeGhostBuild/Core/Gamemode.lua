@@ -67,7 +67,7 @@ function Gamemode.setupGamemodeData()
 
 	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
 		print("Step one")
-		if mob:IsA("Part") and mob.Parent.Name == "Server" and mob:GetAttribute("HP") then
+		if mob:IsA("Part") and mob:GetAttribute("HP") then
 			print("Step two")
 			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
 				print("Step three")
