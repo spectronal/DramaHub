@@ -54,14 +54,17 @@ local function getNextMob(from: "Gamemode" | "Game")
 
 		return mobsList[1]
 	elseif from == "Game" then
-		local mobs = State.scriptSettings.FarmTab.SelectMobs
-
-		if not mobs or #mobs == 0 then
-			warn("SelectMobs vazio ou nil!")
-			return nil
+		for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
+			if mob:IsA("Part") and mob:GetAttribute("HP") then
+				for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
+					if mobClient:IsA("Model") and mob.Name == mobClient.Name then
+						if table.find(State.scriptSettings.FarmTab.SelectMobs, mob:GetAttribute("Name")) then
+							return mob
+						end
+					end
+				end
+			end
 		end
-
-		return mobs[1]
 	end
 
 	return
