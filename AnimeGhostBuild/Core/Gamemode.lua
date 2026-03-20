@@ -65,7 +65,15 @@ function Gamemode.setupGamemodeData()
 		table.insert(State.mapScrolls, v["EggName"])
 	end
 
-	Farm.getMobsName()
+	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
+		if mob:IsA("Part") and mob.Parent.Name == "Server" and mob:GetAttribute("HP") then
+			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
+				if mob.Name == mobClient then
+					State.Mobs[mob:GetAttribute("Name")] = mob
+				end
+			end
+		end
+	end
 end
 
 -- Cooldown Listener
