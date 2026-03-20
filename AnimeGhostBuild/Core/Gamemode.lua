@@ -68,10 +68,11 @@ function Gamemode.setupGamemodeData()
 		print("Step one")
 		if mob:IsA("Part") and mob:GetAttribute("HP") then
 			print("Step two")
-			for _, mobClient in pairs(State.enemiesClientFolder:GetDescendants()) do
-				print("Step three")
-				if mob.Name == mobClient.Name then
-					table.insert(State.Mobs, mob:GetAttribute("Name"))
+			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
+				if mobClient:IsA("Model") then
+					if mob.Name == mobClient.Name then
+						table.insert(State.Mobs, mob:GetAttribute("Name"))
+					end
 				end
 			end
 		end
