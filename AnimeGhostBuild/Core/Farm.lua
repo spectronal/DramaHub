@@ -62,18 +62,6 @@ end
 
 -- Auto Farm
 
-function Farm.getMobsName()
-	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
-		if mob:IsA("Part") and mob.Parent.Name == "Server" and mob:GetAttribute("HP") then
-			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
-				if mob.Name == mobClient then
-					State.Mobs[mob:GetAttribute("Name")] = mob
-				end
-			end
-		end
-	end
-end
-
 function Farm.autoFarmEnemies(type: "Gamemode" | "Game")
 	if not State.currentMob or not State.currentMob.Parent then
 		State.currentMob = getNextMob(type)
