@@ -62,18 +62,16 @@ function Gamemode.setupGamemodeData()
 
 	for i, v in pairs(State.MapData) do
 		table.insert(State.mapScrolls, v["EggName"])
-		print(i, v, v["EggName"])
 	end
 
 	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
 		print("Step one")
 		if mob:IsA("Part") and mob:GetAttribute("HP") then
 			print("Step two")
-			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
+			for _, mobClient in pairs(State.enemiesClientFolder:GetDescendants()) do
 				print("Step three")
 				if mob.Name == mobClient.Name then
-					State.Mobs[mob:GetAttribute("Name")] = mob.Name
-					print(State.Mobs)
+					table.insert(State.Mobs, mob:GetAttribute("Name"))
 				end
 			end
 		end
