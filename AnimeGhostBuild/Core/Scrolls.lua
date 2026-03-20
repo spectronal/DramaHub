@@ -39,10 +39,8 @@ function Scrolls.getScrollName()
 end
 
 function Scrolls.autoOpen()
-	if not game.Players.LocalPlayer:GetAttribute("InMode") then
-		if not State.scriptSettings.ScrollsTab.TeleportToEgg then
-			Framework.Remote:Fire("PetSystem", "Open", Selected, "All")
-		end
+	if not State.scriptSettings.ScrollsTab.TeleportToEgg then
+		Framework.Remote:Fire("PetSystem", "Open", Selected, "All")
 	else
 		teleportToScroll()
 		task.wait(2)
