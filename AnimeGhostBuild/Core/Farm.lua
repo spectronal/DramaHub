@@ -74,8 +74,12 @@ end
 
 function Farm.autoFarmEnemies(type: "Gamemode" | "Game")
 	if not State.currentMob or not State.currentMob.Parent then
-		State.currentMob = getNextMob(type)
-		print(State.currentMob)
+		if type == "Gamemode" then
+			State.currentMob = getNextMob("Gamemode")
+		elseif type == "Game" then
+			State.currentMob = getNextMob("Game")
+		end
+
 		State.lastHP = nil
 		State.stuckTime = 0
 
