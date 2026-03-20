@@ -56,17 +56,10 @@ local function getNextMob(from: "Gamemode" | "Game")
 	elseif from == "Game" then
 		for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
 			if mob:IsA("Part") and mob:GetAttribute("HP") then
-				print("Mob encontrado:", mob.Name, mob:GetAttribute("Name"))
-				for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
-					if mobClient:IsA("Model") then
-						print("  Client:", mobClient.Name, "| Match:", mob.Name == mobClient.Name)
-						if mob.Name == mobClient.Name then
-							local found = table.find(State.scriptSettings.FarmTab.SelectMobs, mob:GetAttribute("Name"))
-							print("  SelectMobs match:", found, "| Buscando:", mob:GetAttribute("Name"))
-							print("  SelectMobs conteudo:", State.scriptSettings.FarmTab.SelectMobs)
-							if found then
-								return mob
-							end
+				for _, mobClient in pairs(State.enemiesClientFolder:GetDescendants()) do
+					if mobClient:IsA("Model") and mob.Name == mobClient.Name then
+						if State.scriptSettings.FarmTab.SelectMobs[mob:GetAttribute("Name")] == true then
+							return mob
 						end
 					end
 				end
