@@ -54,7 +54,14 @@ local function getNextMob(from: "Gamemode" | "Game")
 
 		return mobsList[1]
 	elseif from == "Game" then
-		return State.scriptSettings.FarmTab.SelectMobs[1]
+		local mobs = State.scriptSettings.FarmTab.SelectMobs
+
+		if not mobs or #mobs == 0 then
+			warn("SelectMobs vazio ou nil!")
+			return nil
+		end
+
+		return mobs[1]
 	end
 
 	return

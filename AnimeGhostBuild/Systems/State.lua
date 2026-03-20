@@ -129,6 +129,7 @@ State.lastClickTime = tick()
 State.comboIndex = 0
 
 -- Auto Farm State
+State.Inserted = {}
 State.Mobs = {}
 State.enemiesFolder = workspace["_ENEMIES"].Server
 State.enemiesClientFolder = State.enemiesFolder.Parent.Client

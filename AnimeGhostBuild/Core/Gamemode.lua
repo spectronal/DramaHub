@@ -18,6 +18,8 @@ local Janitor = State.Janitor
 local GuiService = State.GuiService
 local newJanitor = Janitor.new()
 
+local Inserted = State.Inserted
+
 -- Setup
 
 function Gamemode.setupGamemodeData()
@@ -65,13 +67,16 @@ function Gamemode.setupGamemodeData()
 	end
 
 	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
-		print("Step one")
 		if mob:IsA("Part") and mob:GetAttribute("HP") then
-			print("Step two")
 			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
 				if mobClient:IsA("Model") then
 					if mob.Name == mobClient.Name then
-						table.insert(State.Mobs, mob:GetAttribute("Name"))
+						local mobName = mob:GetAttribute("Name")
+
+						if not Inserted[mobName] then
+							Inserted[mobName] = true
+							table.insert(State.Mobs, mobName)
+						end
 					end
 				end
 			end
