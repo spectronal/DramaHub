@@ -13,22 +13,15 @@ local Selected = State.scriptSettings.ScrollsTab.SelectedScroll
 
 local mapFolder = workspace["_MAP"]
 
-local function getScrollModel()
+local function teleportToScroll()
 	for _, model in pairs(mapFolder:GetDescendants()) do
 		if model:IsA("Model") and model.Name == Selected then
-			return model.Range
+			local distance = (PlayerRoot.Position - scrollModel).Magnitude
+
+			if distance > 10 then
+				PlayerRoot.Position = Vector3.new(model.Position)
+			end
 		end
-	end
-	return
-end
-
-local function teleportToScroll()
-	local scrollModel = getScrollModel()
-
-	local distance = (PlayerRoot.Position - scrollModel).Magnitude
-
-	if distance > 10 then
-		PlayerRoot.Position = Vector3.new(scrollModel.Position)
 	end
 end
 
