@@ -49,8 +49,8 @@ local Utils = getgenv().DH.Utils
 local Player = getgenv().DH.Player
 local Rewards = getgenv().DH.Rewards
 local Farm = getgenv().DH.Farm
-local Scrolls = getgenv().DH.Scrolls
 local Gamemode = getgenv().DH.Gamemode
+local Scrolls = getgenv().DH.Scrolls
 local Gacha = getgenv().DH.Gacha
 
 -- Services
