@@ -4,6 +4,9 @@ getgenv().DH.Gamemode = {}
 local Gamemode = getgenv().DH.Gamemode
 local State = getgenv().DH.State
 
+local Scrolls = getgenv().DH.Scrolls
+local Farm = getgenv().DH.Farm
+
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -56,6 +59,11 @@ function Gamemode.setupGamemodeData()
 	for maps, _ in ipairs(State.MapData) do
 		table.insert(State.MapsNum, maps)
 	end
+
+	for map, scrollName in pairs(MapData) do
+		table.insert(State.mapScrolls, scrollName["EggName"])
+	end
+	Farm.getMobsName()
 end
 
 -- Cooldown Listener
@@ -108,10 +116,9 @@ end
 -- Ui Handler
 local function enableUI()
 	task.wait(1.2)
-	if LocalPlayer:WaitForChild("PlayerGui").Results.Content.Visible == true then
-		GuiService.SetScreens(true, { "SideGUI", "Utils" }, true)
-		newJanitor:Cleanup()
-	end
+	LocalPlayer:WaitForChild("PlayerGui").Results.Content.Visible = false
+	GuiService.SetScreens(true, { "SideGUI", "Utils" }, true)
+	newJanitor:Cleanup()
 end
 
 -- Mode Queries
@@ -262,7 +269,6 @@ function Gamemode.autoLeaveGamemode()
 	local MaxWave = tonumber(State.scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
 
 	if MaxWave ~= 0 and Wave >= MaxWave or not LocalPlayer:GetAttribute("InMode") then
-		enableUI()
 		if State.scriptSettings.GamemodesTab.SavedPosition ~= nil then
 			Gamemode.teleportPlayerToPosition()
 		else
@@ -281,7 +287,8 @@ end
 function Gamemode.teleportPlayerToPosition()
 	local RootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
 	Framework.Remote:Fire("TeleportSystem", "To", State.scriptSettings.GamemodesTab.WorldToTeleport)
-	task.wait(1)
+	task.wait(3)
+	enableUI()
 	RootPart.CFrame = CFrame.new(State.scriptSettings.GamemodesTab.SavedPosition)
 end
 

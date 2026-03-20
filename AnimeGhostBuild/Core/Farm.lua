@@ -32,33 +32,51 @@ local function teleportToMob(mob)
 	end
 end
 
-local function getNextMob()
+local function getNextMob(from: "Gamemode" | "Game")
 	local mobsList = {}
 	local Gamemode = getgenv().DH.Gamemode
 
-	for _, mob in pairs(State.enemiesFolder:WaitForChild("Gamemode"):GetDescendants()) do
-		if
-			mob:IsA("Part")
-			and mob.Parent
-			and mob.Parent.Name == Gamemode.getPlayerMode("Mode")
-			and mob:GetAttribute("Order")
-		then
-			table.insert(mobsList, mob)
+	if from == "Gamemode" then
+		for _, mob in pairs(State.enemiesFolder:WaitForChild("Gamemode"):GetDescendants()) do
+			if
+				mob:IsA("Part")
+				and mob.Parent
+				and mob.Parent.Name == Gamemode.getPlayerMode("Mode")
+				and mob:GetAttribute("Order")
+			then
+				table.insert(mobsList, mob)
+			end
 		end
+
+		table.sort(mobsList, function(a, b)
+			return a:GetAttribute("Order") < b:GetAttribute("Order")
+		end)
+
+		return mobsList[1]
+	elseif from == "Game" then
+		return State.scriptSettings.FarmTab.SelectMobs[1]
 	end
 
-	table.sort(mobsList, function(a, b)
-		return a:GetAttribute("Order") < b:GetAttribute("Order")
-	end)
-
-	return mobsList[1]
+	return
 end
 
 -- Auto Farm
 
-function Farm.autoFarmEnemies()
+function Farm.getMobsName()
+	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
+		if mob:IsA("Part") and mob.Parent.Name == "Server" and mob:GetAttribute("HP") then
+			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
+				if mob.Name == mobClient then
+					State.Mobs[mob:GetAttribute("Name")] = mob
+				end
+			end
+		end
+	end
+end
+
+function Farm.autoFarmEnemies(type: "Gamemode" | "Game")
 	if not State.currentMob or not State.currentMob.Parent then
-		State.currentMob = getNextMob()
+		State.currentMob = getNextMob(type)
 		State.lastHP = nil
 		State.stuckTime = 0
 

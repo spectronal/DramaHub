@@ -11,6 +11,17 @@ local Framework = require(replicatedStorage.Framework.Library)
 -- Script Settings
 
 State.scriptSettings = {
+	FarmTab = {
+		SelectedMobs = { "" },
+		AutoFarm = false,
+		AutoFarmWithScroll = false,
+	},
+	ScrollsTab = {
+		SelectedScroll = "",
+
+		AutoOpenScroll = false,
+		TeleportToEgg = false,
+	},
 	PlayerTab = {
 		AutoClick = false,
 		AutoClickAnimation = false,
@@ -74,8 +85,6 @@ State.GachaData = Framework:GetData("GachaData")
 State.GamemodeData = Framework:GetData("GamemodeData")
 State.MapData = Framework:GetData("MapData")
 
--- Get Screen
-
 -- Gacha State
 
 State.Gachas = {}
@@ -84,6 +93,9 @@ State.Targets = {}
 for id in pairs(State.GachaData) do
 	table.insert(State.Gachas, id)
 end
+
+-- Scrolls State
+State.mapScrolls = {}
 
 -- Gamemode State
 
@@ -117,8 +129,9 @@ State.lastClickTime = tick()
 State.comboIndex = 0
 
 -- Auto Farm State
-
+State.Mobs = {}
 State.enemiesFolder = workspace["_ENEMIES"].Server
+State.enemiesClientFolder = State.enemiesFolder.Parent.Client
 State.PlayerRootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
 State.currentMob = nil
 State.lastHP = nil

@@ -30,6 +30,7 @@ local loadOrder = {
 	"Gacha",
 	"Gamemode",
 	"Farm",
+	"Scrolls",
 }
 
 for _, name in ipairs(loadOrder) do
@@ -47,6 +48,7 @@ local Utils = getgenv().DH.Utils
 local Player = getgenv().DH.Player
 local Rewards = getgenv().DH.Rewards
 local Farm = getgenv().DH.Farm
+local Scrolls = getgenv().DH.Scrolls
 local Gamemode = getgenv().DH.Gamemode
 local Gacha = getgenv().DH.Gacha
 
@@ -154,6 +156,45 @@ mainAbout:AddParagraph({
 	Content = "\nThis is a development build of Drama Hub, an all-in-one script for Anime Ghost. \nThis build is not intended for public use and may contain bugs or unfinished features.\n\nCreated by spectronal",
 })
 
+-- Tab: Farm
+
+local farmAbout = Tabs.Farm:AddSection("Mobs")
+
+local selectFarmMob = farmAbout:AddDropdown("selectFarmMob", {
+	Title = "Select Mobs",
+	Description = "Select a enemy to farm",
+	Values = State.Mobs,
+	Multi = true,
+	Default = { "" },
+})
+
+farmAbout:AddButton({
+	Title = "Refresh Mob List",
+	Callback = function()
+		table.clear(State.Mobs)
+
+		for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
+			if mob:IsA("Part") and mob.Parent.Name == "Server" and mob:GetAttribute("HP") then
+				for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
+					if mob.Name == mobClient then
+						State.Mobs[mob:GetAttribute("Name")] = mob
+					end
+				end
+			end
+		end
+
+		selectFarmMob:SetValue(State.Mobs)
+	end,
+})
+
+farmAbout:AddToggle("Auto Farm", {
+	Title = "Auto Farm",
+	Default = false,
+	Callback = function(state)
+		State.scriptSettings.FarmTab.AutoFarm = state
+	end,
+})
+
 -- Tab: Player
 
 local mainPlayer = Tabs.Player:AddSection("Main")
@@ -217,59 +258,6 @@ mainPlayer2:AddToggle("AutoChests", {
 	Default = false,
 	Callback = function(state)
 		State.scriptSettings.PlayerTab.AutoChests = state
-	end,
-})
-
--- Tab: Gachas
-
-local mainGacha = Tabs.Gachas:AddSection("Main")
-mainGacha:AddParagraph({
-	Title = "Gacha Features",
-	Content = "\nHere you can find various features related to gacha mechanics.",
-})
-
-local selectGacha = mainGacha:AddDropdown("selectGacha", {
-	Title = "Select Gacha",
-	Description = "Select a gacha to spin",
-	Values = State.Gachas,
-	Multi = false,
-	Default = "Psychic Power",
-})
-
-local selectGachaTarget = mainGacha:AddDropdown("selectGachaTarget", {
-	Title = "Select Target",
-	Description = "Select your target for spin",
-	Values = State.Targets,
-	Multi = true,
-	Default = { "Choose a target" },
-})
-
-mainGacha:AddToggle("autoGacha", {
-	Title = "Auto Gacha",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.GachaTab.AutoGacha = state
-	end,
-})
-
-local gachaSettings = Tabs.Gachas:AddSection("Settings")
-
-gachaSettings:AddSlider("gachaDelay", {
-	Title = "Spin Delay",
-	Description = "Set the delay between each spin (in seconds)",
-	Default = 0.1,
-	Min = 0.1,
-	Max = 5,
-	Rounding = 0.1,
-	Callback = function(Value)
-		State.scriptSettings.GachaTab.GachaDelay = Value
-	end,
-})
-
-gachaSettings:AddButton({
-	Title = "Remove Gacha Animation",
-	Callback = function()
-		Gacha.removeGachaAnimation()
 	end,
 })
 
@@ -395,6 +383,85 @@ leaveGamemode:AddToggle("autoLeave", {
 	end,
 })
 
+local mainScrolls = Tabs.Gachas:AddSection("Main")
+
+local selectScroll = mainScrolls:AddDropdown("selectScroll", {
+	Title = "Select Scroll",
+	Description = "Select a scroll to open",
+	Values = State.mapScrolls,
+	Multi = false,
+	Default = "",
+})
+
+mainScrolls:AddToggle("teleportToEgg", {
+	Title = "Auto Teleport to Scroll",
+	Default = false,
+	Callback = function(state)
+		State.scriptSettings.ScrollsTab.TeleportToEgg = state
+	end,
+})
+
+mainScrolls:AddToggle("autoOpenScroll", {
+	Title = "Auto Open Scroll",
+	Default = false,
+	Callback = function(state)
+		State.scriptSettings.ScrollsTab.AutoOpenScroll = state
+	end,
+})
+
+-- Tab: Gachas
+
+local mainGacha = Tabs.Gachas:AddSection("Main")
+mainGacha:AddParagraph({
+	Title = "Gacha Features",
+	Content = "\nHere you can find various features related to gacha mechanics.",
+})
+
+local selectGacha = mainGacha:AddDropdown("selectGacha", {
+	Title = "Select Gacha",
+	Description = "Select a gacha to spin",
+	Values = State.Gachas,
+	Multi = false,
+	Default = "Psychic Power",
+})
+
+local selectGachaTarget = mainGacha:AddDropdown("selectGachaTarget", {
+	Title = "Select Target",
+	Description = "Select your target for spin",
+	Values = State.Targets,
+	Multi = true,
+	Default = { "Choose a target" },
+})
+
+mainGacha:AddToggle("autoGacha", {
+	Title = "Auto Gacha",
+	Default = false,
+	Callback = function(state)
+		State.scriptSettings.GachaTab.AutoGacha = state
+	end,
+})
+
+local gachaSettings = Tabs.Gachas:AddSection("Settings")
+
+gachaSettings:AddSlider("gachaDelay", {
+	Title = "Spin Delay",
+	Description = "Set the delay between each spin (in seconds)",
+	Default = 0.1,
+	Min = 0.1,
+	Max = 5,
+	Rounding = 0.1,
+	Callback = function(Value)
+		State.scriptSettings.GachaTab.GachaDelay = Value
+	end,
+})
+
+gachaSettings:AddButton({
+	Title = "Remove Gacha Animation",
+	Callback = function()
+		Gacha.removeGachaAnimation()
+	end,
+})
+
 -- Settings
 local playerGamemode = Tabs.Gamemode:AddSection("Settings")
 
@@ -477,6 +544,14 @@ playerGamemode2:AddToggle("autoJoinPublic", {
 })
 
 -- Dropdown OnChanged Handlers
+
+selectFarmMob:OnChanged(function(Value)
+	State.scriptSettings.GachaTab.SelectMobs = Value
+end)
+
+selectScroll:OnChanged(function(Value)
+	State.scriptSettings.ScrollsTab.SelectedScroll = Value
+end)
 
 selectGacha:OnChanged(function(Value)
 	table.clear(State.Targets)
