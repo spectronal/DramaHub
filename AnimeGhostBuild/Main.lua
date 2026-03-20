@@ -178,7 +178,7 @@ farmAbout:AddButton({
 			if mob:IsA("Part") and mob.Parent.Name == "Server" and mob:GetAttribute("HP") then
 				for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
 					if mob.Name == mobClient then
-						State.Mobs[mob:GetAttribute("Name")] = mob
+						table.insert(State.Mobs, mob:GetAttribute("Name"))
 					end
 				end
 			end
@@ -384,7 +384,7 @@ leaveGamemode:AddToggle("autoLeave", {
 	end,
 })
 
-local mainScrolls = Tabs.Gachas:AddSection("Main")
+local mainScrolls = Tabs.Scroll:AddSection("Main")
 
 local selectScroll = mainScrolls:AddDropdown("selectScroll", {
 	Title = "Select Scroll",

@@ -38,6 +38,7 @@ function Scrolls.autoOpen()
 	else
 		teleportToScroll()
 		task.wait(2)
+		print(Selected)
 		Framework.Remote:Fire("PetSystem", "Open", Selected, "All")
 	end
 end
