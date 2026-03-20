@@ -60,10 +60,9 @@ function Gamemode.setupGamemodeData()
 		table.insert(State.MapsNum, maps)
 	end
 
-	for map, _ in State.MapData do
-		for scrollName, q in map do
-			print(scrollName, q)
-		end
+	for i, v in pairs(State.MapData) do
+		v = tostring(v)
+		table.insert(State.mapScrolls, v["EggName"])
 	end
 
 	Farm.getMobsName()
