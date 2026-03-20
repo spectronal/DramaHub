@@ -16,10 +16,10 @@ local mapFolder = workspace["_MAP"]
 local function teleportToScroll()
 	for _, model in pairs(mapFolder:GetDescendants()) do
 		if model:IsA("Model") and model.Name == Selected then
-			local distance = (PlayerRoot.Position - scrollModel).Magnitude
+			local distance = (PlayerRoot.Position - model.Range).Magnitude
 
 			if distance > 10 then
-				PlayerRoot.Position = Vector3.new(model.Position)
+				PlayerRoot.Position = Vector3.new(model.Range.Position)
 			end
 		end
 	end
