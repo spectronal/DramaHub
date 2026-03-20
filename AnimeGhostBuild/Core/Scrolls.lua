@@ -14,7 +14,7 @@ local function teleportToScroll()
 	for _, model in pairs(mapFolder:GetDescendants()) do
 		if model:IsA("Model") and model.Name == State.scriptSettings.ScrollsTab.SelectedScroll then
 			print(model.Name)
-			local distance = (State.PlayerRootPart.Position - model.Range).Magnitude
+			local distance = (State.PlayerRootPart.Position - model.Range.Position).Magnitude
 
 			if distance > 15 then
 				State.PlayerRootPart.CFrame = CFrame.new(model.Range.CFrame)
