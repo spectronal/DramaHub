@@ -16,14 +16,14 @@ local mapFolder = workspace["_MAP"]
 local function getScrollModel()
 	for _, model in pairs(mapFolder:GetDescendants()) do
 		if model:IsA("Model") and model.Name == Selected then
-			return model
+			return model.Range
 		end
 	end
 	return
 end
 
 local function teleportToScroll()
-	local scrollModel = getScrollModel().Range
+	local scrollModel = getScrollModel()
 
 	local distance = (PlayerRoot.Position - scrollModel).Magnitude
 
