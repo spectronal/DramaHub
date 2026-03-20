@@ -18,6 +18,7 @@ local URLS = {
 	Farm = BASE_URL .. "/farm?token=" .. SCRIPT_TOKEN,
 	Gamemode = BASE_URL .. "/gamemode?token=" .. SCRIPT_TOKEN,
 	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
+	Scrolls = BASE_URL .. "/scrolls?token=" .. SCRIPT_TOKEN,
 }
 
 -- Loader
@@ -688,6 +689,10 @@ task.spawn(function()
 
 		if State.scriptSettings.GamemodesTab.AutoLeaveGamemode then
 			Gamemode.autoLeaveGamemode()
+		end
+
+		if State.scriptSettings.ScrollsTab.AutoOpenScroll then
+			Scrolls.autoOpen()
 		end
 
 		Gamemode.gamemodeNotifier(Fluent)
