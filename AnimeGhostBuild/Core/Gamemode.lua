@@ -72,7 +72,7 @@ function Gamemode.setupGamemodeData()
 			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
 				print("Step three")
 				if mob.Name == mobClient.Name then
-					State.Mobs[mob:GetAttribute("Name")] = mob
+					State.Mobs[mob:GetAttribute("Name")] = mob.Name
 					print(State.Mobs)
 				end
 			end
