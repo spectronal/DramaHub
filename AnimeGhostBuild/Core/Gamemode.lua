@@ -61,7 +61,6 @@ function Gamemode.setupGamemodeData()
 	end
 
 	for i, v in pairs(State.MapData) do
-		v = tostring(v)
 		table.insert(State.mapScrolls, v["EggName"])
 		print(i, v, v["EggName"])
 	end
