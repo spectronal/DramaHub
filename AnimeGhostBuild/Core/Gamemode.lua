@@ -60,8 +60,8 @@ function Gamemode.setupGamemodeData()
 		table.insert(State.MapsNum, maps)
 	end
 
-	for map, _ in ipairs(State.MapData) do
-		for scrollName, q in ipairs(map) do
+	for map, _ in State.MapData do
+		for scrollName, q in map do
 			print(scrollName, q)
 		end
 	end
