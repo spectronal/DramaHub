@@ -8,19 +8,16 @@ local Gamemode = getgenv().DH.Gamemode
 local Framework = State.Framework
 local MapData = State.MapData
 
-local PlayerRoot = State.PlayerRootPart
-local Selected = State.scriptSettings.ScrollsTab.SelectedScroll
-
 local mapFolder = workspace["_MAP"]
 
 local function teleportToScroll()
 	for _, model in pairs(mapFolder:GetDescendants()) do
-		if model:IsA("Model") and model.Name == Selected then
+		if model:IsA("Model") and model.Name == State.scriptSettings.ScrollsTab.SelectedScroll then
 			print(model.Name)
-			local distance = (PlayerRoot.Position - model.Range).Magnitude
+			local distance = (State.PlayerRootPart.Position - model.Range).Magnitude
 
 			if distance > 15 then
-				PlayerRoot.CFrame = CFrame.new(model.Range.CFrame)
+				State.PlayerRootPart.CFrame = CFrame.new(model.Range.CFrame)
 			end
 		end
 	end
@@ -34,11 +31,10 @@ end
 
 function Scrolls.autoOpen()
 	if not State.scriptSettings.ScrollsTab.TeleportToEgg then
-		Framework.Remote:Fire("PetSystem", "Open", Selected, "All")
+		Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
 	else
 		teleportToScroll()
 		task.wait(2)
-		print(Selected)
-		Framework.Remote:Fire("PetSystem", "Open", Selected, "All")
+		Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
 	end
 end
