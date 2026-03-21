@@ -681,11 +681,11 @@ saveWorldToTp:OnChanged(function(Value)
 end)
 
 equipBestinMode:OnChanged(function(Value)
-	State.scriptSettings.GamemodeTab.SelectedEquipBestInMode = Value
+	State.scriptSettings.GamemodesTab.SelectedEquipBestInMode = Value
 end)
 
 equipBest:OnChanged(function(Value)
-	State.scriptSettings.GamemodeTab.SelectedEquipBestNoMode = Value
+	State.scriptSettings.GamemodesTab.SelectedEquipBestNoMode = Value
 end)
 
 -- Description helpers (Ascension)
@@ -806,7 +806,7 @@ task.spawn(function()
 				Rewards.autoChests()
 			end
 
-			if State.scriptSettings.GamemodeTab.AutoEquipBest then
+			if State.scriptSettings.GamemodesTab.AutoEquipBest then
 				Gamemode.EquipBest()
 			end
 

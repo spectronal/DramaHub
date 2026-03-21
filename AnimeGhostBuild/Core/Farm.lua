@@ -54,17 +54,25 @@ local function getNextMob(from: "Gamemode" | "Game")
 
 		return mobsList[1]
 	elseif from == "Game" then
+		local validMobs = {}
+
 		for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
-			if mob:IsA("Part") and mob:GetAttribute("HP") then
+			if mob:IsA("Part") and mob:GetAttribute("HP") and mob:GetAttribute("Order") then
 				for _, mobClient in pairs(State.enemiesClientFolder:GetDescendants()) do
 					if mobClient:IsA("Model") and mob.Name == mobClient.Name then
 						if State.scriptSettings.FarmTab.SelectMobs[mob:GetAttribute("Name")] == true then
-							return mob
+							table.insert(validMobs, mob)
 						end
 					end
 				end
 			end
 		end
+
+		table.sort(validMobs, function(a, b)
+			return a:GetAttribute("Order") < b:GetAttribute("Order")
+		end)
+
+		return validMobs[1]
 	end
 
 	return
