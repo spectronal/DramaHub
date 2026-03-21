@@ -85,3 +85,17 @@ local function autoCreateGamemodes()
 		gamemodeFold:SetAttribute("IsInGamemode", false)
 	end
 end
+
+local args = {
+	{
+		{
+			"WarriorSystem",
+			"Attack",
+			"a35b67d8eff2475fb35e99ea184b2951",
+			true,
+			n = 4
+		},
+		"\002"
+	}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("ffrostflame_bridgenet2@1.0.0"):WaitForChild("dataRemoteEvent"):FireServer(unpack(args))

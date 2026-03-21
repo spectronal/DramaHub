@@ -3,6 +3,7 @@ getgenv().DH.Scrolls = {}
 
 local Scrolls = getgenv().DH.Scrolls
 local State = getgenv().DH.State
+local Gamemode = getgenv().DH.Gamemode
 
 local Framework = State.Framework
 
@@ -22,10 +23,12 @@ local function teleportToScroll()
 end
 
 function Scrolls.autoOpen()
-	if not State.scriptSettings.ScrollsTab.TeleportToEgg then
-		Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
-	else
-		teleportToScroll()
-		Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
+	if not Gamemode.InMode() then
+		if not State.scriptSettings.ScrollsTab.TeleportToEgg then
+			Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
+		else
+			teleportToScroll()
+			Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
+		end
 	end
 end

@@ -41,16 +41,19 @@ State.scriptSettings = {
 		SelectedRaid = "",
 		SelectedDungeon = "",
 		SelectedInfinityCastle = "",
+		SelectedDefenseMode = "",
 
 		SelectedRaidDifficulty = "",
 		SelectedDungeonDifficulty = "",
 		SelectedInfinityCastleDifficulty = "",
+		SelectedDefenseModeDifficulty = "",
 
 		SelectedPlayersToJoin = { "" },
 
 		RaidToLeave = 0,
 		DungeonToLeave = 0,
 		InfinityCastleToLeave = 0,
+		DefenseToLeave = 0,
 
 		AutoJoinPublicGamemode = false,
 		AutoJoinSelectedGamemode = false,
@@ -106,18 +109,21 @@ State.PriorityMap = {
 	["Raid"] = 1,
 	["Dungeon"] = 2,
 	["Infinity Castle"] = 3,
+	["Defense Mode"] = 4,
 }
 
 State.cooldowns = {
 	Raid = 0,
 	Dungeon = 0,
 	["Infinity Castle"] = 0,
+	["Defense Mode"] = 0,
 }
 
 State.MapsNum = {}
 State.RaidData = {}
 State.DungeonData = {}
 State.InfinityData = {}
+State.DefenseData = {}
 
 State.gamemodeFold = workspace:WaitForChild("_MAP"):WaitForChild("Gamemode")
 State.gamemodeServer = replicatedStorage:WaitForChild("Server").Gamemode

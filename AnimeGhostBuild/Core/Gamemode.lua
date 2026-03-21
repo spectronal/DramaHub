@@ -102,6 +102,8 @@ Framework.Remote:Connect(function(data)
 			State.cooldowns.Dungeon = tick() + total
 		elseif msg:find("Infinity Castle") then
 			State.cooldowns["Infinity Castle"] = tick() + total
+		elseif msg:Find("Defense Mode") then
+			State.cooldowns["Defense Mode"] = tick() + total
 		end
 	end
 end)

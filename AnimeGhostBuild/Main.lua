@@ -55,10 +55,14 @@ local Gacha = getgenv().DH.Gacha
 
 -- Services
 
+local HttpRbxApiService = game:GetService("HttpRbxApiService")
+local HttpService = game:GetService("HttpService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+
+local Inserted = State.Inserted
 
 local Framework = State.Framework
 
@@ -173,12 +177,20 @@ farmAbout:AddButton({
 	Title = "Refresh Mob List",
 	Callback = function()
 		table.clear(State.Mobs)
+		table.clear(Inserted)
 
 		for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
-			if mob:IsA("Part") and mob.Parent.Name == "Server" and mob:GetAttribute("HP") then
+			if mob:IsA("Part") and mob:GetAttribute("HP") then
 				for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
-					if mob.Name == mobClient then
-						table.insert(State.Mobs, mob:GetAttribute("Name"))
+					if mobClient:IsA("Model") then
+						if mob.Name == mobClient.Name then
+							local mobName = mob:GetAttribute("Name")
+
+							if not Inserted[mobName] then
+								Inserted[mobName] = true
+								table.insert(State.Mobs, mobName)
+							end
+						end
 					end
 				end
 			end
@@ -275,7 +287,7 @@ local selectGamemode = mainGamemode:AddDropdown("selectGamemode", {
 	Description = "Select a gamemode to play",
 	Values = State.Gamemodes,
 	Multi = true,
-	Default = { "Choose a gamemode" },
+	Default = { "" },
 })
 
 mainGamemode:AddToggle("AutoFarmMobs", {
@@ -290,7 +302,7 @@ mainGamemode:AddToggle("AutoFarmMobs", {
 local mapsGamemode = Tabs.Gamemode:AddSection("Maps")
 
 local selectRaid = mapsGamemode:AddDropdown("selectRaid", {
-	Title = "Select Raid",
+	Title = "Raid Map",
 	Description = "Select an raid map",
 	Values = State.RaidData,
 	Multi = false,
@@ -298,7 +310,7 @@ local selectRaid = mapsGamemode:AddDropdown("selectRaid", {
 })
 
 local selectDungeon = mapsGamemode:AddDropdown("selectDungeon", {
-	Title = "Select Dungeon",
+	Title = "Dungeon Map",
 	Description = "Select an dungeon map",
 	Values = State.DungeonData,
 	Multi = false,
@@ -306,26 +318,34 @@ local selectDungeon = mapsGamemode:AddDropdown("selectDungeon", {
 })
 
 local selectInfinity = mapsGamemode:AddDropdown("selectInfinity", {
-	Title = "Select Infinity",
+	Title = "Infinity Castle Map",
 	Description = "Select an infinity map",
 	Values = State.InfinityData,
 	Multi = false,
 	Default = "Choose an infinity map",
 })
 
+local selectDefense = mapsGamemode:AddDropdown("selectDefense", {
+	Title = "Defense Mode Map",
+	Description = "Select an Defense map",
+	Values = State.DefenseData,
+	Multi = false,
+	Default = "Choose an defense map",
+})
+
 -- Difficulties
 local diffGamemode = Tabs.Gamemode:AddSection("Difficulties")
 
 local selectRaidDiff = diffGamemode:AddDropdown("selectRaidDiff", {
-	Title = "Select Raid Diff",
+	Title = "Raid Diff",
 	Description = "Select a difficulty for raids",
-	Values = { "Easy", "Medium", "Hard" },
+	Values = { "Easy" },
 	Multi = false,
 	Default = "",
 })
 
 local selectDungeonDiff = diffGamemode:AddDropdown("selectDungeonDiff", {
-	Title = "Select Dungeon Diff",
+	Title = "Dungeon Diff",
 	Description = "Select a difficulty for dungeons",
 	Values = { "Easy", "Medium", "Hard" },
 	Multi = false,
@@ -333,7 +353,15 @@ local selectDungeonDiff = diffGamemode:AddDropdown("selectDungeonDiff", {
 })
 
 local selectInfinityDiff = diffGamemode:AddDropdown("selectInfinityDiff", {
-	Title = "Select Infinity Diff",
+	Title = "Infinity Diff",
+	Description = "Select a difficulty for infinity castle",
+	Values = { "Easy" },
+	Multi = false,
+	Default = "",
+})
+
+local selectDefenseDiff = diffGamemode:AddDropdown("selectDefenseDiff", {
+	Title = "Defense Diff",
 	Description = "Select a difficulty for infinity castle",
 	Values = { "Easy" },
 	Multi = false,
@@ -344,7 +372,7 @@ local selectInfinityDiff = diffGamemode:AddDropdown("selectInfinityDiff", {
 local leaveGamemode = Tabs.Gamemode:AddSection("Leave in")
 
 leaveGamemode:AddInput("raidLeaveIn", {
-	Title = "Raid Leave In",
+	Title = "Raid Leave at",
 	Default = 0,
 	Placeholder = "e.g 30",
 	Numeric = true,
@@ -355,7 +383,7 @@ leaveGamemode:AddInput("raidLeaveIn", {
 })
 
 leaveGamemode:AddInput("dungeonLeaveIn", {
-	Title = "Dungeon Leave In",
+	Title = "Dungeon Leave at",
 	Default = 0,
 	Placeholder = "e.g 30",
 	Numeric = true,
@@ -366,13 +394,24 @@ leaveGamemode:AddInput("dungeonLeaveIn", {
 })
 
 leaveGamemode:AddInput("infinityLeaveIn", {
-	Title = "Infinity Leave In",
+	Title = "Infinity Leave at",
 	Default = 0,
 	Placeholder = "e.g 30",
 	Numeric = true,
 	Finished = true,
 	Callback = function(Value)
 		State.scriptSettings.GamemodesTab.InfinityCastleToLeave = Value
+	end,
+})
+
+leaveGamemode:AddInput("defenseModeLeaveIn", {
+	Title = "Defense Leave at",
+	Default = 0,
+	Placeholder = "e.g 30",
+	Numeric = true,
+	Finished = true,
+	Callback = function(Value)
+		State.scriptSettings.GamemodesTab.DefenseModeToLeave = Value
 	end,
 })
 
@@ -547,11 +586,12 @@ playerGamemode2:AddToggle("autoJoinPublic", {
 -- Dropdown OnChanged Handlers
 
 selectFarmMob:OnChanged(function(Value)
-	State.scriptSettings.GachaTab.SelectMobs = Value
+	State.scriptSettings.FarmTab.SelectMobs = Value
 end)
 
 selectScroll:OnChanged(function(Value)
 	State.scriptSettings.ScrollsTab.SelectedScroll = Value
+	print(State.scriptSettings.ScrollsTab.SelectedScroll)
 end)
 
 selectGacha:OnChanged(function(Value)
@@ -587,6 +627,10 @@ selectInfinityDiff:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.SelectedInfinityCastleDifficulty = Value
 end)
 
+selectDefenseDiff:OnChanged(function(Value)
+	State.scriptSettings.GamemodesTab.SelectedDefenseModeDifficulty = Value
+end)
+
 selectRaid:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.SelectedRaid = Value
 end)
@@ -597,6 +641,10 @@ end)
 
 selectInfinity:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.SelectedInfinityCastle = Value
+end)
+
+selectDefense:OnChanged(function(Value)
+	State.scriptSettings.GamemodesTab.SelectedDefenseMode = Value
 end)
 
 selectPlayersToJoin:OnChanged(function(Value)
@@ -733,7 +781,6 @@ end)
 
 task.spawn(function()
 	while true do
-		task.wait(300)
 		local character = LocalPlayer.Character
 		if character then
 			local humanoid = character:FindFirstChildOfClass("Humanoid")
@@ -741,5 +788,6 @@ task.spawn(function()
 				humanoid.Jump = true
 			end
 		end
+		task.wait(300)
 	end
 end)
