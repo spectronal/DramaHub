@@ -112,7 +112,7 @@ Framework.Remote:Connect(function(data)
 			State.cooldowns.Dungeon = tick() + total
 		elseif msg:find("Infinity Castle") then
 			State.cooldowns["Infinity Castle"] = tick() + total
-		elseif msg:Find("Defense Mode") then
+		elseif msg:find("Defense Mode") then
 			State.cooldowns["Defense Mode"] = tick() + total
 		end
 	end
@@ -327,23 +327,32 @@ end
 function Gamemode.EquipBest()
 	if LocalPlayer:GetAttribute("InMode") then
 		local selected = State.scriptSettings.GamemodesTab.SelectedEquipBestInMode
+		local selectedTitle = State.scriptSettings.GamemodesTab.SelectedEquipTitleInMode
 
-		if LocalPlayer:GetAttribute("EquipBest") == selected then
+		if LocalPlayer:GetAttribute("EquipBest") == selected and LocalPlayer:GetAttribute("Title") == selectedTitle then
 			return
 		end
 
 		Framework.Remote:Fire("EquipBestSystem", "Apply", selected)
+		Framework.Remote:Fire("TitleSystem", "Equip", "Boost", selectedTitle)
+
 		Notifier("<dr> [Drama Hub] </>" .. "<w> All " .. selected .. " buffs equippeds in Gamemode! </>")
+		Notifier("<dr> [Drama Hub] </>" .. "<w> Title: " .. selectedTitle .. " equipped! </>")
+
 		LocalPlayer:SetAttribute("EquipBest", selected)
 	elseif not LocalPlayer:GetAttribute("InMode") then
 		local selected = State.scriptSettings.GamemodesTab.SelectedEquipBestNoMode
+		local selectedTitle = State.scriptSettings.GamemodesTab.SelectedEquipTitleNoMode
 
-		if LocalPlayer:GetAttribute("EquipBest") == selected then
+		if LocalPlayer:GetAttribute("EquipBest") == selected and LocalPlayer:GetAttribute("Title") == selectedTitle then
 			return
 		end
 
 		Framework.Remote:Fire("EquipBestSystem", "Apply", selected)
+		Framework.Remote:Fire("TitleSystem", "Equip", "Boost", selectedTitle)
+
 		Notifier("<dr> [Drama Hub] </>" .. "<w> All " .. selected .. " buffs equippeds! </>")
+		Notifier("<dr> [Drama Hub] </>" .. "<w> Title: " .. selectedTitle .. " equipped! </>")
 
 		LocalPlayer:SetAttribute("EquipBest", selected)
 	end
