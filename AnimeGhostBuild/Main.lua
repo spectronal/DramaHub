@@ -605,11 +605,19 @@ equipbestSection:AddToggle("autoEquipBest", {
 	Title = "Auto Equip Best",
 	Default = false,
 	Callback = function(state)
-		State.scriptSettings.GamemodesTab.AutoJoinPublicGamemode = state
+		State.scriptSettings.GamemodesTab.AutoEquipBest = state
 	end,
 })
 
 -- Dropdown OnChanged Handlers
+
+equipBestinMode:OnChanged(function(Value)
+	State.scriptSettings.GamemodeTab.SelectedEquipBestInMode = Value
+end)
+
+equipBest:OnChanged(function(Value)
+	State.scriptSettings.GamemodeTab.SelectedEquipBestNoMode = Value
+end)
 
 selectFarmMob:OnChanged(function(Value)
 	State.scriptSettings.FarmTab.SelectMobs = Value

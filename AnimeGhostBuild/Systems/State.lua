@@ -55,6 +55,9 @@ State.scriptSettings = {
 		InfinityCastleToLeave = 0,
 		DefenseToLeave = 0,
 
+		SelectedEquipBestInMode = "",
+		SelectedEquipBestNoMode = "",
+
 		AutoJoinPublicGamemode = false,
 		AutoJoinSelectedGamemode = false,
 		AutoCreateGamemode = false,

@@ -13,6 +13,7 @@ local LocalPlayer = Players.LocalPlayer
 
 local Framework = State.Framework
 local Abbreviate = Framework:GetService("AbbreviateService")
+local Notifier = Framework:GetService("NotifyService")
 
 local Janitor = State.Janitor
 local GuiService = State.GuiService
@@ -316,6 +317,32 @@ function Gamemode.teleportPlayerToPosition()
 	RootPart.CFrame = CFrame.new(State.scriptSettings.GamemodesTab.SavedPosition)
 end
 
+-- Equip Best Mode/NoMode
+
+function Gamemode.EquipBest(modes: "NoMode" | "InMode")
+	if modes == "InMode" then
+		if LocalPlayer:GetAttribute("InMode") then
+			Framework.Remote:Fire("EquipBestSystem", "Apply", State.scriptSettings.GamemodesTab.SelectedEquipBestInMode)
+			Notifier(
+				"<dr> [Drama Hub] </>"
+					.. "<w> All "
+					.. State.scriptSettings.GamemodesTab.SelectedEquipBestInMode
+					.. " equippeds in Gamemode!"
+			)
+		end
+	elseif modes == "NoMode" then
+		if not LocalPlayer:GetAttribute("InMode") then
+			Framework.Remote:Fire("EquipBestSystem", "Apply", State.scriptSettings.GamemodesTab.SelectedEquipBestNoMode)
+			Notifier(
+				"<dr> [Drama Hub] </>"
+					.. "<w> All "
+					.. State.scriptSettings.GamemodesTab.SelectedEquipBestInMode
+					.. " equippeds!"
+			)
+		end
+	end
+end
+
 -- Notifier
 
 function Gamemode.gamemodeNotifier(Fluent)
@@ -368,8 +395,8 @@ end
 function Gamemode.changeDescriptionPlayerStatus(setDescription)
 	setDescription(
 		"PlayerStatus",
-		`Priority: Raid > Dungeon > Infinity Castle \n \nCooldowns: {Gamemode.getCooldownsText()} \n \nSaved Position: World: {tostring(
+		`Priority: Raid > Dungeon > Infinity Castle > Defense Mode\n \nModes: {Gamemode.getCooldownsText()} \n \nSaved Position: World: {(tostring(
 			State.scriptSettings.GamemodesTab.WorldToTeleport
-		)} / {tostring(State.scriptSettings.GamemodesTab.SavedPosition)}`
+		) or "Nil")} / {tostring(State.scriptSettings.GamemodesTab.SavedPosition)}`
 	)
 end
