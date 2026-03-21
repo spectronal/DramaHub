@@ -55,8 +55,8 @@ State.scriptSettings = {
 		InfinityCastleToLeave = 0,
 		DefenseToLeave = 0,
 
-		SelectedEquipBestInMode = "",
-		SelectedEquipBestNoMode = "",
+		SelectedEquipBestInMode = "Energy",
+		SelectedEquipBestNoMode = "Energy",
 
 		AutoJoinPublicGamemode = false,
 		AutoJoinSelectedGamemode = false,
