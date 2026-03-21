@@ -319,31 +319,27 @@ end
 
 -- Equip Best Mode/NoMode
 
-function Gamemode.EquipBest(modes: "NoMode" | "InMode")
-	if modes == "InMode" then
-		if LocalPlayer:GetAttribute("InMode") then
-			local selected = State.scriptSettings.GamemodesTab.SelectedEquipBestInMode
+function Gamemode.EquipBest()
+	if LocalPlayer:GetAttribute("InMode") then
+		local selected = State.scriptSettings.GamemodesTab.SelectedEquipBestInMode
 
-			if LocalPlayer:GetAttribute("EquipBest") == selected then
-				return
-			end
-
-			Framework.Remote:Fire("EquipBestSystem", "Apply", selected)
-			Notifier("<dr> [Drama Hub] </>" .. "<w> All " .. selected .. " equippeds in Gamemode!")
-			LocalPlayer:SetAttribute("EquipBest", selected)
+		if LocalPlayer:GetAttribute("EquipBest") == selected then
+			return
 		end
-	elseif modes == "NoMode" then
-		if not LocalPlayer:GetAttribute("InMode") then
-			local selected = State.scriptSettings.GamemodesTab.SelectedEquipBestNoMode
 
-			if LocalPlayer:GetAttribute("EquipBest") == selected then
-				return
-			end
+		Framework.Remote:Fire("EquipBestSystem", "Apply", selected)
+		Notifier("<dr> [Drama Hub] </>" .. "<w> All " .. selected .. " equippeds in Gamemode!")
+		LocalPlayer:SetAttribute("EquipBest", selected)
+	elseif not LocalPlayer:GetAttribute("InMode") then
+		local selected = State.scriptSettings.GamemodesTab.SelectedEquipBestNoMode
 
-			Framework.Remote:Fire("EquipBestSystem", "Apply", selected)
-			Notifier("<dr> [Drama Hub] </>" .. "<w> All " .. selected .. " equippeds!")
-			LocalPlayer:SetAttribute("EquipBest", selected)
+		if LocalPlayer:GetAttribute("EquipBest") == selected then
+			return
 		end
+
+		Framework.Remote:Fire("EquipBestSystem", "Apply", selected)
+		Notifier("<dr> [Drama Hub] </>" .. "<w> All " .. selected .. " equippeds!")
+		LocalPlayer:SetAttribute("EquipBest", selected)
 	end
 end
 

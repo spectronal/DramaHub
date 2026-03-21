@@ -590,7 +590,7 @@ local equipBestinMode = equipbestSection:AddDropdown("equipBestinMode", {
 	Description = "",
 	Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
 	Multi = false,
-	Default = { "Energy" },
+	Default = 1,
 })
 
 local equipBest = equipbestSection:AddDropdown("equipBest", {
@@ -598,7 +598,7 @@ local equipBest = equipbestSection:AddDropdown("equipBest", {
 	Description = "",
 	Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
 	Multi = false,
-	Default = { "Energy" },
+	Default = 1,
 })
 
 equipbestSection:AddToggle("autoEquipBest", {
@@ -610,15 +610,6 @@ equipbestSection:AddToggle("autoEquipBest", {
 })
 
 -- Dropdown OnChanged Handlers
-
-equipBestinMode:OnChanged(function(Value)
-	State.scriptSettings.GamemodeTab.SelectedEquipBestInMode = Value
-end)
-
-equipBest:OnChanged(function(Value)
-	State.scriptSettings.GamemodeTab.SelectedEquipBestNoMode = Value
-end)
-
 selectFarmMob:OnChanged(function(Value)
 	State.scriptSettings.FarmTab.SelectMobs = Value
 end)
@@ -687,6 +678,14 @@ end)
 
 saveWorldToTp:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.WorldToTeleport = Value
+end)
+
+equipBestinMode:OnChanged(function(Value)
+	State.scriptSettings.GamemodeTab.SelectedEquipBestInMode = Value
+end)
+
+equipBest:OnChanged(function(Value)
+	State.scriptSettings.GamemodeTab.SelectedEquipBestNoMode = Value
 end)
 
 -- Description helpers (Ascension)
@@ -805,6 +804,10 @@ task.spawn(function()
 
 			if State.scriptSettings.PlayerTab.AutoChests then
 				Rewards.autoChests()
+			end
+
+			if State.scriptSettings.GamemodeTab.AutoEquipBest then
+				Gamemode.EquipBest()
 			end
 
 			changeDescriptionAscension()
