@@ -76,8 +76,11 @@ function Farm.autoFarmEnemies(typemode: "Gamemode" | "Game")
 	if not State.currentMob or not State.currentMob.Parent then
 		if typemode == "Gamemode" then
 			State.currentMob = getNextMob("Gamemode")
-		elseif typemode == "Game" and not Gamemode.InMode() then
-			State.currentMob = getNextMob("Game")
+		elseif typemode == "Game" then
+			if not Gamemode.InMode() then
+				State.currentMob = getNextMob("Game")
+				print(State.currentMob .. " in Game")
+			end
 		end
 
 		State.lastHP = nil
