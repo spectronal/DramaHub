@@ -72,7 +72,7 @@ function Gamemode.setupGamemodeData()
 		table.insert(State.mapScrolls, v["EggName"])
 	end
 
-	for titles, v in pairs(State.TitleData) do
+	for titles, v in pairs(State.Framework.PlayerData.Titles) do
 		table.insert(State.Titles, titles)
 	end
 
