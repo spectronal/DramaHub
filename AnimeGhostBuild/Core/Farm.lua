@@ -79,7 +79,6 @@ function Farm.autoFarmEnemies(typemode: "Gamemode" | "Game")
 		elseif typemode == "Game" then
 			if not game.Players.LocalPlayer:GetAttribute("InMode") then
 				State.currentMob = getNextMob("Game")
-				print(State.currentMob .. " in Game")
 			end
 		end
 
