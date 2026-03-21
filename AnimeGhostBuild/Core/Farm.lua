@@ -75,9 +75,11 @@ end
 function Farm.autoFarmEnemies(typemode: "Gamemode" | "Game")
 	if not State.currentMob or not State.currentMob.Parent then
 		if typemode == "Gamemode" then
+			State.currentMob = ""
 			State.currentMob = getNextMob("Gamemode")
 		elseif typemode == "Game" then
 			if not game.Players.LocalPlayer:GetAttribute("InMode") then
+				State.currentMob = ""
 				State.currentMob = getNextMob("Game")
 			end
 		end

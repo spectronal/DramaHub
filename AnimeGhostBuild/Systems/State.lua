@@ -60,6 +60,7 @@ State.scriptSettings = {
 		AutoCreateGamemode = false,
 		AutoLeaveGamemode = false,
 		AutoFarmMobs = false,
+		AutoEquipBest = false,
 		WorldToTeleport = 0,
 		SavedPosition = nil,
 	},

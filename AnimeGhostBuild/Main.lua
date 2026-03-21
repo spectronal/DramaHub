@@ -583,6 +583,32 @@ playerGamemode2:AddToggle("autoJoinPublic", {
 	end,
 })
 
+local equipbestSection = Tabs.Gamemode:AddSection("Equip Best")
+
+local equipBestinMode = equipbestSection:AddDropdown("equipBestinMode", {
+	Title = "Equip Best (Gamemode)",
+	Description = "",
+	Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
+	Multi = false,
+	Default = { "Energy" },
+})
+
+local equipBest = equipbestSection:AddDropdown("equipBest", {
+	Title = "Equip Best (After Mode)",
+	Description = "",
+	Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
+	Multi = false,
+	Default = { "Energy" },
+})
+
+equipbestSection:AddToggle("autoEquipBest", {
+	Title = "Auto Equip Best",
+	Default = false,
+	Callback = function(state)
+		State.scriptSettings.GamemodesTab.AutoJoinPublicGamemode = state
+	end,
+})
+
 -- Dropdown OnChanged Handlers
 
 selectFarmMob:OnChanged(function(Value)
@@ -781,7 +807,7 @@ end)
 
 task.spawn(function()
 	while true do
-		local character = LocalPlayer.Character
+		local character = game.Players.LocalPlayer.Character
 		if character then
 			local humanoid = character:FindFirstChildOfClass("Humanoid")
 			if humanoid then
