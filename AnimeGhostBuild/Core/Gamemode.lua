@@ -58,6 +58,10 @@ function Gamemode.setupGamemodeData()
 		table.insert(State.InfinityData, infinity)
 	end
 
+	for defense, _ in pairs(State.GamemodeData["Defense Mode"]) do
+		table.insert(State.DefenseData, defense)
+	end
+
 	for maps, _ in State.MapData do
 		table.insert(State.MapsNum, maps)
 	end
