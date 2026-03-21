@@ -345,13 +345,7 @@ function Gamemode.EquipBest()
 		Framework.Remote:Fire("EquipBestSystem", "Apply", selected)
 		Notifier("<dr> [Drama Hub] </>" .. "<w> All " .. selected .. " buffs equippeds! </>")
 
-		for title, _ in State.TitleData do
-			Framework
-		end
-
 		LocalPlayer:SetAttribute("EquipBest", selected)
-
-
 	end
 end
 
