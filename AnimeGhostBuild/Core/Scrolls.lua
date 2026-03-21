@@ -23,7 +23,7 @@ local function teleportToScroll()
 end
 
 function Scrolls.autoOpen()
-	if not Gamemode.InMode() then
+	if not game.Players.LocalPlayer:GetAttribute("InMode") then
 		if not State.scriptSettings.ScrollsTab.TeleportToEgg then
 			Framework.Remote:Fire("PetSystem", "Open", State.scriptSettings.ScrollsTab.SelectedScroll, "All")
 		else
