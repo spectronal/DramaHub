@@ -197,7 +197,7 @@ function Gamemode.getCooldownsText()
 		table.insert(parts, `{mode} : {formatTime(remaining)}`)
 	end
 
-	return table.concat(parts, " | ")
+	return table.concat(parts, "\n")
 end
 
 -- Join / Create / Leave
