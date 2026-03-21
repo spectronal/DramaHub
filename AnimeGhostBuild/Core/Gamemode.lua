@@ -9,6 +9,7 @@ local Farm = getgenv().DH.Farm
 
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local TouchInputService = game:GetService("TouchInputService")
 local LocalPlayer = Players.LocalPlayer
 
 local Framework = State.Framework
@@ -69,6 +70,10 @@ function Gamemode.setupGamemodeData()
 
 	for i, v in pairs(State.MapData) do
 		table.insert(State.mapScrolls, v["EggName"])
+	end
+
+	for titles, v in pairs(State.TitleData) do
+		table.insert(State.Titles, titles)
 	end
 
 	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
@@ -339,7 +344,14 @@ function Gamemode.EquipBest()
 
 		Framework.Remote:Fire("EquipBestSystem", "Apply", selected)
 		Notifier("<dr> [Drama Hub] </>" .. "<w> All " .. selected .. " buffs equippeds! </>")
+
+		for title, _ in State.TitleData do
+			Framework
+		end
+
 		LocalPlayer:SetAttribute("EquipBest", selected)
+
+
 	end
 end
 

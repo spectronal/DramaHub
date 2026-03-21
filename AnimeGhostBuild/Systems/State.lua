@@ -91,6 +91,7 @@ State.ChestData = Framework:GetData("ChestData")
 State.GachaData = Framework:GetData("GachaData")
 State.GamemodeData = Framework:GetData("GamemodeData")
 State.MapData = Framework:GetData("MapData")
+State.TitleData = Framework:GetData("TitleData")
 
 -- Gacha State
 
@@ -132,6 +133,8 @@ State.DefenseData = {}
 State.gamemodeFold = workspace:WaitForChild("_MAP"):WaitForChild("Gamemode")
 State.gamemodeServer = replicatedStorage:WaitForChild("Server").Gamemode
 State.lastCreate = 0
+
+State.Titles = {}
 
 -- Auto Click State
 

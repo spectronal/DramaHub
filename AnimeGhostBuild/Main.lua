@@ -601,6 +601,22 @@ local equipBest = equipbestSection:AddDropdown("equipBest", {
 	Default = 1,
 })
 
+local equipTitle = equipbestSection:AddDropdown("equipTitle", {
+	Title = "Equip Title (Gamemode)",
+	Description = "",
+	Values = State.Titles,
+	Multi = false,
+	Default = 1,
+})
+
+local equipTitle = equipbestSection:AddDropdown("equipTitle", {
+	Title = "Equip Title (Gamemode)",
+	Description = "",
+	Values = State.Titles,
+	Multi = false,
+	Default = 1,
+})
+
 equipbestSection:AddToggle("autoEquipBest", {
 	Title = "Auto Equip Best",
 	Default = false,
