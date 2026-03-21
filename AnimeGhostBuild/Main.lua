@@ -593,6 +593,16 @@ local equipBestinMode = equipbestSection:AddDropdown("equipBestinMode", {
 	Default = 1,
 })
 
+local equipTitleInMode = equipbestSection:AddDropdown("equipTitle", {
+	Title = "Equip Title (Gamemode)",
+	Description = "",
+	Values = State.Titles,
+	Multi = false,
+	Default = 1,
+})
+
+local randomSection = Tabs.Gamemode:AddSection("")
+
 local equipBest = equipbestSection:AddDropdown("equipBest", {
 	Title = "Equip Best (After Mode)",
 	Description = "",
@@ -602,15 +612,7 @@ local equipBest = equipbestSection:AddDropdown("equipBest", {
 })
 
 local equipTitle = equipbestSection:AddDropdown("equipTitle", {
-	Title = "Equip Title (Gamemode)",
-	Description = "",
-	Values = State.Titles,
-	Multi = false,
-	Default = 1,
-})
-
-local equipTitle = equipbestSection:AddDropdown("equipTitle", {
-	Title = "Equip Title (Gamemode)",
+	Title = "Equip Title (After Mode)",
 	Description = "",
 	Values = State.Titles,
 	Multi = false,

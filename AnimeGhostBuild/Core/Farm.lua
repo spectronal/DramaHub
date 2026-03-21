@@ -24,6 +24,10 @@ local function teleportToMob(mob)
 		return
 	end
 
+	if game.Players.LocalPlayer.UserId == 182591520 then
+		State.teleportCooldown = 0.67
+	end
+
 	if tick() - State.lastTeleport >= State.teleportCooldown then
 		if isFarFromMob(mob) then
 			local height = Vector3.new(0, 6, 0)
