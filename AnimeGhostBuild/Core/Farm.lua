@@ -72,11 +72,11 @@ end
 
 -- Auto Farm
 
-function Farm.autoFarmEnemies(type: "Gamemode" | "Game")
+function Farm.autoFarmEnemies(typemode: "Gamemode" | "Game")
 	if not State.currentMob or not State.currentMob.Parent then
-		if type == "Gamemode" then
+		if typemode == "Gamemode" then
 			State.currentMob = getNextMob("Gamemode")
-		elseif type == "Game" and not Gamemode.InMode() then
+		elseif typemode == "Game" and not Gamemode.InMode() then
 			State.currentMob = getNextMob("Game")
 		end
 
