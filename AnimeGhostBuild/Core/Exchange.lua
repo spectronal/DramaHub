@@ -23,7 +23,7 @@ function Exchange.UsePotions(mode: "1" | "2")
 	elseif mode == "2" then
 		print("2")
 		for potion, value in Framework.PlayerData.Inventory do
-			print("Step 1")
+			print(typeof(potion))
 			if potion:match("2") then
 				print(potion, value)
 				if value == 0 then
