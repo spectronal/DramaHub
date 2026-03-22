@@ -145,7 +145,7 @@ local Tabs = {
 	Player = Window:AddTab({ Title = "Player", Icon = "smile-plus" }),
 	Gamemode = Window:AddTab({ Title = "Gamemodes", Icon = "gamepad-2" }),
 	Scroll = Window:AddTab({ Title = "Scroll", Icon = "scroll" }),
-	Exchange = Window:AddTab({ Title = "Exchange", Icon = "bolt" }),
+	Exchange = Window:AddTab({ Title = "Exchange", Icon = "flask-conical" }),
 	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
 	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }

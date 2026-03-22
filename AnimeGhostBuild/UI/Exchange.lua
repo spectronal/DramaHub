@@ -7,7 +7,7 @@ local UIExchange = getgenv().DH.UI.Exchange
 function UIExchange.build(Tabs)
 	local State = getgenv().DH.State
 
-	local exchangeSection = Tabs.Farm:AddSection("Potions")
+	local exchangeSection = Tabs.Exchange:AddSection("Potions")
 
 	exchangeSection:AddToggle("AutoExchangeTier1", {
 		Title = "Auto Exchange Tier 1",
