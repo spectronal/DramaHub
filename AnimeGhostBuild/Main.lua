@@ -293,6 +293,7 @@ task.spawn(function()
 			end
 
 			if State.scriptSettings.ExchangeTab.Potions.AutoTierTwo then
+				print("called 2")
 				Exchange.UsePotions("2")
 			end
 

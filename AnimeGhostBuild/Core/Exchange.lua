@@ -7,7 +7,9 @@ local State = getgenv().DH.State
 local Framework = State.Framework
 
 function Exchange.UsePotions(mode: "1" | "2")
+	print("Fora")
 	if mode == "1" then
+		print("1")
 		for potion, value in ipairs(Framework.PlayerData.Inventory) do
 			if potion:match("Potion1") then
 				if value == 0 then
@@ -19,6 +21,7 @@ function Exchange.UsePotions(mode: "1" | "2")
 			end
 		end
 	elseif mode == "2" then
+		print("2")
 		for potion, value in ipairs(Framework.PlayerData.Inventory) do
 			print("Step 1")
 			if potion:match("Potion2") then
