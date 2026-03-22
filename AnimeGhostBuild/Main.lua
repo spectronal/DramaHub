@@ -57,6 +57,7 @@ local Gacha = getgenv().DH.Gacha
 
 local HttpRbxApiService = game:GetService("HttpRbxApiService")
 local HttpService = game:GetService("HttpService")
+local VirtualUser = game:GetService("VirtualUser")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -586,22 +587,12 @@ playerGamemode2:AddToggle("autoJoinPublic", {
 local equipbestSection = Tabs.Gamemode:AddSection("Equip Best")
 
 local equipBestinMode = equipbestSection:AddDropdown("equipBestinMode", {
-	Title = "Equip Best (Gamemode)",
+	Title = "Equip Best (In Mode)",
 	Description = "",
 	Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
 	Multi = false,
 	Default = 1,
 })
-
-local equipTitleInMode = equipbestSection:AddDropdown("equipTitle", {
-	Title = "Equip Title (Gamemode)",
-	Description = "",
-	Values = State.Titles,
-	Multi = false,
-	Default = 1,
-})
-
-local randomSection = Tabs.Gamemode:AddSection("")
 
 local equipBest = equipbestSection:AddDropdown("equipBest", {
 	Title = "Equip Best (After Mode)",
@@ -611,7 +602,17 @@ local equipBest = equipbestSection:AddDropdown("equipBest", {
 	Default = 1,
 })
 
-local equipTitle = equipbestSection:AddDropdown("equipTitle", {
+local randomSection = Tabs.Gamemode:AddSection("")
+
+local equipTitleInMode = randomSection:AddDropdown("equipTitle", {
+	Title = "Equip Title (In Mode)",
+	Description = "",
+	Values = State.Titles,
+	Multi = false,
+	Default = 1,
+})
+
+local equipTitle = randomSection:AddDropdown("equipTitle", {
 	Title = "Equip Title (After Mode)",
 	Description = "",
 	Values = State.Titles,
@@ -704,6 +705,14 @@ end)
 
 equipBest:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.SelectedEquipBestNoMode = Value
+end)
+
+equipTitle:OnChanged(function(Value)
+	State.scriptSettings.GamemodesTab.SelectedEquipTitleNoMode = Value
+end)
+
+equipBestinMode:OnChanged(function(Value)
+	State.scriptSettings.GamemodesTab.SelectedEquipTitleInMode = Value
 end)
 
 -- Description helpers (Ascension)
@@ -836,13 +845,8 @@ end)
 
 task.spawn(function()
 	while true do
-		local character = game.Players.LocalPlayer.Character
-		if character then
-			local humanoid = character:FindFirstChildOfClass("Humanoid")
-			if humanoid then
-				humanoid.Jump = true
-			end
-		end
+		VirtualUser:CaptureController()
+		VirtualUser:ClickButton2(Vector2.new())
 		task.wait(300)
 	end
 end)

@@ -57,6 +57,8 @@ State.scriptSettings = {
 
 		SelectedEquipBestInMode = "Energy",
 		SelectedEquipBestNoMode = "Energy",
+		SelectedEquipTitleInMode = "",
+		SelectedEquipTitleNoMode = "",
 
 		AutoJoinPublicGamemode = false,
 		AutoJoinSelectedGamemode = false,

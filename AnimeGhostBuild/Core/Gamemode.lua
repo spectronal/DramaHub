@@ -355,6 +355,7 @@ function Gamemode.EquipBest()
 		Notifier("<dr> [Drama Hub] </>" .. "<w> Title: " .. selectedTitle .. " equipped! </>")
 
 		LocalPlayer:SetAttribute("EquipBest", selected)
+		LocalPlayer:SetAttribute("EquipTitle", )
 	end
 end
 
