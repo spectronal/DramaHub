@@ -849,8 +849,10 @@ end)
 
 task.spawn(function()
 	while true do
-		VirtualUser:CaptureController()
-		VirtualUser:ClickButton2(Vector2.new())
-		task.wait(300)
+		task.wait(30)
+		game:GetService("Players").LocalPlayer.Idled:Connect(function()
+			VirtualUser:CaptureController()
+			VirtualUser:ClickButton2(Vector2.new())
+		end)
 	end
 end)
