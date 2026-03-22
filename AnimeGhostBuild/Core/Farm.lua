@@ -91,13 +91,13 @@ function Farm.autoFarmEnemiesNormal()
 			or not State.currentMobNormal.Parent
 			or State.currentMobNormal:GetAttribute("Dead") == true
 		then
-			State.currentMobNormal = getNextMob("Gamemode")
+			State.currentMobNormal = getNextMob("Game")
 
 			State.lastHP = nil
 			State.stuckTime = 0
 
-			if State.currentMob then
-				teleportToMob(State.currentMob)
+			if State.currentMobNormal then
+				teleportToMob(State.currentMobNormal)
 			else
 				return
 			end
