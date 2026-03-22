@@ -13,7 +13,7 @@ function UIExchange.build(Tabs)
 		Title = "Auto Exchange Tier 1",
 		Default = false,
 		Callback = function(state)
-			State.scriptSettings.ExchangeTab.Potions.AutoTier1 = state
+			State.scriptSettings.ExchangeTab.Potions.AutoTierOne = state
 		end,
 	})
 
@@ -21,7 +21,8 @@ function UIExchange.build(Tabs)
 		Title = "Auto Exchange Tier 2",
 		Default = false,
 		Callback = function(state)
-			State.scriptSettings.ExchangeTab.Potions.AutoTier2 = state
+			print("called")
+			State.scriptSettings.ExchangeTab.Potions.AutoTierTwo = state
 		end,
 	})
 end

@@ -76,14 +76,6 @@ function Gamemode.setupGamemodeData()
 		table.insert(State.Titles, titles)
 	end
 
-	for potions, v in pairs(State.Framework.PlayerData.Inventory) do
-		if potions:match("1") then
-			table.insert(State.PotionsTierOne, potions)
-		elseif potions:match("2") then
-			table.insert(State.PotionsTierTwo, potions)
-		end
-	end
-
 	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
 		if mob:IsA("Part") and mob:GetAttribute("HP") then
 			for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do

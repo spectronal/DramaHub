@@ -6,8 +6,8 @@ local State = getgenv().DH.State
 
 local Framework = State.Framework
 
-function Exchange.UsePotions(type: "1" | "2")
-	if type == "1" then
+function Exchange.UsePotions(mode: "1" | "2")
+	if mode == "1" then
 		for potion, value in ipairs(Framework.PlayerData.Inventory) do
 			if potion:match("Potion1") then
 				if value == 0 then
@@ -18,7 +18,7 @@ function Exchange.UsePotions(type: "1" | "2")
 				Framework.Remote:Fire("Exchange", "Make", "Potion", "Tier 1", potion, amount)
 			end
 		end
-	elseif type == "2" then
+	elseif mode == "2" then
 		for potion, value in ipairs(Framework.PlayerData.Inventory) do
 			print("Step 1")
 			if potion:match("Potion2") then
