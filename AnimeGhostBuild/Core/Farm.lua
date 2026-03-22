@@ -85,7 +85,7 @@ end
 -- Auto Farm
 
 function Farm.autoFarmEnemiesNormal()
-	if LocalPlayer:GetAttribute("InMode") then
+	if not LocalPlayer:GetAttribute("InMode") then
 		if
 			not State.currentMobNormal
 			or not State.currentMobNormal.Parent
@@ -126,7 +126,7 @@ function Farm.autoFarmEnemiesNormal()
 end
 
 function Farm.autoFarmEnemiesGamemode()
-	if not LocalPlayer:GetAttribute("InMode") then
+	if LocalPlayer:GetAttribute("InMode") then
 		if
 			not State.currentMobGamemode
 			or not State.currentMobGamemode.Parent
