@@ -299,12 +299,8 @@ task.spawn(function()
 	end
 end)
 
-task.spawn(function()
-	while true do
-		task.wait(30)
-		LocalPlayer.Idled:Connect(function()
-			VirtualUser:CaptureController()
-			VirtualUser:ClickButton2(Vector2.new())
-		end)
-	end
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+	VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+	task.wait(0.1)
+	VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 end)
