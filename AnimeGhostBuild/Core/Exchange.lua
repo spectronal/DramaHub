@@ -28,7 +28,7 @@ function Exchange.UsePotions(mode: "1" | "2")
 
 		for potion, value in Framework.PlayerData.Inventory do
 			if potion:match("1") and value >= 5 then
-				local amount = value / 5
+				local amount = math.floor(value / 5)
 				print("[Tier 1] Firing:", potion, "| Value:", value, "| Amount:", amount)
 				Framework.Remote:Fire("Exchange", "Make", "Potion", "Tier 1", potion, amount)
 			end
@@ -52,7 +52,7 @@ function Exchange.UsePotions(mode: "1" | "2")
 
 		for potion, value in Framework.PlayerData.Inventory do
 			if potion:match("2") and value >= 5 then
-				local amount = value / 5
+				local amount = math.floor(value / 5)
 				print("[Tier 2] Firing:", potion, "| Value:", value, "| Amount:", amount)
 				Framework.Remote:Fire("Exchange", "Make", "Potion", "Tier 2", potion, amount)
 			end
