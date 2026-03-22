@@ -11,7 +11,7 @@ function UIExchange.build(Tabs)
 
 	exchangeSection:AddToggle("AutoExchangePotions", {
 		Title = "Auto Exchange Potions",
-		Description = "Exchange Tier 1 and Tier 2 potions",
+		Description = "Exchange Tier 1/2 potions",
 		Default = false,
 		Callback = function(state)
 			State.scriptSettings.ExchangeTab.Potions.AutoPotions = state
