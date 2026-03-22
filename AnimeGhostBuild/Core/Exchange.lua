@@ -19,7 +19,7 @@ function Exchange.UsePotions(mode: "1" | "2")
 			end
 
 			print("[Firing]", potion, "| Value:", value, "| Amount:", amount)
-			Framework.Remote:Fire("Exchange", "Make", "Potion", tier, potion, amount)
+			Framework.Remote:Fire("ExchangeSystem", "Make", "Potion", tier, potion, amount)
 
 			task.wait(1) -- espera 1 tick completo pra BridgeNet2 mandar o pacote antes do próximo
 		end
