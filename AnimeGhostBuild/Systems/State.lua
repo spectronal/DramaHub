@@ -75,8 +75,7 @@ State.scriptSettings = {
 	},
 	ExchangeTab = {
 		Potions = {
-			AutoTierOne = false,
-			AutoTierTwo = false,
+			AutoPotions = false,
 		},
 	},
 	Roles = {

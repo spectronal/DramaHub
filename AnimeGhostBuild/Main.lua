@@ -288,13 +288,8 @@ task.spawn(function()
 				Gamemode.EquipTitle()
 			end
 
-			if State.scriptSettings.ExchangeTab.Potions.AutoTierOne then
+			if State.scriptSettings.ExchangeTab.Potions.AutoPotions then
 				Exchange.UsePotions("1")
-			end
-
-			if State.scriptSettings.ExchangeTab.Potions.AutoTierTwo then
-				print("called 2")
-				Exchange.UsePotions("2")
 			end
 
 			changeDescriptionAscension()
