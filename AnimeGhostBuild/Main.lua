@@ -1,8 +1,5 @@
 -- DramaHub: Anime Ghost
--- Version: 1.0.85
--- Update Logs: for Gamemode: Added Auto Farm Mobs, Save Position/Return World and Status Mode (QOL), for general: Added custom DramaHub Roles, Result UI is not appearing anymore and new Hub notifiers (QOL)
--- Errors: 1.5 (1: Warriors is not focusing in the main enemy in gamemodes, idk how i'll fix it | 0.5: I think the general performance is bad, i'll fix it tomorrow)
--- Expected for 1.0.9: New Farm Tab (with autofarm for all the maps + autofarm mobs with scroll hatch), New Scroll Tab (Scroll Farm for all the maps btw), New Section of Equip best in Gamemode Tab, and for end, new Exchange Tab (for potions and tokens)
+-- Version: 1.1
 
 DRAMAHUB_VERSION = "DEVELOPMENT BUILD"
 AUTHOR = 10544785935
@@ -19,11 +16,16 @@ local URLS = {
 	Gamemode = BASE_URL .. "/gamemode?token=" .. SCRIPT_TOKEN,
 	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
 	Scrolls = BASE_URL .. "/scrolls?token=" .. SCRIPT_TOKEN,
+
+	UIAbout = BASE_URL .. "/ui-about?token=" .. SCRIPT_TOKEN,
+	UIFarm = BASE_URL .. "/ui-farm?token=" .. SCRIPT_TOKEN,
+	UIPlayer = BASE_URL .. "/ui-player?token=" .. SCRIPT_TOKEN,
+	UIGamemode = BASE_URL .. "/ui-gamemode?token=" .. SCRIPT_TOKEN,
+	UIScroll = BASE_URL .. "/ui-scroll?token=" .. SCRIPT_TOKEN,
+	UIGacha = BASE_URL .. "/ui-gacha?token=" .. SCRIPT_TOKEN,
 }
 
--- Loader
-
-local loadOrder = {
+local coreOrder = {
 	"State",
 	"Utils",
 	"Player",
@@ -34,43 +36,57 @@ local loadOrder = {
 	"Scrolls",
 }
 
-for _, name in ipairs(loadOrder) do
+for _, name in ipairs(coreOrder) do
 	local ok, err = pcall(function()
 		loadstring(game:HttpGet(URLS[name]))()
 	end)
-
 	if not ok then
 		warn("[DramaHub] Failed to load module '" .. name .. "': " .. tostring(err))
 	end
 end
 
+local uiOrder = {
+	"UIAbout",
+	"UIFarm",
+	"UIPlayer",
+	"UIGamemode",
+	"UIScroll",
+	"UIGacha",
+}
+
+for _, name in ipairs(uiOrder) do
+	local ok, err = pcall(function()
+		loadstring(game:HttpGet(URLS[name]))()
+	end)
+	if not ok then
+		warn("[DramaHub] Failed to load UI module '" .. name .. "': " .. tostring(err))
+	end
+end
+
 local State = getgenv().DH.State
-local Utils = getgenv().DH.Utils
 local Player = getgenv().DH.Player
 local Rewards = getgenv().DH.Rewards
 local Farm = getgenv().DH.Farm
 local Gamemode = getgenv().DH.Gamemode
-local Scrolls = getgenv().DH.Scrolls
 local Gacha = getgenv().DH.Gacha
+local Scrolls = getgenv().DH.Scrolls
 
--- Services
+local UIAbout = getgenv().DH.UI.About
+local UIFarm = getgenv().DH.UI.Farm
+local UIPlayer = getgenv().DH.UI.Player
+local UIGamemode = getgenv().DH.UI.Gamemode
+local UIScroll = getgenv().DH.UI.Scroll
+local UIGacha = getgenv().DH.UI.Gacha
 
-local HttpRbxApiService = game:GetService("HttpRbxApiService")
-local HttpService = game:GetService("HttpService")
 local VirtualUser = game:GetService("VirtualUser")
-local replicatedStorage = game:GetService("ReplicatedStorage")
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-
-local Inserted = State.Inserted
-
 local Framework = State.Framework
 
 for _, f in pairs(getgc(true)) do
 	if typeof(f) == "function" and islclosure(f) then
 		local success, constants = pcall(debug.getconstants, f)
-
 		if success and constants and table.find(constants, "PlayerBillboards") then
 			hookfunction(f, function(...)
 				return nil
@@ -80,8 +96,6 @@ for _, f in pairs(getgc(true)) do
 end
 
 Gamemode.setupGamemodeData()
-
--- UI
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager =
@@ -94,28 +108,13 @@ coreGui:FindFirstChild("ScreenGui").Name = "DramaHub"
 coreGui:FindFirstChild("DramaHub").DisplayOrder = 9999
 coreGui:FindFirstChild("DramaHub").Parent = LocalPlayer.PlayerGui
 
--- Notifiers
-
-Fluent:Notify({
-	Title = "Drama Hub | Development Build",
-	Content = "Loading...",
-	Duration = 2,
-})
-
+Fluent:Notify({ Title = "Drama Hub | Development Build", Content = "Loading...", Duration = 2 })
 task.wait(2.2)
 
 if LocalPlayer.UserId == AUTHOR then
-	Fluent:Notify({
-		Title = "Drama Hub | Owner Acess",
-		Content = "Welcome back spectronal!",
-		Duration = 2,
-	})
+	Fluent:Notify({ Title = "Drama Hub | Owner Acess", Content = "Welcome back spectronal!", Duration = 2 })
 else
-	Fluent:Notify({
-		Title = "Drama Hub | Premium Acess",
-		Content = "Welcome back " .. LocalPlayer.Name,
-		Duration = 2,
-	})
+	Fluent:Notify({ Title = "Drama Hub | Premium Acess", Content = "Welcome back " .. LocalPlayer.Name, Duration = 2 })
 end
 
 Fluent:Notify({
@@ -123,8 +122,6 @@ Fluent:Notify({
 	Content = "DramaHub have a internal anti afk system, so you can be afk without worry",
 	Duration = 5,
 })
-
--- Window & Tabs
 
 local Window = Fluent:CreateWindow({
 	Title = "Drama Hub | Development Build",
@@ -150,572 +147,18 @@ Window:SelectTab(1)
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
-
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
--- Tab: About
-
-local mainAbout = Tabs.About:AddSection("Drama Hub")
-mainAbout:AddParagraph({
-	Title = "Version Development Build",
-	Content = "\nThis is a development build of Drama Hub, an all-in-one script for Anime Ghost. \nThis build is not intended for public use and may contain bugs or unfinished features.\n\nCreated by spectronal",
-})
-
--- Tab: Farm
-
-local farmAbout = Tabs.Farm:AddSection("Mobs")
-
-local selectFarmMob = farmAbout:AddDropdown("selectFarmMob", {
-	Title = "Select Mobs",
-	Description = "Select a enemy to farm",
-	Values = State.Mobs,
-	Multi = true,
-	Default = { "" },
-})
-
-farmAbout:AddButton({
-	Title = "Refresh Mob List",
-	Callback = function()
-		table.clear(State.Mobs)
-		table.clear(Inserted)
-
-		for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
-			if mob:IsA("Part") and mob:GetAttribute("HP") then
-				for _, mobClient in pairs(State.enemiesClientFolder:GetChildren()) do
-					if mobClient:IsA("Model") then
-						if mob.Name == mobClient.Name then
-							local mobName = mob:GetAttribute("Name")
-
-							if not Inserted[mobName] then
-								Inserted[mobName] = true
-								table.insert(State.Mobs, mobName)
-							end
-						end
-					end
-				end
-			end
-		end
-
-		selectFarmMob:SetValue(State.Mobs)
-	end,
-})
-
-farmAbout:AddToggle("Auto Farm", {
-	Title = "Auto Farm",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.FarmTab.AutoFarm = state
-	end,
-})
-
--- Tab: Player
-
-local mainPlayer = Tabs.Player:AddSection("Main")
-mainPlayer:AddParagraph({
-	Title = "Player Features",
-	Content = "\nHere you can find various features related to the player, such as auto-clicker and auto-rewards.",
-})
-
-local autoClickAnimation = mainPlayer:AddToggle("AutoClickAnimation", {
-	Title = "Auto Click with Animation",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.PlayerTab.AutoClickAnimation = state
-	end,
-})
-
-local autoClick = mainPlayer:AddToggle("AutoClick", {
-	Title = "Auto Click without Animation",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.PlayerTab.AutoClick = state
-	end,
-})
-
-local autoAscend = mainPlayer:AddToggle("AutoAscencion", {
-	Title = "Auto Ascension",
-	Description = "Calculing...",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.PlayerTab.AutoAscension = state
-	end,
-})
-
-mainPlayer:AddButton({
-	Title = "Remove Ascension Cutscene",
-	Callback = function()
-		Player.removeCutscene()
-	end,
-})
-
-local mainPlayer2 = Tabs.Player:AddSection("Auto Collect")
-
-mainPlayer2:AddToggle("AutoRewards", {
-	Title = "Auto Collect Rewards",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.PlayerTab.AutoRewards = state
-	end,
-})
-
-mainPlayer2:AddToggle("AutoAchievements", {
-	Title = "Auto Collect Achievements",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.PlayerTab.AutoAchievements = state
-	end,
-})
-
-mainPlayer2:AddToggle("AutoChests", {
-	Title = "Auto Collect Chest",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.PlayerTab.AutoChests = state
-	end,
-})
-
--- Tab: Gamemodes
-
-local mainGamemode = Tabs.Gamemode:AddSection("Main")
-mainGamemode:AddParagraph({
-	Title = "Gamemode Features",
-	Content = "\nHere you can find various features related to gamemodes.",
-})
-
-local selectGamemode = mainGamemode:AddDropdown("selectGamemode", {
-	Title = "Select Gamemode",
-	Description = "Select a gamemode to play",
-	Values = State.Gamemodes,
-	Multi = true,
-	Default = { "" },
-})
-
-mainGamemode:AddToggle("AutoFarmMobs", {
-	Title = "Auto Farm Mobs",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.GamemodesTab.AutoFarmMobs = state
-	end,
-})
-
--- Maps
-local mapsGamemode = Tabs.Gamemode:AddSection("Maps")
-
-local selectRaid = mapsGamemode:AddDropdown("selectRaid", {
-	Title = "Raid Map",
-	Description = "Select an raid map",
-	Values = State.RaidData,
-	Multi = false,
-	Default = "Choose an raid map",
-})
-
-local selectDungeon = mapsGamemode:AddDropdown("selectDungeon", {
-	Title = "Dungeon Map",
-	Description = "Select an dungeon map",
-	Values = State.DungeonData,
-	Multi = false,
-	Default = "Choose an dungeon map",
-})
-
-local selectInfinity = mapsGamemode:AddDropdown("selectInfinity", {
-	Title = "Infinity Castle Map",
-	Description = "Select an infinity map",
-	Values = State.InfinityData,
-	Multi = false,
-	Default = "Choose an infinity map",
-})
-
-local selectDefense = mapsGamemode:AddDropdown("selectDefense", {
-	Title = "Defense Mode Map",
-	Description = "Select an Defense map",
-	Values = State.DefenseData,
-	Multi = false,
-	Default = "Choose an defense map",
-})
-
--- Difficulties
-local diffGamemode = Tabs.Gamemode:AddSection("Difficulties")
-
-local selectRaidDiff = diffGamemode:AddDropdown("selectRaidDiff", {
-	Title = "Raid Diff",
-	Description = "Select a difficulty for raids",
-	Values = { "Easy" },
-	Multi = false,
-	Default = "",
-})
-
-local selectDungeonDiff = diffGamemode:AddDropdown("selectDungeonDiff", {
-	Title = "Dungeon Diff",
-	Description = "Select a difficulty for dungeons",
-	Values = { "Easy", "Medium", "Hard" },
-	Multi = false,
-	Default = "",
-})
-
-local selectInfinityDiff = diffGamemode:AddDropdown("selectInfinityDiff", {
-	Title = "Infinity Diff",
-	Description = "Select a difficulty for infinity castle",
-	Values = { "Easy" },
-	Multi = false,
-	Default = "",
-})
-
-local selectDefenseDiff = diffGamemode:AddDropdown("selectDefenseDiff", {
-	Title = "Defense Diff",
-	Description = "Select a difficulty for infinity castle",
-	Values = { "Easy" },
-	Multi = false,
-	Default = "",
-})
-
--- Leave In
-local leaveGamemode = Tabs.Gamemode:AddSection("Leave in")
-
-leaveGamemode:AddInput("raidLeaveIn", {
-	Title = "Raid Leave at",
-	Default = 0,
-	Placeholder = "e.g 30",
-	Numeric = true,
-	Finished = true,
-	Callback = function(Value)
-		State.scriptSettings.GamemodesTab.RaidToLeave = Value
-	end,
-})
-
-leaveGamemode:AddInput("dungeonLeaveIn", {
-	Title = "Dungeon Leave at",
-	Default = 0,
-	Placeholder = "e.g 30",
-	Numeric = true,
-	Finished = true,
-	Callback = function(Value)
-		State.scriptSettings.GamemodesTab.DungeonToLeave = Value
-	end,
-})
-
-leaveGamemode:AddInput("infinityLeaveIn", {
-	Title = "Infinity Leave at",
-	Default = 0,
-	Placeholder = "e.g 30",
-	Numeric = true,
-	Finished = true,
-	Callback = function(Value)
-		State.scriptSettings.GamemodesTab.InfinityCastleToLeave = Value
-	end,
-})
-
-leaveGamemode:AddInput("defenseModeLeaveIn", {
-	Title = "Defense Leave at",
-	Default = 0,
-	Placeholder = "e.g 30",
-	Numeric = true,
-	Finished = true,
-	Callback = function(Value)
-		State.scriptSettings.GamemodesTab.DefenseModeToLeave = Value
-	end,
-})
-
-leaveGamemode:AddToggle("autoLeave", {
-	Title = "Auto Leave Gamemode",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.GamemodesTab.AutoLeaveGamemode = state
-	end,
-})
-
-local mainScrolls = Tabs.Scroll:AddSection("Main")
-
-local selectScroll = mainScrolls:AddDropdown("selectScroll", {
-	Title = "Select Scroll",
-	Description = "Select a scroll to open",
-	Values = State.mapScrolls,
-	Multi = false,
-	Default = "",
-})
-
-mainScrolls:AddToggle("teleportToEgg", {
-	Title = "Auto Teleport to Scroll",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.ScrollsTab.TeleportToEgg = state
-	end,
-})
-
-mainScrolls:AddToggle("autoOpenScroll", {
-	Title = "Auto Open Scroll",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.ScrollsTab.AutoOpenScroll = state
-	end,
-})
-
--- Tab: Gachas
-
-local mainGacha = Tabs.Gachas:AddSection("Main")
-mainGacha:AddParagraph({
-	Title = "Gacha Features",
-	Content = "\nHere you can find various features related to gacha mechanics.",
-})
-
-local selectGacha = mainGacha:AddDropdown("selectGacha", {
-	Title = "Select Gacha",
-	Description = "Select a gacha to spin",
-	Values = State.Gachas,
-	Multi = false,
-	Default = "Psychic Power",
-})
-
-local selectGachaTarget = mainGacha:AddDropdown("selectGachaTarget", {
-	Title = "Select Target",
-	Description = "Select your target for spin",
-	Values = State.Targets,
-	Multi = true,
-	Default = { "Choose a target" },
-})
-
-mainGacha:AddToggle("autoGacha", {
-	Title = "Auto Gacha",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.GachaTab.AutoGacha = state
-	end,
-})
-
-local gachaSettings = Tabs.Gachas:AddSection("Settings")
-
-gachaSettings:AddSlider("gachaDelay", {
-	Title = "Spin Delay",
-	Description = "Set the delay between each spin (in seconds)",
-	Default = 0.1,
-	Min = 0.1,
-	Max = 5,
-	Rounding = 0.1,
-	Callback = function(Value)
-		State.scriptSettings.GachaTab.GachaDelay = Value
-	end,
-})
-
-gachaSettings:AddButton({
-	Title = "Remove Gacha Animation",
-	Callback = function()
-		Gacha.removeGachaAnimation()
-	end,
-})
-
--- Settings
-local playerGamemode = Tabs.Gamemode:AddSection("Settings")
-
-playerGamemode:AddParagraph({
-	Title = "Status",
-	Content = "StatusMode",
-})
-
-local saveWorldToTp = playerGamemode:AddDropdown("WorldToTp", {
-	Title = "World To Teleport",
-	Description = "Select a world to back",
-	Values = State.MapsNum,
-	Multi = false,
-	Default = "",
-})
-
-playerGamemode:AddButton({
-	Title = "Save Position",
-	Callback = function()
-		Gamemode.savePlayerPosition()
-
-		Fluent:Notify({
-			Title = "Saved Position!",
-			Content = "Position: "
-				.. tostring(State.scriptSettings.GamemodesTab.SavedPosition)
-				.. " | World: "
-				.. tostring(State.scriptSettings.GamemodesTab.WorldToTeleport),
-			Duration = 2,
-		})
-	end,
-
-	Gamemode.changeDescriptionPlayerStatus(Player.setDescription),
-})
-
-playerGamemode:AddToggle("AutoCreateGamemode", {
-	Title = "Auto Create Gamemode",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.GamemodesTab.AutoCreateGamemode = state
-	end,
-})
-
-local playerGamemode2 = Tabs.Gamemode:AddSection("")
-
-local selectPlayersToJoin = playerGamemode2:AddDropdown("selectPlayersToJoin", {
-	Title = "Select Player's Party to Join",
-	Description = "Select players to join the gamemode",
-	Values = State.PlayersInGamemodes,
-	Multi = true,
-	Default = {},
-})
-
-playerGamemode2:AddButton({
-	Title = "Refresh Players List",
-	Callback = function()
-		table.clear(State.PlayersInGamemodes)
-
-		for _, names in pairs(Players:GetPlayers()) do
-			table.insert(State.PlayersInGamemodes, names.Name)
-		end
-
-		selectPlayersToJoin:SetValue(State.PlayersInGamemodes)
-	end,
-})
-
-playerGamemode2:AddToggle("autoJoinSelected", {
-	Title = "Auto Join Gamemode (Selected Players)",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.GamemodesTab.AutoJoinSelectedGamemode = state
-	end,
-})
-
-playerGamemode2:AddToggle("autoJoinPublic", {
-	Title = "Auto Join Gamemode (Public)",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.GamemodesTab.AutoJoinPublicGamemode = state
-	end,
-})
-
-local equipbestSection = Tabs.Gamemode:AddSection("Equip Best")
-
-local equipBestinMode = equipbestSection:AddDropdown("equipBestinMode", {
-	Title = "Equip Best (In Mode)",
-	Description = "",
-	Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
-	Multi = false,
-	Default = 1,
-})
-
-local equipBest = equipbestSection:AddDropdown("equipBest", {
-	Title = "Equip Best (After Mode)",
-	Description = "",
-	Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
-	Multi = false,
-	Default = 1,
-})
-
-local randomSection = Tabs.Gamemode:AddSection("")
-
-local equipTitleInMode = randomSection:AddDropdown("equipTitle", {
-	Title = "Equip Title (In Mode)",
-	Description = "",
-	Values = State.Titles,
-	Multi = false,
-	Default = 1,
-})
-
-local equipTitle = randomSection:AddDropdown("equipTitle", {
-	Title = "Equip Title (After Mode)",
-	Description = "",
-	Values = State.Titles,
-	Multi = false,
-	Default = 1,
-})
-
-randomSection:AddToggle("autoEquipBest", {
-	Title = "Auto Equip Best",
-	Default = false,
-	Callback = function(state)
-		State.scriptSettings.GamemodesTab.AutoEquipBest = state
-	end,
-})
-
--- Dropdown OnChanged Handlers
-selectFarmMob:OnChanged(function(Value)
-	State.scriptSettings.FarmTab.SelectMobs = Value
-end)
-
-selectScroll:OnChanged(function(Value)
-	State.scriptSettings.ScrollsTab.SelectedScroll = Value
-	print(State.scriptSettings.ScrollsTab.SelectedScroll)
-end)
-
-selectGacha:OnChanged(function(Value)
-	table.clear(State.Targets)
-	State.scriptSettings.GachaTab.SelectedGacha = Value
-
-	for targetId in pairs(State.GachaData[Value].Targets) do
-		if not table.find(State.Targets, targetId) then
-			table.insert(State.Targets, targetId)
-		end
-	end
-
-	selectGachaTarget:SetValue(State.Targets)
-end)
-
-selectGachaTarget:OnChanged(function(Value)
-	State.scriptSettings.GachaTab.SelectedTarget = Value
-end)
-
-selectGamemode:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedGamemode = Value
-end)
-
-selectRaidDiff:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedRaidDifficulty = Value
-end)
-
-selectDungeonDiff:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedDungeonDifficulty = Value
-end)
-
-selectInfinityDiff:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedInfinityCastleDifficulty = Value
-end)
-
-selectDefenseDiff:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedDefenseModeDifficulty = Value
-end)
-
-selectRaid:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedRaid = Value
-end)
-
-selectDungeon:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedDungeon = Value
-end)
-
-selectInfinity:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedInfinityCastle = Value
-end)
-
-selectDefense:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedDefenseMode = Value
-end)
-
-selectPlayersToJoin:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedPlayersToJoin = Value
-end)
-
-saveWorldToTp:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.WorldToTeleport = Value
-end)
-
-equipBestinMode:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedEquipBestInMode = Value
-end)
-
-equipBest:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedEquipBestNoMode = Value
-end)
-
-equipTitle:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedEquipTitleNoMode = Value
-end)
-
-equipTitleInMode:OnChanged(function(Value)
-	State.scriptSettings.GamemodesTab.SelectedEquipTitleInMode = Value
-end)
-
--- Description helpers (Ascension)
+UIAbout.build(Tabs)
+UIFarm.build(Tabs)
+UIPlayer.build(Tabs)
+UIGamemode.build(Tabs, Fluent)
+UIScroll.build(Tabs)
+UIGacha.build(Tabs)
+
+local autoClickAnimation = UIPlayer.autoClickAnimation
+local autoClick = UIPlayer.autoClick
 
 local Abbreviate = Framework:GetService("AbbreviateService")
 
@@ -736,11 +179,9 @@ local function changeDescriptionAscension()
 			local function remains()
 				if price - playerMoney <= 0 then
 					return "Can ascend"
-				elseif price - playerMoney > 0 then
+				else
 					return Abbreviate:Number(price - playerMoney)
 				end
-
-				return
 			end
 
 			Player.setDescription("Ascension", `Remains {remains()} {currency} for Level: {nextLevel}`)
@@ -754,8 +195,6 @@ local function changeDescriptionPlayerStatus()
 	Player.registerDescriptions()
 	Gamemode.changeDescriptionPlayerStatus(Player.setDescription)
 end
-
--- Loops
 
 task.spawn(function()
 	while true do
@@ -850,7 +289,7 @@ end)
 task.spawn(function()
 	while true do
 		task.wait(30)
-		game:GetService("Players").LocalPlayer.Idled:Connect(function()
+		LocalPlayer.Idled:Connect(function()
 			VirtualUser:CaptureController()
 			VirtualUser:ClickButton2(Vector2.new())
 		end)
