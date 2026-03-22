@@ -11,7 +11,7 @@ function Exchange.UsePotions(mode: "1" | "2")
 	if mode == "1" then
 		print("1")
 		for potion, value in Framework.PlayerData.Inventory do
-			if potion:match("Potion1") then
+			if potion:match("1") then
 				if value == 0 then
 					return
 				end
@@ -24,7 +24,7 @@ function Exchange.UsePotions(mode: "1" | "2")
 		print("2")
 		for potion, value in Framework.PlayerData.Inventory do
 			print("Step 1")
-			if potion:match("Potion2") then
+			if potion:match("2") then
 				print(potion, value)
 				if value == 0 then
 					print("Value 0")
