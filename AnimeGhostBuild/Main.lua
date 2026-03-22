@@ -78,10 +78,6 @@ local UIGamemode = getgenv().DH.UI.Gamemode
 local UIScroll = getgenv().DH.UI.Scroll
 local UIGacha = getgenv().DH.UI.Gacha
 
-<<<<<<< HEAD
-=======
-local HttpService = game:GetService("HttpService")
->>>>>>> b32416a35b9d15d047cbd44f65b5e2edeeaafd68
 local VirtualUser = game:GetService("VirtualUser")
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -293,16 +289,9 @@ end)
 task.spawn(function()
 	while true do
 		task.wait(30)
-<<<<<<< HEAD
 		LocalPlayer.Idled:Connect(function()
 			VirtualUser:CaptureController()
 			VirtualUser:ClickButton2(Vector2.new())
-=======
-		game:GetService("Players").LocalPlayer.Idled:Connect(function()
-			VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-			task.wait(0.1)
-			VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
->>>>>>> b32416a35b9d15d047cbd44f65b5e2edeeaafd68
 		end)
 	end
 end)
