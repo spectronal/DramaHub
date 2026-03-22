@@ -284,6 +284,20 @@ function UIGamemode.build(Tabs, Fluent)
 		Default = 1,
 	})
 
+	randomSection:AddButton({
+		Title = "Refresh Titles",
+		Callback = function()
+			table.clear(State.Titles)
+
+			for titles, v in pairs(State.Framework.PlayerData.Titles) do
+				table.insert(State.Titles, titles)
+			end
+
+			equipTitleInMode:SetValue(State.Titles)
+			equipTitle:SetValue(State.Titles)
+		end,
+	})
+
 	randomSection:AddToggle("autoEquipTitle", {
 		Title = "Auto Equip Titles",
 		Default = false,
