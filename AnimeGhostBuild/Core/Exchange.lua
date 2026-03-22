@@ -14,7 +14,7 @@ function Exchange.UsePotions(type: "1" | "2")
 					return
 				end
 
-				local amount = math.floor((value or 0) / 5)
+				local amount = value / 5
 				Framework.Remote:Fire("Exchange", "Make", "Potion", "Tier 1", potion, amount)
 			end
 		end
@@ -25,7 +25,8 @@ function Exchange.UsePotions(type: "1" | "2")
 					return
 				end
 
-				local amount = math.floor((value or 0) / 5)
+				local amount = value / 5
+				print(typeof(value))
 				Framework.Remote:Fire("Exchange", "Make", "Potion", "Tier 2", potion, amount)
 			end
 		end
