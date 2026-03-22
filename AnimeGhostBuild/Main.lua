@@ -289,7 +289,7 @@ task.spawn(function()
 			end
 
 			if State.scriptSettings.ExchangeTab.Potions.AutoPotions then
-				Exchange.UsePotions("1")
+				Exchange.UsePotions()
 			end
 
 			changeDescriptionAscension()
