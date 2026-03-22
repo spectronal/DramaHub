@@ -55,8 +55,8 @@ State.scriptSettings = {
 		InfinityCastleToLeave = 0,
 		DefenseToLeave = 0,
 
-		SelectedEquipBestInMode = "Energy",
-		SelectedEquipBestNoMode = "Energy",
+		SelectedEquipBestInMode = "",
+		SelectedEquipBestNoMode = "",
 		SelectedEquipTitleInMode = "",
 		SelectedEquipTitleNoMode = "",
 
@@ -66,6 +66,7 @@ State.scriptSettings = {
 		AutoLeaveGamemode = false,
 		AutoFarmMobs = false,
 		AutoEquipBest = false,
+		AutoEquipTitle = false,
 		WorldToTeleport = 0,
 		SavedPosition = nil,
 	},
@@ -149,7 +150,8 @@ State.Mobs = {}
 State.enemiesFolder = workspace["_ENEMIES"].Server
 State.enemiesClientFolder = State.enemiesFolder.Parent.Client
 State.PlayerRootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
-State.currentMob = nil
+State.currentMobGamemode = nil
+State.currentMobNormal = nil
 State.lastHP = nil
 State.stuckTime = 0
 State.lastTeleport = 0

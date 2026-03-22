@@ -620,7 +620,7 @@ local equipTitle = randomSection:AddDropdown("equipTitle", {
 	Default = 1,
 })
 
-equipbestSection:AddToggle("autoEquipBest", {
+randomSection:AddToggle("autoEquipBest", {
 	Title = "Auto Equip Best",
 	Default = false,
 	Callback = function(state)
@@ -711,7 +711,7 @@ equipTitle:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.SelectedEquipTitleNoMode = Value
 end)
 
-equipBestinMode:OnChanged(function(Value)
+equipTitleInMode:OnChanged(function(Value)
 	State.scriptSettings.GamemodesTab.SelectedEquipTitleInMode = Value
 end)
 
@@ -766,11 +766,11 @@ task.spawn(function()
 		end
 
 		if State.scriptSettings.GamemodesTab.AutoFarmMobs then
-			Farm.autoFarmEnemies("Gamemode")
+			Farm.autoFarmEnemiesGamemode()
 		end
 
 		if State.scriptSettings.FarmTab.AutoFarm then
-			Farm.autoFarmEnemies("Game")
+			Farm.autoFarmEnemiesNormal()
 		end
 	end
 end)
@@ -835,6 +835,10 @@ task.spawn(function()
 
 			if State.scriptSettings.GamemodesTab.AutoEquipBest then
 				Gamemode.EquipBest()
+			end
+
+			if State.scriptSettings.GamemodesTab.AutoEquipTitle then
+				Gamemode.EquipTitle()
 			end
 
 			changeDescriptionAscension()

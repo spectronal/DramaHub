@@ -84,45 +84,84 @@ end
 
 -- Auto Farm
 
-function Farm.autoFarmEnemies(typemode: "Gamemode" | "Game")
-	if not State.currentMob or not State.currentMob.Parent or State.currentMob:GetAttribute("Dead") == true then
-		if typemode == "Gamemode" then
-			State.currentMob = ""
-			State.currentMob = getNextMob("Gamemode")
-		elseif typemode == "Game" then
-			if not game.Players.LocalPlayer:GetAttribute("InMode") then
-				State.currentMob = ""
-				State.currentMob = getNextMob("Game")
+function Farm.autoFarmEnemiesNormal()
+	if LocalPlayer:GetAttribute("InMode") then
+		if
+			not State.currentMobNormal
+			or not State.currentMobNormal.Parent
+			or State.currentMobNormal:GetAttribute("Dead") == true
+		then
+			State.currentMobNormal = getNextMob("Gamemode")
+
+			State.lastHP = nil
+			State.stuckTime = 0
+
+			if State.currentMob then
+				teleportToMob(State.currentMob)
+			else
+				return
 			end
 		end
 
-		State.lastHP = nil
-		State.stuckTime = 0
+		Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
+		teleportToMob(State.currentMobNormal)
 
-		if State.currentMob then
-			teleportToMob(State.currentMob)
-		else
-			return
+		local currentHP = State.currentMobNormal:GetAttribute("HP")
+
+		if State.lastHP then
+			if currentHP == State.lastHP then
+				State.stuckTime += 1
+			else
+				State.stuckTime = 0
+			end
+
+			if State.stuckTime >= 5 then
+				teleportToMob(State.currentMobNormal)
+				State.stuckTime = 0
+			end
 		end
+
+		State.lastHP = currentHP
 	end
+end
 
-	Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
-	teleportToMob(State.currentMob)
+function Farm.autoFarmEnemiesGamemode()
+	if not LocalPlayer:GetAttribute("InMode") then
+		if
+			not State.currentMobGamemode
+			or not State.currentMobGamemode.Parent
+			or State.currentMobGamemode:GetAttribute("Dead") == true
+		then
+			State.currentMobGamemode = getNextMob("Gamemode")
 
-	local currentHP = State.currentMob:GetAttribute("HP")
-
-	if State.lastHP then
-		if currentHP == State.lastHP then
-			State.stuckTime += 1
-		else
+			State.lastHP = nil
 			State.stuckTime = 0
+
+			if State.currentMobGamemode then
+				teleportToMob(State.currentMobGamemode)
+			else
+				return
+			end
 		end
 
-		if State.stuckTime >= 5 then
-			teleportToMob(State.currentMob)
-			State.stuckTime = 0
+		Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
+		teleportToMob(State.currentMobGamemode)
+
+		local currentHP = State.currentMobGamemode:GetAttribute("HP")
+
+		if State.lastHP then
+			if currentHP == State.lastHP then
+				State.stuckTime += 1
+			else
+				State.stuckTime = 0
+			end
+
+			if State.stuckTime >= 5 then
+				teleportToMob(State.currentMobGamemode)
+				State.stuckTime = 0
+			end
 		end
+
+		State.lastHP = currentHP
 	end
-
-	State.lastHP = currentHP
 end
