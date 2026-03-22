@@ -20,8 +20,11 @@ function Exchange.UsePotions(type: "1" | "2")
 		end
 	elseif type == "2" then
 		for potion, value in ipairs(Framework.PlayerData.Inventory) do
+			print("Step 1")
 			if potion:match("Potion2") then
+				print(potion, value)
 				if value == 0 then
+					print("Value 0")
 					return
 				end
 
