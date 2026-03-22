@@ -62,13 +62,22 @@ State.scriptSettings = {
 
 		AutoJoinPublicGamemode = false,
 		AutoJoinSelectedGamemode = false,
+
 		AutoCreateGamemode = false,
 		AutoLeaveGamemode = false,
 		AutoFarmMobs = false,
+
 		AutoEquipBest = false,
 		AutoEquipTitle = false,
+
 		WorldToTeleport = 0,
 		SavedPosition = nil,
+	},
+	ExchangeTab = {
+		Potions = {
+			AutoTier1 = false,
+			AutoTier2 = false,
+		},
 	},
 	Roles = {
 		["DRAMAHUB DEVELOPER"] = Color3.new(1, 0, 0),
@@ -95,6 +104,11 @@ State.GachaData = Framework:GetData("GachaData")
 State.GamemodeData = Framework:GetData("GamemodeData")
 State.MapData = Framework:GetData("MapData")
 State.TitleData = Framework:GetData("TitleData")
+
+-- Exchange
+
+State.PotionsTierOne = {}
+State.PotionsTierTwo = {}
 
 -- Gacha State
 

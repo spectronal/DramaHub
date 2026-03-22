@@ -16,12 +16,14 @@ local URLS = {
 	Gamemode = BASE_URL .. "/gamemode?token=" .. SCRIPT_TOKEN,
 	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
 	Scrolls = BASE_URL .. "/scrolls?token=" .. SCRIPT_TOKEN,
+	Exchange = BASE_URL .. "/exchange?token=" .. SCRIPT_TOKEN,
 
 	UIAbout = BASE_URL .. "/ui-about?token=" .. SCRIPT_TOKEN,
 	UIFarm = BASE_URL .. "/ui-farm?token=" .. SCRIPT_TOKEN,
 	UIPlayer = BASE_URL .. "/ui-player?token=" .. SCRIPT_TOKEN,
 	UIGamemode = BASE_URL .. "/ui-gamemode?token=" .. SCRIPT_TOKEN,
 	UIScroll = BASE_URL .. "/ui-scroll?token=" .. SCRIPT_TOKEN,
+	UIExchange = BASE_URL .. "/ui-exchange?token=" .. SCRIPT_TOKEN,
 	UIGacha = BASE_URL .. "/ui-gacha?token=" .. SCRIPT_TOKEN,
 }
 
@@ -34,6 +36,7 @@ local coreOrder = {
 	"Gamemode",
 	"Farm",
 	"Scrolls",
+	"Exchange",
 }
 
 for _, name in ipairs(coreOrder) do
@@ -51,6 +54,7 @@ local uiOrder = {
 	"UIPlayer",
 	"UIGamemode",
 	"UIScroll",
+	"UIExchange",
 	"UIGacha",
 }
 
@@ -69,6 +73,7 @@ local Rewards = getgenv().DH.Rewards
 local Farm = getgenv().DH.Farm
 local Gamemode = getgenv().DH.Gamemode
 local Gacha = getgenv().DH.Gacha
+local Exchange = getgenv().DH.Exchange
 local Scrolls = getgenv().DH.Scrolls
 
 local UIAbout = getgenv().DH.UI.About
@@ -76,6 +81,7 @@ local UIFarm = getgenv().DH.UI.Farm
 local UIPlayer = getgenv().DH.UI.Player
 local UIGamemode = getgenv().DH.UI.Gamemode
 local UIScroll = getgenv().DH.UI.Scroll
+local UIExchange = getgenv().DH.UI.Exchange
 local UIGacha = getgenv().DH.UI.Gacha
 
 local VirtualUser = game:GetService("VirtualUser")
@@ -139,6 +145,7 @@ local Tabs = {
 	Player = Window:AddTab({ Title = "Player", Icon = "smile-plus" }),
 	Gamemode = Window:AddTab({ Title = "Gamemodes", Icon = "gamepad-2" }),
 	Scroll = Window:AddTab({ Title = "Scroll", Icon = "scroll" }),
+	Exchange = Window:AddTab({ Title = "Exchange", Icon = "bolt" }),
 	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
 	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
@@ -155,6 +162,7 @@ UIFarm.build(Tabs)
 UIPlayer.build(Tabs)
 UIGamemode.build(Tabs, Fluent)
 UIScroll.build(Tabs)
+UIExchange.build(Tabs)
 UIGacha.build(Tabs)
 
 local autoClickAnimation = UIPlayer.autoClickAnimation
@@ -278,6 +286,14 @@ task.spawn(function()
 
 			if State.scriptSettings.GamemodesTab.AutoEquipTitle then
 				Gamemode.EquipTitle()
+			end
+
+			if State.scriptSettings.ExchangeTab.Potions.AutoTier1 then
+				Exchange.UsePotions("1")
+			end
+
+			if State.scriptSettings.ExchangeTab.Potions.AutoTier2 then
+				Exchange.UsePotions("2")
 			end
 
 			changeDescriptionAscension()

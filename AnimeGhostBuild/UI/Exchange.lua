@@ -1,0 +1,27 @@
+getgenv().DH = getgenv().DH or {}
+getgenv().DH.UI = getgenv().DH.UI or {}
+getgenv().DH.UI.Exchange = {}
+
+local UIExchange = getgenv().DH.UI.Exchange
+
+function UIExchange.build(Tabs)
+	local State = getgenv().DH.State
+
+	local exchangeSection = Tabs.Farm:AddSection("Potions")
+
+	exchangeSection:AddToggle("AutoExchangeTier1", {
+		Title = "Auto Exchange Tier 1",
+		Default = false,
+		Callback = function(state)
+			State.scriptSettings.ExchangeTab.Potions.AutoTier1 = state
+		end,
+	})
+
+	exchangeSection:AddToggle("AutoExchangeTier2", {
+		Title = "Auto Exchange Tier 2",
+		Default = false,
+		Callback = function(state)
+			State.scriptSettings.ExchangeTab.Potions.AutoTier2 = state
+		end,
+	})
+end

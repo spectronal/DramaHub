@@ -8,21 +8,21 @@ getgenv().DH.UI.Farm = {}
 local UIFarm = getgenv().DH.UI.Farm
 
 function UIFarm.build(Tabs)
-	local State    = getgenv().DH.State
+	local State = getgenv().DH.State
 	local Inserted = State.Inserted
 
 	local farmAbout = Tabs.Farm:AddSection("Mobs")
 
 	local selectFarmMob = farmAbout:AddDropdown("selectFarmMob", {
-		Title       = "Select Mobs",
+		Title = "Select Mobs",
 		Description = "Select a enemy to farm",
-		Values      = State.Mobs,
-		Multi       = true,
-		Default     = { "" },
+		Values = State.Mobs,
+		Multi = true,
+		Default = { "" },
 	})
 
 	farmAbout:AddButton({
-		Title    = "Refresh Mob List",
+		Title = "Refresh Mob List",
 		Callback = function()
 			table.clear(State.Mobs)
 			table.clear(Inserted)
@@ -49,8 +49,8 @@ function UIFarm.build(Tabs)
 	})
 
 	farmAbout:AddToggle("Auto Farm", {
-		Title    = "Auto Farm",
-		Default  = false,
+		Title = "Auto Farm",
+		Default = false,
 		Callback = function(state)
 			State.scriptSettings.FarmTab.AutoFarm = state
 		end,
