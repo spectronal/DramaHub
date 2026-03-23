@@ -104,7 +104,7 @@ end
 Gamemode.setupGamemodeData()
 
 
-local AntiAFK = loadstring(game:HttpGet("https://raw.githubusercontent.com/spectronal/DramaHub/refs/heads/main/AntiAFK.lua?token=GHSAT0AAAAAADT5P4BDAZGA7UNHRUVJXH7K2OASKMA"))()
+local AntiAFK = loadstring(game:HttpGet("https://raw.githubusercontent.com/spectronal/luau/refs/heads/main/AntiAFK"))()
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
