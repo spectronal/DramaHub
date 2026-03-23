@@ -103,12 +103,12 @@ end
 
 Gamemode.setupGamemodeData()
 
-
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
-local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
-local AntiAFK = loadstring(game:HttpGet("https://raw.githubusercontent.com/spectronal/luau/refs/heads/main/AntiAFK"))()
-
+local SaveManager =
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(
+	game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua")
+)()
 coreGui:FindFirstChild("ScreenGui").Name = "DramaHub"
 coreGui:FindFirstChild("DramaHub").DisplayOrder = 9999
 coreGui:FindFirstChild("DramaHub").Parent = LocalPlayer.PlayerGui
@@ -296,4 +296,8 @@ task.spawn(function()
 			changeDescriptionPlayerStatus()
 		end
 	end
+end)
+
+task.spawn(function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/spectronal/luau/refs/heads/main/AntiAFK"))()
 end)
