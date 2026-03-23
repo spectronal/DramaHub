@@ -103,6 +103,11 @@ end
 
 Gamemode.setupGamemodeData()
 
+local AntiAFK = loadstring(
+	game:HttpGet(
+		"https://raw.githubusercontent.com/spectronal/DramaHub/refs/heads/main/AntiAFK.lua?token=GHSAT0AAAAAADT5P4BDAZGA7UNHRUVJXH7K2OASKMA"
+	)
+)()
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager =
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
@@ -125,7 +130,7 @@ end
 
 Fluent:Notify({
 	Title = "Anti AFK System",
-	Content = "DramaHub have a internal anti afk system, so you can be afk without worry",
+	Content = "Automatically enabled!",
 	Duration = 5,
 })
 
@@ -297,12 +302,4 @@ task.spawn(function()
 			changeDescriptionPlayerStatus()
 		end
 	end
-end)
-
-game:GetService("Players").LocalPlayer.Idled:Connect(function()
-	VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-	task.wait(0.1)
-	VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-
-	print("Anti Afk Signal")
 end)
