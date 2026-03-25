@@ -21,6 +21,14 @@ function UIFarm.build(Tabs)
 		Default = { "" },
 	})
 
+	local selectPriority = farmAbout:AddDropdown("selectPriority", {
+		Title = "Priority",
+		Description = "Note: It may contain bugs based on your Enemy Range",
+		Values = { "Weakest > Strongest", "Strongest > Weakest" },
+		Multi = false,
+		Default = 1,
+	})
+
 	farmAbout:AddButton({
 		Title = "Refresh Mob List",
 		Callback = function()
@@ -59,5 +67,9 @@ function UIFarm.build(Tabs)
 	-- OnChanged
 	selectFarmMob:OnChanged(function(Value)
 		State.scriptSettings.FarmTab.SelectMobs = Value
+	end)
+
+	selectPriority:OnChanged(function(Value)
+		State.scriptSettings.FarmTab.Priority = Value
 	end)
 end

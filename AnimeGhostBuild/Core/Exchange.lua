@@ -6,8 +6,8 @@ local State = getgenv().DH.State
 
 local Framework = State.Framework
 
-function Exchange.UsePotions(mode: "1" | "2")
-	local tier = mode == "1" and "Tier 1" or "Tier 2"
+function Exchange.UsePotions(mode: "1" | "2" | "3")
+	local tier = mode == "1" and "Tier 1" or "Tier 2" or "Tier 3"
 
 	for potion, value in Framework.PlayerData.Inventory do
 		if potion:match(mode) then

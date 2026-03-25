@@ -16,13 +16,16 @@ local URLS = {
 	Gamemode = BASE_URL .. "/gamemode?token=" .. SCRIPT_TOKEN,
 	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
 	Scrolls = BASE_URL .. "/scrolls?token=" .. SCRIPT_TOKEN,
+	Potions = BASE_URL .. "/potions?token=" .. SCRIPT_TOKEN,
 	Exchange = BASE_URL .. "/exchange?token=" .. SCRIPT_TOKEN,
 
 	UIAbout = BASE_URL .. "/ui-about?token=" .. SCRIPT_TOKEN,
+	UIUpdateLogs = BASE_URL .. "/ui-updatelogs?token=" .. SCRIPT_TOKEN,
 	UIFarm = BASE_URL .. "/ui-farm?token=" .. SCRIPT_TOKEN,
 	UIPlayer = BASE_URL .. "/ui-player?token=" .. SCRIPT_TOKEN,
 	UIGamemode = BASE_URL .. "/ui-gamemode?token=" .. SCRIPT_TOKEN,
 	UIScroll = BASE_URL .. "/ui-scroll?token=" .. SCRIPT_TOKEN,
+	UIPotion = BASE_URL .. "/ui-potion?token=" .. SCRIPT_TOKEN,
 	UIExchange = BASE_URL .. "/ui-exchange?token=" .. SCRIPT_TOKEN,
 	UIGacha = BASE_URL .. "/ui-gacha?token=" .. SCRIPT_TOKEN,
 }
@@ -37,6 +40,7 @@ local coreOrder = {
 	"Farm",
 	"Scrolls",
 	"Exchange",
+	"Potions",
 }
 
 for _, name in ipairs(coreOrder) do
@@ -50,10 +54,12 @@ end
 
 local uiOrder = {
 	"UIAbout",
+	"UIUpdateLogs",
 	"UIFarm",
 	"UIPlayer",
 	"UIGamemode",
 	"UIScroll",
+	"UIPotion",
 	"UIExchange",
 	"UIGacha",
 }
@@ -67,24 +73,29 @@ for _, name in ipairs(uiOrder) do
 	end
 end
 
-local State = getgenv().DH.State
-local Player = getgenv().DH.Player
-local Rewards = getgenv().DH.Rewards
-local Farm = getgenv().DH.Farm
-local Gamemode = getgenv().DH.Gamemode
-local Gacha = getgenv().DH.Gacha
-local Exchange = getgenv().DH.Exchange
-local Scrolls = getgenv().DH.Scrolls
+local DramaHub = getgenv().DH
+local DramaHubUI = getgenv().DH.UI
 
-local UIAbout = getgenv().DH.UI.About
-local UIFarm = getgenv().DH.UI.Farm
-local UIPlayer = getgenv().DH.UI.Player
-local UIGamemode = getgenv().DH.UI.Gamemode
-local UIScroll = getgenv().DH.UI.Scroll
-local UIExchange = getgenv().DH.UI.Exchange
-local UIGacha = getgenv().DH.UI.Gacha
+local State = DramaHub.State
+local Player = DramaHub.Player
+local Rewards = DramaHub.Rewards
+local Farm = DramaHub.Farm
+local Gamemode = DramaHub.Gamemode
+local Gacha = DramaHub.Gacha
+local Exchange = DramaHub.Exchange
+local Scrolls = DramaHub.Scrolls
+local Potions = DramaHub.Potions
 
-local VirtualUser = game:GetService("VirtualUser")
+local UIAbout = DramaHubUI.About
+local UIUpdateLogs = DramaHubUI.UpdateLogs
+local UIFarm = DramaHubUI.Farm
+local UIPlayer = DramaHubUI.Player
+local UIGamemode = DramaHubUI.Gamemode
+local UIScroll = DramaHubUI.Scroll
+local UIExchange = DramaHubUI.Exchange
+local UIGacha = DramaHubUI.Gacha
+local UIPotions = DramaHubUI.Potions
+
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -113,7 +124,7 @@ coreGui:FindFirstChild("ScreenGui").Name = "DramaHub"
 coreGui:FindFirstChild("DramaHub").DisplayOrder = 9999
 coreGui:FindFirstChild("DramaHub").Parent = LocalPlayer.PlayerGui
 
-Fluent:Notify({ Title = "Drama Hub | Development Build", Content = "Loading...", Duration = 2 })
+Fluent:Notify({ Title = "Drama Hub | Developer Version", Content = "Loading...", Duration = 2 })
 task.wait(2.2)
 
 if LocalPlayer.UserId == AUTHOR then
@@ -129,7 +140,7 @@ Fluent:Notify({
 })
 
 local Window = Fluent:CreateWindow({
-	Title = "Drama Hub | Development Build",
+	Title = "Drama Hub | Developer Version",
 	SubTitle = "by spectronal",
 	TabWidth = 160,
 	Size = UDim2.fromOffset(580, 460),
@@ -140,10 +151,12 @@ local Window = Fluent:CreateWindow({
 
 local Tabs = {
 	About = Window:AddTab({ Title = "About", Icon = "clipboard" }),
+	UpdateLogs = Window:AddTab({ Title = "Update Logs", Icon = "arrow-big-up" }),
 	Farm = Window:AddTab({ Title = "Farm", Icon = "bot" }),
 	Player = Window:AddTab({ Title = "Player", Icon = "smile-plus" }),
 	Gamemode = Window:AddTab({ Title = "Gamemodes", Icon = "gamepad-2" }),
 	Scroll = Window:AddTab({ Title = "Scroll", Icon = "scroll" }),
+	Potion = Window:AddTab({ Title = "Potions", Icon = "flask" }),
 	Exchange = Window:AddTab({ Title = "Exchange", Icon = "flask-conical" }),
 	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
 	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
@@ -157,10 +170,12 @@ InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
 UIAbout.build(Tabs)
+UIUpdateLogs.build(Tabs)
 UIFarm.build(Tabs)
 UIPlayer.build(Tabs)
 UIGamemode.build(Tabs, Fluent)
 UIScroll.build(Tabs)
+UIPotions.build(Tabs)
 UIExchange.build(Tabs)
 UIGacha.build(Tabs)
 
@@ -287,9 +302,22 @@ task.spawn(function()
 				Gamemode.EquipTitle()
 			end
 
+			if State.scriptSettings.PotionsTab.AutoPausePotions then
+				Potions.PotionsMode("Pause")
+			end
+
+			if State.scriptSettings.PotionsTab.AutoUnPausePotions then
+				Potions.PotionsMode("UnPause")
+			end
+
+			if State.scriptSettings.PotionsTab.AutoUsePotions then
+				Potions.AutoUse()
+			end
+
 			if State.scriptSettings.ExchangeTab.Potions.AutoPotions then
 				Exchange.UsePotions("1")
 				Exchange.UsePotions("2")
+				Exchange.UsePotions("3")
 			end
 
 			changeDescriptionAscension()

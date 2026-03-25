@@ -15,6 +15,7 @@ State.scriptSettings = {
 		SelectedMobs = { "" },
 		AutoFarm = false,
 		AutoFarmWithScroll = false,
+		Priority = "",
 	},
 	ScrollsTab = {
 		SelectedScroll = "",
@@ -38,6 +39,7 @@ State.scriptSettings = {
 	},
 	GamemodesTab = {
 		SelectedGamemode = { "" },
+		SelectedPriority = "",
 		SelectedRaid = "",
 		SelectedDungeon = "",
 		SelectedInfinityCastle = "",
@@ -78,9 +80,22 @@ State.scriptSettings = {
 			AutoPotions = false,
 		},
 	},
+	PotionsTab = {
+		IntervalToUse = 0,
+
+		SelectedPotionsToUse = {},
+		SelectedPotionsToPauseInMode = {},
+		SelectedPotionsToPauseNoMode = {},
+		SelectedPotionsToUnPauseNoMode = {},
+		SelectedPotionsToUnPauseInMode = {},
+
+		AutoPausePotions = false,
+		AutoUnPausePotions = false,
+		AutoUsePotions = false,
+	},
 	Roles = {
-		["DRAMAHUB DEVELOPER"] = Color3.new(1, 0, 0),
-		["DRAMAHUB PREMIUM"] = Color3.new(1, 0.682353, 0),
+		["DRAMAHUB DEVELOPER"] = Color3.new(0.388235, 0.007843, 0.745098),
+		["DRAMAHUB TESTER"] = Color3.new(1, 0.368627, 0),
 		["DRAMAHUB USER"] = Color3.new(0, 0.882353, 1),
 	},
 }
@@ -103,6 +118,10 @@ State.GachaData = Framework:GetData("GachaData")
 State.GamemodeData = Framework:GetData("GamemodeData")
 State.MapData = Framework:GetData("MapData")
 State.TitleData = Framework:GetData("TitleData")
+
+-- Potions
+
+State.Potions = {}
 
 -- Exchange
 

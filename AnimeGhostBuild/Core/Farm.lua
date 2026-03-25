@@ -53,7 +53,11 @@ local function getNextMob(from: "Gamemode" | "Game")
 		end
 
 		table.sort(mobsList, function(a, b)
-			return a:GetAttribute("Order") < b:GetAttribute("Order")
+			if State.scriptSettings.GamemodesTab.SelectedPriority == "Strongest > Weakest" then
+				return a:GetAttribute("Order") > b:GetAttribute("Order")
+			else
+				return a:GetAttribute("Order") < b:GetAttribute("Order")
+			end
 		end)
 
 		return mobsList[1]
@@ -73,7 +77,11 @@ local function getNextMob(from: "Gamemode" | "Game")
 		end
 
 		table.sort(validMobs, function(a, b)
-			return a:GetAttribute("Order") < b:GetAttribute("Order")
+			if State.scriptSettings.FarmTab.Priority == "Strongest > Weakest" then
+				return a:GetAttribute("Order") > b:GetAttribute("Order")
+			else
+				return a:GetAttribute("Order") < b:GetAttribute("Order")
+			end
 		end)
 
 		return validMobs[1]

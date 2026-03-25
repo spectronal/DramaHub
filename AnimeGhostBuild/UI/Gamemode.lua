@@ -28,6 +28,14 @@ function UIGamemode.build(Tabs, Fluent)
 		Default = { "" },
 	})
 
+	local selectPriority = mainGamemode:AddDropdown("selectPriority", {
+		Title = "Priority",
+		Description = "Note: It may contain bugs based on your Enemy Range",
+		Values = { "Weakest > Strongest", "Strongest > Weakest" },
+		Multi = false,
+		Default = 1,
+	})
+
 	mainGamemode:AddToggle("AutoFarmMobs", {
 		Title = "Auto Farm Mobs",
 		Default = false,
@@ -247,14 +255,14 @@ function UIGamemode.build(Tabs, Fluent)
 	local equipbestSection = Tabs.Gamemode:AddSection("Equip Best")
 
 	local equipBestinMode = equipbestSection:AddDropdown("equipBestinMode", {
-		Title = "Equip Best (In Mode)",
+		Title = "Equip Best (On Mode)",
 		Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
 		Multi = false,
 		Default = 1,
 	})
 
 	local equipBest = equipbestSection:AddDropdown("equipBest", {
-		Title = "Equip Best (After Mode)",
+		Title = "Equip Best (Off Mode)",
 		Values = { "Energy", "Damage", "Ghost", "EggLuck", "AtkSPD", "GachaLuck", "Drop" },
 		Multi = false,
 		Default = 1,
@@ -268,23 +276,23 @@ function UIGamemode.build(Tabs, Fluent)
 		end,
 	})
 
-	local randomSection = Tabs.Gamemode:AddSection("")
+	local titlesSection = Tabs.Gamemode:AddSection("Titles")
 
-	local equipTitleInMode = randomSection:AddDropdown("equipTitleInMode", {
-		Title = "Equip Title (In Mode)",
+	local equipTitleInMode = titlesSection:AddDropdown("equipTitleInMode", {
+		Title = "Equip Title (On Mode)",
 		Values = State.Titles,
 		Multi = false,
 		Default = 1,
 	})
 
-	local equipTitle = randomSection:AddDropdown("equipTitle", {
-		Title = "Equip Title (After Mode)",
+	local equipTitle = titlesSection:AddDropdown("equipTitle", {
+		Title = "Equip Title (Off Mode)",
 		Values = State.Titles,
 		Multi = false,
 		Default = 1,
 	})
 
-	randomSection:AddButton({
+	titlesSection:AddButton({
 		Title = "Refresh Titles",
 		Callback = function()
 			table.clear(State.Titles)
@@ -298,16 +306,22 @@ function UIGamemode.build(Tabs, Fluent)
 		end,
 	})
 
-	randomSection:AddToggle("autoEquipTitle", {
+	titlesSection:AddToggle("autoEquipTitle", {
 		Title = "Auto Equip Titles",
 		Default = false,
 		Callback = function(state)
 			State.scriptSettings.GamemodesTab.AutoEquipTitle = state
 		end,
 	})
-	-- OnChanged Handlers
+
+	-- OnChanged Handlers do
+
 	selectGamemode:OnChanged(function(Value)
 		State.scriptSettings.GamemodesTab.SelectedGamemode = Value
+	end)
+
+	selectPriority:OnChanged(function(Value)
+		State.scriptSettings.GamemodesTab.SelectedPriority = Value
 	end)
 
 	selectRaid:OnChanged(function(Value)

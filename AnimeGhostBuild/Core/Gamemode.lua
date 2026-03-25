@@ -4,16 +4,10 @@ getgenv().DH.Gamemode = {}
 local Gamemode = getgenv().DH.Gamemode
 local State = getgenv().DH.State
 
-local Scrolls = getgenv().DH.Scrolls
-local Farm = getgenv().DH.Farm
-
-local replicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
-local TouchInputService = game:GetService("TouchInputService")
 local LocalPlayer = Players.LocalPlayer
 
 local Framework = State.Framework
-local Abbreviate = Framework:GetService("AbbreviateService")
 local Notifier = Framework:GetService("NotifyService")
 
 local Janitor = State.Janitor
@@ -21,6 +15,7 @@ local GuiService = State.GuiService
 local newJanitor = Janitor.new()
 
 local Inserted = State.Inserted
+local alreadyLeft = false
 
 -- Setup
 
@@ -74,6 +69,12 @@ function Gamemode.setupGamemodeData()
 
 	for titles, v in pairs(State.Framework.PlayerData.Titles) do
 		table.insert(State.Titles, titles)
+	end
+
+	for potions, _ in pairs(State.Framework.PlayerData) do
+		if potions:match("Potion") then
+			table.insert(State.Potions, potions)
+		end
 	end
 
 	for _, mob in pairs(State.enemiesFolder:GetDescendants()) do
@@ -281,8 +282,21 @@ end
 
 function Gamemode.autoLeaveGamemode()
 	if not Gamemode.inMode() then
+		if alreadyLeft then
+			return
+		end -- já executou, ignora
+		alreadyLeft = true
+
+		if State.scriptSettings.GamemodesTab.SavedPosition ~= nil then
+			Gamemode.teleportPlayerToPosition()
+		else
+			Framework.Remote:Fire("TeleportSystem", "To", "Lobby")
+		end
 		return
 	end
+
+	-- está no modo, reseta a flag
+	alreadyLeft = false
 
 	local modeName = Gamemode.getPlayerMode("Mode")
 	if not modeName then
@@ -299,6 +313,7 @@ function Gamemode.autoLeaveGamemode()
 	local MaxWave = tonumber(State.scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
 
 	if MaxWave ~= 0 and Wave >= MaxWave then
+		alreadyLeft = true
 		if State.scriptSettings.GamemodesTab.SavedPosition ~= nil then
 			Gamemode.teleportPlayerToPosition()
 		else
@@ -446,7 +461,7 @@ end
 function Gamemode.changeDescriptionPlayerStatus(setDescription)
 	setDescription(
 		"PlayerStatus",
-		`Priority: Raid > Dungeon > Infinity Castle > Defense Mode\n \nModes: {Gamemode.getCooldownsText()} \n \nSaved Position: World: {(tostring(
+		`Priority: Raid > Dungeon > Infinity Castle > Defense Mode\n \nModes: \n {Gamemode.getCooldownsText()} \n \nSaved Position: World: {(tostring(
 			State.scriptSettings.GamemodesTab.WorldToTeleport
 		) or "Nil")} / {tostring(State.scriptSettings.GamemodesTab.SavedPosition)}`
 	)

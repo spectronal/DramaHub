@@ -1,0 +1,14 @@
+getgenv().DH = getgenv().DH or {}
+getgenv().DH.UI = getgenv().DH.UI or {}
+getgenv().DH.UI.UpdateLogs = {}
+
+local UIUpdateLogs = getgenv().DH.UI.UpdateLogs
+
+function UIUpdateLogs.build(Tabs)
+	local main = Tabs.UpdateLogs:AddSection("Patch Notes")
+
+	main:AddParagraph({
+		Title = "Patch: 25/03/2026",
+		Content = "Added:\n - Priority Enemies Dropdown in Farm/Gamemodes Tab \n - Pré-Support for Exchange Potions Tier 4 (Game not released this exchange yet) \n - Potions Tab with Auto Pause/UnPause Potions and Auto Use \nFixed: \n - Gamemode Auto Leave wasnt coming back to saved pos after complete/timeout \n \n version: 1.2.0",
+	})
+end

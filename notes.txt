@@ -1,99 +1,23 @@
 local args = {
 	{
 		{
-			"GamemodeSystem",
-			"Create",
-			"Raid",
-			"TitanTown",
-			"Easy",
-			n = 6
+			"ItemSystem",
+			"Use",
+			"DamagePotion1",
+			n = 3
 		},
 		"\002"
 	}
 }
 game:GetService("ReplicatedStorage"):WaitForChild("ffrostflame_bridgenet2@1.0.0"):WaitForChild("dataRemoteEvent"):FireServer(unpack(args))
 
-
 local args = {
 	{
 		{
-			"GamemodeSystem",
-			"Start",
-			"Raid",
-			10544785935,
-			n = 4
-		},
-		"\002"
-	}
-}
-game:GetService("ReplicatedStorage"):WaitForChild("ffrostflame_bridgenet2@1.0.0"):WaitForChild("dataRemoteEvent"):FireServer(unpack(args))
-
-
-Framework.Remote:Fire("GamemodeSystem", "Create", scriptSettings.GamemodesTab.SelectedGamemode, scriptSettings.GamemodesTab.select, scriptSettings.GamemodesTab.SelectedRaidDifficulty)
-
-
-
-
-
-local GamemodePriority = {
-	"Raid",
-	"Dungeon",
-	"Infinity Castle",
-}
-
-local PriorityMap = {
-	["Raid"] = 1,
-	["Dungeon"] = 2,
-	["Infinity Castle"] = 3,
-}
-
-local function autoCreateGamemodes()
-	if gamemodeFold:GetAttribute("IsInGamemode") and LocalPlayer:GetAttribute("InMode") then
-		return
-	else
-		gamemodeFold:SetAttribute("IsInGamemode", false)
-	end
-
-	local selected = {}
-
-	for gamemode, key in pairs(scriptSettings.GamemodesTab.SelectedGamemode) do
-		table.insert(selected, ga memode)
-	end
-
-	if #selected == 0 then return end
-
-	table.sort(selected, function(a, b)
-		return PriorityMap[a] < PriorityMap[b]   -- << LINHA 452
-	end)
-
-	local chosen = selected[1]
-
-	Framework.Remote:Fire(
-		"GamemodeSystem",
-		"Create",
-		chosen,
-		scriptSettings.GamemodesTab[string.gsub("Selected" .. chosen, " ", "")],
-		scriptSettings.GamemodesTab[string.gsub("Selected" .. chosen .. "Difficulty", " ", "")],
-		LocalPlayer.UserId
-	)
-
-	if LocalPlayer:GetAttribute("InMode") then
-		gamemodeFold:SetAttribute("GamemodeType", chosen)
-		gamemodeFold:SetAttribute("IsInGamemode", true)
-	else
-		gamemodeFold:SetAttribute("GamemodeType", "")
-		gamemodeFold:SetAttribute("IsInGamemode", false)
-	end
-end
-
-local args = {
-	{
-		{
-			"WarriorSystem",
-			"Attack",
-			"a35b67d8eff2475fb35e99ea184b2951",
-			true,
-			n = 4
+			"PotionSystem",
+			"Pause",
+			"Ghost",
+			n = 3
 		},
 		"\002"
 	}
