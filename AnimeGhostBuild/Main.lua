@@ -89,9 +89,9 @@ local UIFarm = getgenv().DH.UI.Farm
 local UIPlayer = getgenv().DH.UI.Player
 local UIGamemode = getgenv().DH.UI.Gamemode
 local UIScroll = getgenv().DH.UI.Scroll
+local UIPotions = getgenv().DH.UI.Potions
 local UIExchange = getgenv().DH.UI.Exchange
 local UIGacha = getgenv().DH.UI.Gacha
-local UIPotions = getgenv().DH.UI.Potions
 
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")

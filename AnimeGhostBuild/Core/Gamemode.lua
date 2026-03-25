@@ -71,7 +71,7 @@ function Gamemode.setupGamemodeData()
 		table.insert(State.Titles, titles)
 	end
 
-	for potions, _ in pairs(State.Framework.PlayerData) do
+	for potions, _ in pairs(State.Framework.PlayerData.Inventory) do
 		if potions:match("Potion") then
 			table.insert(State.Potions, potions)
 		end

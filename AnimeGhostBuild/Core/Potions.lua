@@ -6,7 +6,6 @@ local State = getgenv().DH.State
 
 local LocalPlayer = game:GetService("Players").LocalPlayer
 
-local PotionsUI = LocalPlayer.PlayerGui.Utils.Content.PlayerBoosts
 local Framework = State.Framework
 
 function Potions.AutoUse()
@@ -20,13 +19,13 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 	if mode == "Pause" then
 		if LocalPlayer:GetAttribute("InMode") then
 			for _, potions in State.scriptSettings.PotionsTab.SelectedPotionsToPauseInMode do
-				if PotionsUI[potions].Timer.Text ~= "Paused" then
+				if Framework.PlayerData.PotionPaused[potions] == false then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
 			end
 		else
 			for _, potions in State.scriptSettings.PotionsTab.SelectedPotionsToPauseNoMode do
-				if PotionsUI[potions].Timer.Text ~= "Paused" then
+				if Framework.PlayerData.PotionPaused[potions] == false then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
 			end
@@ -34,13 +33,13 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 	else
 		if LocalPlayer:GetAttribute("InMode") then
 			for _, potions in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseInMode do
-				if PotionsUI[potions].Timer.Text == "Paused" then
+				if Framework.PlayerData.PotionPaused[potions] == true then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
 			end
 		else
 			for _, potions in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseNoMode do
-				if PotionsUI[potions].Timer.Text == "Paused" then
+				if Framework.PlayerData.PotionPaused[potions] == true then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
 			end
