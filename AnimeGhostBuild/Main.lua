@@ -1,11 +1,11 @@
--- DramaHub: Anime Ghost
+-- getgenv().DH: Anime Ghost
 -- Version: 1.1
 
-DRAMAHUB_VERSION = "DEVELOPMENT BUILD"
+getgenv().DH_VERSION = "DEVELOPMENT BUILD"
 AUTHOR = 10544785935
 
-local BASE_URL = "https://dramahub.up.railway.app/script"
-local SCRIPT_TOKEN = "SPECTRONAL_DRAMAHUB_PRIVATETOKEN"
+local BASE_URL = "https://getgenv().DH.up.railway.app/script"
+local SCRIPT_TOKEN = "SPECTRONAL_getgenv().DH_PRIVATETOKEN"
 
 local URLS = {
 	State = BASE_URL .. "/state?token=" .. SCRIPT_TOKEN,
@@ -48,7 +48,7 @@ for _, name in ipairs(coreOrder) do
 		loadstring(game:HttpGet(URLS[name]))()
 	end)
 	if not ok then
-		warn("[DramaHub] Failed to load module '" .. name .. "': " .. tostring(err))
+		warn("[getgenv().DH] Failed to load module '" .. name .. "': " .. tostring(err))
 	end
 end
 
@@ -69,32 +69,29 @@ for _, name in ipairs(uiOrder) do
 		loadstring(game:HttpGet(URLS[name]))()
 	end)
 	if not ok then
-		warn("[DramaHub] Failed to load UI module '" .. name .. "': " .. tostring(err))
+		warn("[getgenv().DH] Failed to load UI module '" .. name .. "': " .. tostring(err))
 	end
 end
 
-local DramaHub = getgenv().DH
-local DramaHubUI = getgenv().DH.UI
+local State = getgenv().DH.State
+local Player = getgenv().DH.Player
+local Rewards = getgenv().DH.Rewards
+local Farm = getgenv().DH.Farm
+local Gamemode = getgenv().DH.Gamemode
+local Gacha = getgenv().DH.Gacha
+local Exchange = getgenv().DH.Exchange
+local Scrolls = getgenv().DH.Scrolls
+local Potions = getgenv().DH.Potions
 
-local State = DramaHub.State
-local Player = DramaHub.Player
-local Rewards = DramaHub.Rewards
-local Farm = DramaHub.Farm
-local Gamemode = DramaHub.Gamemode
-local Gacha = DramaHub.Gacha
-local Exchange = DramaHub.Exchange
-local Scrolls = DramaHub.Scrolls
-local Potions = DramaHub.Potions
-
-local UIAbout = DramaHubUI.About
-local UIUpdateLogs = DramaHubUI.UpdateLogs
-local UIFarm = DramaHubUI.Farm
-local UIPlayer = DramaHubUI.Player
-local UIGamemode = DramaHubUI.Gamemode
-local UIScroll = DramaHubUI.Scroll
-local UIExchange = DramaHubUI.Exchange
-local UIGacha = DramaHubUI.Gacha
-local UIPotions = DramaHubUI.Potions
+local UIAbout = getgenv().DH.UI.About
+local UIUpdateLogs = getgenv().DH.UI.UpdateLogs
+local UIFarm = getgenv().DH.UI.Farm
+local UIPlayer = getgenv().DH.UI.Player
+local UIGamemode = getgenv().DH.UI.Gamemode
+local UIScroll = getgenv().DH.UI.Scroll
+local UIExchange = getgenv().DH.UI.Exchange
+local UIGacha = getgenv().DH.UI.Gacha
+local UIPotions = getgenv().DH.UI.Potions
 
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -120,9 +117,9 @@ local SaveManager =
 local InterfaceManager = loadstring(
 	game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua")
 )()
-coreGui:FindFirstChild("ScreenGui").Name = "DramaHub"
-coreGui:FindFirstChild("DramaHub").DisplayOrder = 9999
-coreGui:FindFirstChild("DramaHub").Parent = LocalPlayer.PlayerGui
+coreGui:FindFirstChild("ScreenGui").Name = "getgenv().DH"
+coreGui:FindFirstChild("getgenv().DH").DisplayOrder = 9999
+coreGui:FindFirstChild("getgenv().DH").Parent = LocalPlayer.PlayerGui
 
 Fluent:Notify({ Title = "Drama Hub | Developer Version", Content = "Loading...", Duration = 2 })
 task.wait(2.2)
