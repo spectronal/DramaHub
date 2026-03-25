@@ -30,7 +30,7 @@ function UIPotions.build(Tabs)
 		Title = "Auto Use Potions",
 		Default = false,
 		Callback = function(state)
-			State.scriptSettings.PotionsTabs.AutoUsePotions = state
+			State.scriptSettings.PotionsTab.AutoUsePotions = state
 		end,
 	})
 
