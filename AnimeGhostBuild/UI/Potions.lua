@@ -12,7 +12,7 @@ function UIPotions.build(Tabs)
 		Title = "Select Potions",
 		Values = State.Potions,
 		Multi = true,
-		Default = 1,
+		Default = { "" },
 	})
 
 	autouse:AddInput("intervalToUsePotion", {
@@ -40,14 +40,14 @@ function UIPotions.build(Tabs)
 		Title = "Potions to Pause (On Mode)",
 		Values = { "Energy", "Ghost", "Damage", "Luck", "Drop" },
 		Multi = true,
-		Default = 1,
+		Default = { "" },
 	})
 
 	local potionsToPauseNoMode = potionsSection:AddDropdown("potionsToPauseNoMode", {
 		Title = "Potions to Pause (Off Mode)",
 		Values = { "Energy", "Ghost", "Damage", "Luck", "Drop" },
 		Multi = true,
-		Default = 1,
+		Default = { "" },
 	})
 
 	potionsSection:AddToggle("autoPausePotions", {
@@ -64,14 +64,14 @@ function UIPotions.build(Tabs)
 		Title = "Potions to UnPause (On Mode)",
 		Values = { "Energy", "Ghost", "Damage", "Luck", "Drop" },
 		Multi = true,
-		Default = 1,
+		Default = { "" },
 	})
 
 	local potionsToUnPauseNoMode = unpotionsSection:AddDropdown("potionsToUnPauseNoMode", {
 		Title = "Potions to UnPause (Off Mode)",
 		Values = { "Energy", "Ghost", "Damage", "Luck", "Drop" },
 		Multi = true,
-		Default = 1,
+		Default = { "" },
 	})
 
 	unpotionsSection:AddToggle("autoUnPausePotions", {
