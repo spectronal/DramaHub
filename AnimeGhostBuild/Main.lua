@@ -1,11 +1,11 @@
 -- getgenv().DH: Anime Ghost
 -- Version: 1.1
 
-getgenv().DH_VERSION = "DEVELOPMENT BUILD"
+DRAMAHUB_VERSION = "DEVELOPMENT BUILD"
 AUTHOR = 10544785935
 
-local BASE_URL = "https://getgenv().DH.up.railway.app/script"
-local SCRIPT_TOKEN = "SPECTRONAL_getgenv().DH_PRIVATETOKEN"
+local BASE_URL = "https://dramahub.up.railway.app/script"
+local SCRIPT_TOKEN = "SPECTRONAL_DRAMAHUB_PRIVATETOKEN"
 
 local URLS = {
 	State = BASE_URL .. "/state?token=" .. SCRIPT_TOKEN,
@@ -48,7 +48,7 @@ for _, name in ipairs(coreOrder) do
 		loadstring(game:HttpGet(URLS[name]))()
 	end)
 	if not ok then
-		warn("[getgenv().DH] Failed to load module '" .. name .. "': " .. tostring(err))
+		warn("[DramaHub] Failed to load module '" .. name .. "': " .. tostring(err))
 	end
 end
 
@@ -69,7 +69,7 @@ for _, name in ipairs(uiOrder) do
 		loadstring(game:HttpGet(URLS[name]))()
 	end)
 	if not ok then
-		warn("[getgenv().DH] Failed to load UI module '" .. name .. "': " .. tostring(err))
+		warn("[DramaHub] Failed to load UI module '" .. name .. "': " .. tostring(err))
 	end
 end
 
@@ -117,9 +117,9 @@ local SaveManager =
 local InterfaceManager = loadstring(
 	game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua")
 )()
-coreGui:FindFirstChild("ScreenGui").Name = "getgenv().DH"
-coreGui:FindFirstChild("getgenv().DH").DisplayOrder = 9999
-coreGui:FindFirstChild("getgenv().DH").Parent = LocalPlayer.PlayerGui
+coreGui:FindFirstChild("ScreenGui").Name = "DramaHub"
+coreGui:FindFirstChild("DramaHub").DisplayOrder = 9999
+coreGui:FindFirstChild("DramaHub").Parent = LocalPlayer.PlayerGui
 
 Fluent:Notify({ Title = "Drama Hub | Developer Version", Content = "Loading...", Duration = 2 })
 task.wait(2.2)
