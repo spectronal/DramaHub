@@ -9,7 +9,8 @@ local LocalPlayer = game:GetService("Players").LocalPlayer
 local Framework = State.Framework
 
 function Potions.AutoUse()
-	for _, potions in State.scriptSettings.PotionsTab.SelectedPotionsToUse do
+	for i, potions in State.scriptSettings.PotionsTab.SelectedPotionsToUse do
+		print(i, potions)
 		Framework.Remote:Fire("ItemSystem", "Use", potions)
 		task.wait((State.scriptSettings.PotionsTab.IntervalToUse or 5))
 	end
@@ -25,6 +26,7 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 			end
 		else
 			for _, potions in State.scriptSettings.PotionsTab.SelectedPotionsToPauseNoMode do
+				print(potions)
 				if Framework.PlayerData.PotionPaused[potions] == false then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
@@ -39,6 +41,7 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 			end
 		else
 			for _, potions in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseNoMode do
+				print(potions)
 				if Framework.PlayerData.PotionPaused[potions] == true then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
