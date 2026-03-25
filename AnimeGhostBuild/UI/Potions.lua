@@ -12,7 +12,7 @@ function UIPotions.build(Tabs)
 		Title = "Select Potions",
 		Values = State.Potions,
 		Multi = true,
-		Default = {},
+		Default = { "" },
 	})
 
 	autouse:AddInput("intervalToUsePotion", {
