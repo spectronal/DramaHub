@@ -31,7 +31,7 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 				end
 			end
 		end
-	else
+	elseif mode == "UnPause" then
 		if LocalPlayer:GetAttribute("InMode") then
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseInMode or {} do
 				if Framework.PlayerData.PotionPaused[potions] == true then
