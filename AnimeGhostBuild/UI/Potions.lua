@@ -34,7 +34,7 @@ function UIPotions.build(Tabs)
 		end,
 	})
 
-	local potionsSection = Tabs.Potions:AddSection("Potions")
+	local potionsSection = Tabs.Potion:AddSection("Potions")
 
 	local potionsToPauseInMode = potionsSection:AddDropdown("potionsToPauseInMode", {
 		Title = "Potions to Pause (On Mode)",
