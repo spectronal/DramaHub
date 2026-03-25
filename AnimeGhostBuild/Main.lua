@@ -153,8 +153,8 @@ local Tabs = {
 	Player = Window:AddTab({ Title = "Player", Icon = "smile-plus" }),
 	Gamemode = Window:AddTab({ Title = "Gamemodes", Icon = "gamepad-2" }),
 	Scroll = Window:AddTab({ Title = "Scroll", Icon = "scroll" }),
-	Potion = Window:AddTab({ Title = "Potions", Icon = "flask" }),
-	Exchange = Window:AddTab({ Title = "Exchange", Icon = "flask-conical" }),
+	Potion = Window:AddTab({ Title = "Potions", Icon = "flask-conical" }),
+	Exchange = Window:AddTab({ Title = "Exchange", Icon = "arrow-left-right" }),
 	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
 	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
