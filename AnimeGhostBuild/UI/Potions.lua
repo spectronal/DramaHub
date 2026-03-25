@@ -6,7 +6,7 @@ local UIPotions = getgenv().DH.UI.Potions
 local State = getgenv().DH.State
 
 function UIPotions.build(Tabs)
-	local autouse = Tabs.Potions:AddSection("Auto Use")
+	local autouse = Tabs.Potion:AddSection("Auto Use")
 
 	local autoUsePotions = autouse:AddDropdown("selectPotions", {
 		Title = "Select Potions",
@@ -58,7 +58,7 @@ function UIPotions.build(Tabs)
 		end,
 	})
 
-	local unpotionsSection = Tabs.Potions:AddSection("")
+	local unpotionsSection = Tabs.Potion:AddSection("")
 
 	local potionsToUnPauseInMode = unpotionsSection:AddDropdown("potionsToUnPauseInMode", {
 		Title = "Potions to UnPause (On Mode)",
