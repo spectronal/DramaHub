@@ -10,7 +10,6 @@ local Framework = State.Framework
 
 function Potions.AutoUse()
 	for i, potions in State.scriptSettings.PotionsTab.SelectedPotionsToUse do
-		print(i, potions)
 		Framework.Remote:Fire("ItemSystem", "Use", i)
 		task.wait((State.scriptSettings.PotionsTab.IntervalToUse or 5))
 	end
@@ -20,12 +19,14 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 	if mode == "Pause" then
 		if LocalPlayer:GetAttribute("InMode") then
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToPauseInMode or {} do
+				print("SelectedPotionsToPauseInMode: " .. State.scriptSettings.PotionsTab.SelectedPotionsToPauseInMode)
 				if Framework.PlayerData.PotionPaused[potions] == false then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
 			end
 		else
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToPauseNoMode or {} do
+				print("SelectedPotionsToPauseNoMode: " .. State.scriptSettings.PotionsTab.SelectedPotionsToPauseNoMode)
 				if Framework.PlayerData.PotionPaused[potions] == false then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
@@ -33,6 +34,7 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 		end
 	elseif mode == "UnPause" then
 		if LocalPlayer:GetAttribute("InMode") then
+			print("SelectedPotionsToUnpauseInMode: " .. State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseInMode)
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseInMode or {} do
 				if Framework.PlayerData.PotionPaused[potions] == true then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
@@ -40,6 +42,9 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 			end
 		else
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseNoMode or {} do
+				print(
+					"SelectedPotionsToUnpauseNoMode: " .. State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseNoMode
+				)
 				if Framework.PlayerData.PotionPaused[potions] == true then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end

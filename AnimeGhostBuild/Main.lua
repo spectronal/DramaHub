@@ -234,6 +234,15 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	while true do
+		task.wait(State.scriptSettings.Potions.IntervalToUse)
+		if State.scriptSettings.PotionsTab.AutoUsePotions then
+			Potions.AutoUse()
+		end
+	end
+end)
+
+task.spawn(function()
 	local rewardTimer = 0
 
 	while true do
@@ -305,10 +314,6 @@ task.spawn(function()
 
 			if State.scriptSettings.PotionsTab.AutoUnPausePotions then
 				Potions.PotionsMode("UnPause")
-			end
-
-			if State.scriptSettings.PotionsTab.AutoUsePotions then
-				Potions.AutoUse()
 			end
 
 			if State.scriptSettings.ExchangeTab.Potions.AutoPotions then
