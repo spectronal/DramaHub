@@ -17,20 +17,12 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 	if mode == "Pause" then
 		if LocalPlayer:GetAttribute("InMode") then
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToPauseInMode or {} do
-				print(
-					"SelectedPotionsToPauseInMode: "
-						.. table.concat(State.scriptSettings.PotionsTab.SelectedPotionsToPauseInMode)
-				)
 				if Framework.PlayerData.PotionPaused[tostring(potions)] == false then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
 			end
 		else
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToPauseNoMode or {} do
-				print(
-					"SelectedPotionsToPauseNoMode: "
-						.. table.concat(State.scriptSettings.PotionsTab.SelectedPotionsToPauseNoMode)
-				)
 				if Framework.PlayerData.PotionPaused[tostring(potions)] == false then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
@@ -38,10 +30,6 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 		end
 	elseif mode == "UnPause" then
 		if LocalPlayer:GetAttribute("InMode") then
-			print(
-				"SelectedPotionsToUnpauseInMode: "
-					.. table.concat(State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseInMode)
-			)
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseInMode or {} do
 				if Framework.PlayerData.PotionPaused[tostring(potions)] == true then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
@@ -49,10 +37,6 @@ function Potions.PotionsMode(mode: "UnPause" | "Pause")
 			end
 		else
 			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseNoMode or {} do
-				print(
-					"SelectedPotionsToUnpauseNoMode: "
-						.. table.concat(State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseNoMode)
-				)
 				if Framework.PlayerData.PotionPaused[tostring(potions)] == true then
 					Framework.Remote:Fire("PotionSystem", "Pause", potions)
 				end
