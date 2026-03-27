@@ -235,7 +235,7 @@ end)
 
 task.spawn(function()
 	while true do
-		task.wait(State.scriptSettings.Potions.IntervalToUse)
+		task.wait(State.scriptSettings.PotionsTab.IntervalToUse)
 		if State.scriptSettings.PotionsTab.AutoUsePotions then
 			Potions.AutoUse()
 		end
