@@ -9,6 +9,11 @@ function UIUpdateLogs.build(Tabs)
 
 	main:AddParagraph({
 		Title = "Patch: 27/03/2026",
+		Content = "Changes:\n - Added back Gacha Tab and Fixed Exchange Potions\n \n version: 1.2.2",
+	})
+
+	main:AddParagraph({
+		Title = "Patch: 27/03/2026",
 		Content = "Added:\n \n - Dropdown for Exchange Potions \n \nFixed: \n - Auto Join Selected Players breaking if player wasnt in server \n \nChanges: \n - Removed Auto Leave Gamemode toggle, now you js need to save pos and select wave to leave \n - Removed Gacha tab (until i fix it) \n \n version: 1.2.1",
 	})
 

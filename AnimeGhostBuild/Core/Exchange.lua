@@ -24,15 +24,17 @@ local function usePotions(mode: "1" | "2" | "3")
 end
 
 function Exchange.autoExchangePotions()
-	for i, tier in State.scriptSettings.ExchangeTab.Potions.SelectedTiers do
-		if i:match("Tier") then
-			if tier == "Tier 1 > Tier 2" then
-				usePotions("1")
-			elseif tier == "Tier 2 > Tier 3" then
-				usePotions("2")
-			elseif tier == "Tier 3 > Tier 4" then
-				usePotions("3")
-			end
+	for tier, selected in State.scriptSettings.ExchangeTab.Potions.SelectedTiers do
+		if not selected then
+			continue
+		end
+
+		if tier == "Tier 1 > Tier 2" then
+			usePotions("1")
+		elseif tier == "Tier 2 > Tier 3" then
+			usePotions("2")
+		elseif tier == "Tier 3 > Tier 4" then
+			usePotions("3")
 		end
 	end
 end

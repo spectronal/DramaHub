@@ -14,7 +14,7 @@ local URLS = {
 	Rewards = BASE_URL .. "/rewards?token=" .. SCRIPT_TOKEN,
 	Farm = BASE_URL .. "/farm?token=" .. SCRIPT_TOKEN,
 	Gamemode = BASE_URL .. "/gamemode?token=" .. SCRIPT_TOKEN,
-	--	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
+	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
 	Scrolls = BASE_URL .. "/scrolls?token=" .. SCRIPT_TOKEN,
 	Potions = BASE_URL .. "/potions?token=" .. SCRIPT_TOKEN,
 	Exchange = BASE_URL .. "/exchange?token=" .. SCRIPT_TOKEN,
@@ -27,7 +27,7 @@ local URLS = {
 	UIScroll = BASE_URL .. "/ui-scroll?token=" .. SCRIPT_TOKEN,
 	UIPotion = BASE_URL .. "/ui-potion?token=" .. SCRIPT_TOKEN,
 	UIExchange = BASE_URL .. "/ui-exchange?token=" .. SCRIPT_TOKEN,
-	--	UIGacha = BASE_URL .. "/ui-gacha?token=" .. SCRIPT_TOKEN,
+	UIGacha = BASE_URL .. "/ui-gacha?token=" .. SCRIPT_TOKEN,
 }
 
 local coreOrder = {
@@ -35,7 +35,7 @@ local coreOrder = {
 	"Utils",
 	"Player",
 	"Rewards",
-	--	"Gacha",
+	"Gacha",
 	"Gamemode",
 	"Farm",
 	"Scrolls",
@@ -61,7 +61,7 @@ local uiOrder = {
 	"UIScroll",
 	"UIPotion",
 	"UIExchange",
-	--	"UIGacha",
+	"UIGacha",
 }
 
 for _, name in ipairs(uiOrder) do
@@ -91,7 +91,7 @@ local UIGamemode = getgenv().DH.UI.Gamemode
 local UIScroll = getgenv().DH.UI.Scroll
 local UIPotions = getgenv().DH.UI.Potions
 local UIExchange = getgenv().DH.UI.Exchange
--- local UIGacha = getgenv().DH.UI.Gacha
+local UIGacha = getgenv().DH.UI.Gacha
 
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -155,7 +155,7 @@ local Tabs = {
 	Scroll = Window:AddTab({ Title = "Scroll", Icon = "scroll" }),
 	Potion = Window:AddTab({ Title = "Potions", Icon = "flask-conical" }),
 	Exchange = Window:AddTab({ Title = "Exchange", Icon = "arrow-left-right" }),
-	--	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
+	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
 	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
 
@@ -174,7 +174,7 @@ UIGamemode.build(Tabs, Fluent)
 UIScroll.build(Tabs)
 UIPotions.build(Tabs)
 UIExchange.build(Tabs)
---UIGacha.build(Tabs)
+UIGacha.build(Tabs)
 
 local autoClickAnimation = UIPlayer.autoClickAnimation
 local autoClick = UIPlayer.autoClick
@@ -215,7 +215,7 @@ local function changeDescriptionPlayerStatus()
 	Gamemode.changeDescriptionPlayerStatus(Player.setDescription)
 end
 
---[[task.spawn(function()
+task.spawn(function()
 	while true do
 		task.wait(State.scriptSettings.GachaTab.GachaDelay)
 
@@ -223,7 +223,7 @@ end
 			Gacha.autoGachas(State.scriptSettings.GachaTab.SelectedGacha, State.scriptSettings.GachaTab.SelectedTarget)
 		end
 	end
-end)]]
+end)
 
 task.spawn(function()
 	while true do
