@@ -24,7 +24,7 @@ local function usePotions(mode: "1" | "2" | "3")
 end
 
 function Exchange.autoExchangePotions()
-	for _, potionMode in State.scriptSettings.ExchangeTab.Potions.SelectedTiers or {} do
+	for potionMode, _ in State.scriptSettings.ExchangeTab.Potions.SelectedTiers or {} do
 		if potionMode:match("Tier 1 > Tier 2") then
 			usePotions("1")
 		elseif potionMode:match("Tier 2 > Tier 3") then
