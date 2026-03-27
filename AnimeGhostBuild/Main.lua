@@ -1,5 +1,5 @@
 -- getgenv().DH: Anime Ghost
--- Version: 1.1
+-- Version: 1.2.1
 
 DRAMAHUB_VERSION = "DEVELOPMENT BUILD"
 AUTHOR = 10544785935
@@ -14,7 +14,7 @@ local URLS = {
 	Rewards = BASE_URL .. "/rewards?token=" .. SCRIPT_TOKEN,
 	Farm = BASE_URL .. "/farm?token=" .. SCRIPT_TOKEN,
 	Gamemode = BASE_URL .. "/gamemode?token=" .. SCRIPT_TOKEN,
-	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
+--	Gacha = BASE_URL .. "/gacha?token=" .. SCRIPT_TOKEN,
 	Scrolls = BASE_URL .. "/scrolls?token=" .. SCRIPT_TOKEN,
 	Potions = BASE_URL .. "/potions?token=" .. SCRIPT_TOKEN,
 	Exchange = BASE_URL .. "/exchange?token=" .. SCRIPT_TOKEN,
@@ -27,7 +27,7 @@ local URLS = {
 	UIScroll = BASE_URL .. "/ui-scroll?token=" .. SCRIPT_TOKEN,
 	UIPotion = BASE_URL .. "/ui-potion?token=" .. SCRIPT_TOKEN,
 	UIExchange = BASE_URL .. "/ui-exchange?token=" .. SCRIPT_TOKEN,
-	UIGacha = BASE_URL .. "/ui-gacha?token=" .. SCRIPT_TOKEN,
+--	UIGacha = BASE_URL .. "/ui-gacha?token=" .. SCRIPT_TOKEN,
 }
 
 local coreOrder = {
@@ -35,7 +35,7 @@ local coreOrder = {
 	"Utils",
 	"Player",
 	"Rewards",
-	"Gacha",
+--	"Gacha",
 	"Gamemode",
 	"Farm",
 	"Scrolls",
@@ -61,7 +61,7 @@ local uiOrder = {
 	"UIScroll",
 	"UIPotion",
 	"UIExchange",
-	"UIGacha",
+--	"UIGacha",
 }
 
 for _, name in ipairs(uiOrder) do
@@ -78,7 +78,7 @@ local Player = getgenv().DH.Player
 local Rewards = getgenv().DH.Rewards
 local Farm = getgenv().DH.Farm
 local Gamemode = getgenv().DH.Gamemode
-local Gacha = getgenv().DH.Gacha
+--local Gacha = getgenv().DH.Gacha
 local Exchange = getgenv().DH.Exchange
 local Scrolls = getgenv().DH.Scrolls
 local Potions = getgenv().DH.Potions
