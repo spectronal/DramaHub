@@ -24,8 +24,8 @@ local function usePotions(mode: "1" | "2" | "3")
 end
 
 function Exchange.autoExchangePotions()
-	for _, tier in State.scriptSettings.ExchangeTab.Potions.SelectedTiers do
-		print("Tier" .. tier)
+	for i, tier in State.scriptSettings.ExchangeTab.Potions.SelectedTiers do
+		print("Tier Index: " .. tostring(i) .. "\nTier Value: " .. tostring(tier))
 		if tier == "Tier 1 > Tier 2" then
 			usePotions("1")
 		elseif tier == "Tier 2 > Tier 3" then
