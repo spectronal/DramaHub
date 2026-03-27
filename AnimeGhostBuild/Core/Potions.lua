@@ -13,33 +13,33 @@ function Potions.AutoUse()
 	end
 end
 
-function Potions.PotionsMode(mode: "UnPause" | "Pause")
-	if mode == "Pause" then
-		if LocalPlayer:GetAttribute("InMode") then
-			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToPauseInMode or {} do
-				if Framework.PlayerData.PotionPaused[tostring(potions)] == false then
-					Framework.Remote:Fire("PotionSystem", "Pause", potions)
-				end
-			end
-		else
-			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToPauseNoMode or {} do
-				if Framework.PlayerData.PotionPaused[tostring(potions)] == false then
-					Framework.Remote:Fire("PotionSystem", "Pause", potions)
-				end
+function Potions.Pause()
+	if LocalPlayer:GetAttribute("InMode") then
+		for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToPauseInMode or {} do
+			if Framework.PlayerData.PotionPaused[tostring(potions)] == false then
+				Framework.Remote:Fire("PotionSystem", "Pause", potions)
 			end
 		end
-	elseif mode == "UnPause" then
-		if LocalPlayer:GetAttribute("InMode") then
-			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseInMode or {} do
-				if Framework.PlayerData.PotionPaused[tostring(potions)] == true then
-					Framework.Remote:Fire("PotionSystem", "Pause", potions)
-				end
+	else
+		for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToPauseNoMode or {} do
+			if Framework.PlayerData.PotionPaused[tostring(potions)] == false then
+				Framework.Remote:Fire("PotionSystem", "Pause", potions)
 			end
-		else
-			for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnpauseNoMode or {} do
-				if Framework.PlayerData.PotionPaused[tostring(potions)] == true then
-					Framework.Remote:Fire("PotionSystem", "Pause", potions)
-				end
+		end
+	end
+end
+
+function Potions.UnPause()
+	if LocalPlayer:GetAttribute("InMode") then
+		for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnPauseInMode or {} do
+			if Framework.PlayerData.PotionPaused[tostring(potions)] == true then
+				Framework.Remote:Fire("PotionSystem", "Pause", potions)
+			end
+		end
+	else
+		for potions, _ in State.scriptSettings.PotionsTab.SelectedPotionsToUnPauseNoMode or {} do
+			if Framework.PlayerData.PotionPaused[tostring(potions)] == true then
+				Framework.Remote:Fire("PotionSystem", "Pause", potions)
 			end
 		end
 	end

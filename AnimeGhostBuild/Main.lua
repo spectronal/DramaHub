@@ -309,11 +309,11 @@ task.spawn(function()
 			end
 
 			if State.scriptSettings.PotionsTab.AutoPausePotions then
-				Potions.PotionsMode("Pause")
+				Potions.Pause()
 			end
 
 			if State.scriptSettings.PotionsTab.AutoUnPausePotions then
-				Potions.PotionsMode("UnPause")
+				Potions.UnPause()
 			end
 
 			if State.scriptSettings.ExchangeTab.Potions.AutoPotions then
