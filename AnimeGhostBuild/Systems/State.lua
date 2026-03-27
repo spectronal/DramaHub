@@ -78,6 +78,7 @@ State.scriptSettings = {
 	ExchangeTab = {
 		Potions = {
 			AutoPotions = false,
+			SelectedTiers = {},
 		},
 	},
 	PotionsTab = {

@@ -91,7 +91,7 @@ local UIGamemode = getgenv().DH.UI.Gamemode
 local UIScroll = getgenv().DH.UI.Scroll
 local UIPotions = getgenv().DH.UI.Potions
 local UIExchange = getgenv().DH.UI.Exchange
-local UIGacha = getgenv().DH.UI.Gacha
+-- local UIGacha = getgenv().DH.UI.Gacha
 
 local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -155,7 +155,7 @@ local Tabs = {
 	Scroll = Window:AddTab({ Title = "Scroll", Icon = "scroll" }),
 	Potion = Window:AddTab({ Title = "Potions", Icon = "flask-conical" }),
 	Exchange = Window:AddTab({ Title = "Exchange", Icon = "arrow-left-right" }),
-	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
+--	Gachas = Window:AddTab({ Title = "Gachas", Icon = "clover" }),
 	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
 
@@ -174,7 +174,7 @@ UIGamemode.build(Tabs, Fluent)
 UIScroll.build(Tabs)
 UIPotions.build(Tabs)
 UIExchange.build(Tabs)
-UIGacha.build(Tabs)
+--UIGacha.build(Tabs)
 
 local autoClickAnimation = UIPlayer.autoClickAnimation
 local autoClick = UIPlayer.autoClick
@@ -216,22 +216,14 @@ local function changeDescriptionPlayerStatus()
 end
 
 task.spawn(function()
-	while true do
+--[[	while true do
 		task.wait(State.scriptSettings.GachaTab.GachaDelay)
 
 		if State.scriptSettings.GachaTab.AutoGacha and State.scriptSettings.GachaTab.SelectedGacha ~= "" then
 			Gacha.autoGachas(State.scriptSettings.GachaTab.SelectedGacha, State.scriptSettings.GachaTab.SelectedTarget)
 		end
-
-		if State.scriptSettings.GamemodesTab.AutoFarmMobs then
-			Farm.autoFarmEnemiesGamemode()
-		end
-
-		if State.scriptSettings.FarmTab.AutoFarm then
-			Farm.autoFarmEnemiesNormal()
-		end
 	end
-end)
+end)]]
 
 task.spawn(function()
 	while true do
@@ -266,14 +258,19 @@ task.spawn(function()
 			Gamemode.autoJoinGamemode(State.gamemodeFold, "Private")
 		end
 
-		if State.scriptSettings.GamemodesTab.AutoLeaveGamemode then
-			Gamemode.autoLeaveGamemode()
-		end
-
 		if State.scriptSettings.ScrollsTab.AutoOpenScroll then
 			Scrolls.autoOpen()
 		end
 
+		if State.scriptSettings.GamemodesTab.AutoFarmMobs then
+			Farm.autoFarmEnemiesGamemode()
+		end
+
+		if State.scriptSettings.FarmTab.AutoFarm then
+			Farm.autoFarmEnemiesNormal()
+		end
+
+		Gamemode.autoLeaveGamemode()
 		Gamemode.gamemodeNotifier(Fluent)
 
 		rewardTimer += dt
@@ -317,9 +314,7 @@ task.spawn(function()
 			end
 
 			if State.scriptSettings.ExchangeTab.Potions.AutoPotions then
-				Exchange.UsePotions("1")
-				Exchange.UsePotions("2")
-				Exchange.UsePotions("3")
+				Exchange.autoExchangePotions()
 			end
 
 			changeDescriptionAscension()

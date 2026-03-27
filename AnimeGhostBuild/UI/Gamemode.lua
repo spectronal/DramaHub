@@ -117,6 +117,11 @@ function UIGamemode.build(Tabs, Fluent)
 	-- Leave In
 	local leaveGamemode = Tabs.Gamemode:AddSection("Leave in")
 
+	leaveGamemode:AddParagraph({
+		Title = "Note:",
+		Content = "Press enter for each input to confirm",
+	})
+
 	leaveGamemode:AddInput("raidLeaveIn", {
 		Title = "Raid Leave at",
 		Default = 0,
@@ -161,13 +166,13 @@ function UIGamemode.build(Tabs, Fluent)
 		end,
 	})
 
-	leaveGamemode:AddToggle("autoLeave", {
+	--[[	leaveGamemode:AddToggle("autoLeave", {
 		Title = "Auto Leave Gamemode",
 		Default = false,
 		Callback = function(state)
 			State.scriptSettings.GamemodesTab.AutoLeaveGamemode = state
 		end,
-	})
+	})]]
 
 	-- Settings
 	local playerGamemode = Tabs.Gamemode:AddSection("Settings")

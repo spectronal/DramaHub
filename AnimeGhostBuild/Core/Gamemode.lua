@@ -215,7 +215,11 @@ function Gamemode.autoJoinGamemode(gamemode, select)
 
 	if select == "Private" then
 		for playerName, _ in pairs(State.scriptSettings.GamemodesTab.SelectedPlayersToJoin) do
-			local player = Players[playerName]
+			if not Players[playerName] then
+				return
+			end
+
+			local player = Players[playerName] or nil
 			if player:GetAttribute("Mode") then
 				local modeText = player:GetAttribute("Mode")
 				if State.scriptSettings.GamemodesTab.SelectedGamemode[modeText] then
@@ -225,6 +229,10 @@ function Gamemode.autoJoinGamemode(gamemode, select)
 		end
 	elseif select == "Public" then
 		for _, playerObj in pairs(Players:GetPlayers()) do
+			if not Players[playerObj.Name] then
+				return
+			end
+
 			local player = Players[playerObj.Name]
 			if player:GetAttribute("Mode") then
 				local modeText = player:GetAttribute("Mode")
@@ -281,43 +289,36 @@ function Gamemode.autoCreateGamemodes()
 end
 
 function Gamemode.autoLeaveGamemode()
-	if not Gamemode.inMode() then
-		if alreadyLeft then
+	if State.scriptSettings.GamemodesTab.SavedPosition ~= nil then
+		if not Gamemode.inMode() then
+			if alreadyLeft then
+				return
+			end -- já executou, ignora
+			alreadyLeft = true
+
+			Gamemode.teleportPlayerToPosition()
 			return
-		end -- já executou, ignora
-		alreadyLeft = true
-
-		if State.scriptSettings.GamemodesTab.SavedPosition ~= nil then
-			Gamemode.teleportPlayerToPosition()
-		else
-			Framework.Remote:Fire("TeleportSystem", "To", "Lobby")
 		end
-		return
-	end
 
-	-- está no modo, reseta a flag
-	alreadyLeft = false
+		alreadyLeft = false
 
-	local modeName = Gamemode.getPlayerMode("Mode")
-	if not modeName then
-		return
-	end
+		local modeName = Gamemode.getPlayerMode("Mode")
+		if not modeName then
+			return
+		end
 
-	local mode = State.gamemodeServer:FindFirstChild(modeName)
-	if not mode then
-		return
-	end
+		local mode = State.gamemodeServer:FindFirstChild(modeName)
+		if not mode then
+			return
+		end
 
-	local Wave = tonumber(mode:GetAttribute("Stage"))
-	local CurrentMode = string.gsub(mode:GetAttribute("ModeId"), " ", "")
-	local MaxWave = tonumber(State.scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
+		local Wave = tonumber(mode:GetAttribute("Stage"))
+		local CurrentMode = string.gsub(mode:GetAttribute("ModeId"), " ", "")
+		local MaxWave = tonumber(State.scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
 
-	if MaxWave ~= 0 and Wave >= MaxWave then
-		alreadyLeft = true
-		if State.scriptSettings.GamemodesTab.SavedPosition ~= nil then
+		if MaxWave ~= 0 and Wave >= MaxWave then
+			alreadyLeft = true
 			Gamemode.teleportPlayerToPosition()
-		else
-			Framework.Remote:Fire("TeleportSystem", "To", "Lobby")
 		end
 	end
 end
@@ -461,7 +462,7 @@ end
 function Gamemode.changeDescriptionPlayerStatus(setDescription)
 	setDescription(
 		"PlayerStatus",
-		`Priority: Raid > Dungeon > Infinity Castle > Defense Mode\n \nModes: \n {Gamemode.getCooldownsText()} \n \nSaved Position: World: {(tostring(
+		`Priority: Raid > Dungeon > Infinity Castle > Defense Mode\n \nModes: \n{Gamemode.getCooldownsText()} \n \nSaved Position: World: {(tostring(
 			State.scriptSettings.GamemodesTab.WorldToTeleport
 		) or "Nil")} / {tostring(State.scriptSettings.GamemodesTab.SavedPosition)}`
 	)
