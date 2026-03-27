@@ -24,13 +24,12 @@ local function usePotions(mode: "1" | "2" | "3")
 end
 
 function Exchange.autoExchangePotions()
-	for potionMode, i in State.scriptSettings.ExchangeTab.Potions.SelectedTiers or {} do
-		print(potionMode, i)
-		if potionMode:match("Tier 1 > Tier 2") then
+	for _, tier in State.scriptSettings.ExchangeTab.Potions.SelectedTiers do
+		if tier == "Tier 1 > Tier 2" then
 			usePotions("1")
-		elseif potionMode:match("Tier 2 > Tier 3") then
+		elseif tier == "Tier 2 > Tier 3" then
 			usePotions("2")
-		elseif potionMode:match("Tier 3 > Tier 4") then
+		elseif tier == "Tier 3 > Tier 4" then
 			usePotions("3")
 		end
 	end
