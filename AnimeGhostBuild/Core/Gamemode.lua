@@ -316,9 +316,11 @@ function Gamemode.autoLeaveGamemode()
 		local CurrentMode = string.gsub(mode:GetAttribute("ModeId"), " ", "")
 		local MaxWave = tonumber(State.scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
 
-		if MaxWave ~= 0 and (Wave or 0) >= MaxWave then
-			alreadyLeft = true
-			Gamemode.teleportPlayerToPosition()
+		if MaxWave ~= nil then
+			if MaxWave ~= 0 and (Wave or 0) >= MaxWave then
+				alreadyLeft = true
+				Gamemode.teleportPlayerToPosition()
+			end
 		end
 	end
 end
