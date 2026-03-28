@@ -372,6 +372,10 @@ function UIGamemode.build(Tabs, Fluent)
 		State.scriptSettings.GamemodesTab.SelectedDefenseMode = Value
 	end)
 
+	selectEaster:OnChanged(function(Value)
+		State.scriptSettings.GamemodesTab.SelectedEasterRaid = Value
+	end)
+
 	selectRaidDiff:OnChanged(function(Value)
 		State.scriptSettings.GamemodesTab.SelectedRaidDifficulty = Value
 	end)
@@ -386,6 +390,10 @@ function UIGamemode.build(Tabs, Fluent)
 
 	selectDefenseDiff:OnChanged(function(Value)
 		State.scriptSettings.GamemodesTab.SelectedDefenseModeDifficulty = Value
+	end)
+
+	selectEasterDiff:OnChanged(function(Value)
+		State.scriptSettings.GamemodesTab.SelectedEasterRaidDifficulty = Value
 	end)
 
 	selectPlayersToJoin:OnChanged(function(Value)
