@@ -61,6 +61,7 @@ function Gamemode.setupGamemodeData()
 
 	for maps, _ in State.MapData do
 		table.insert(State.MapsNum, maps)
+		table.insert(State.MapsNum, "Easter 2026 Event")
 	end
 
 	for i, v in pairs(State.MapData) do
@@ -115,6 +116,8 @@ Framework.Remote:Connect(function(data)
 			State.cooldowns["Infinity Castle"] = tick() + total
 		elseif msg:find("Defense Mode") then
 			State.cooldowns["Defense Mode"] = tick() + total
+		elseif msg:find("Easter") then
+			State.cooldowns["Easter Raid"] = tick() + total
 		end
 	end
 end)
@@ -293,7 +296,7 @@ function Gamemode.autoLeaveGamemode()
 		if not Gamemode.inMode() then
 			if alreadyLeft then
 				return
-			end -- já executou, ignora
+			end
 			alreadyLeft = true
 
 			Gamemode.teleportPlayerToPosition()
@@ -312,15 +315,13 @@ function Gamemode.autoLeaveGamemode()
 			return
 		end
 
-		local Wave = tonumber(mode:GetAttribute("Stage"))
-		local CurrentMode = string.gsub(mode:GetAttribute("ModeId"), " ", "")
-		local MaxWave = tonumber(State.scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"])
+		local Wave = tonumber(mode:GetAttribute("Stage")) or 0
+		local CurrentMode = string.gsub(mode:GetAttribute("ModeId") or "", " ", "")
+		local MaxWave = tonumber(State.scriptSettings.GamemodesTab[CurrentMode .. "ToLeave"]) or 0
 
-		if MaxWave ~= nil then
-			if MaxWave ~= 0 and (Wave or 0) >= MaxWave then
-				alreadyLeft = true
-				Gamemode.teleportPlayerToPosition()
-			end
+		if MaxWave ~= 0 and Wave >= MaxWave then
+			alreadyLeft = true
+			Gamemode.teleportPlayerToPosition()
 		end
 	end
 end

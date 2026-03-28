@@ -15,6 +15,7 @@ State.scriptSettings = {
 		SelectedMobs = { "" },
 		AutoFarm = false,
 		AutoFarmWithScroll = false,
+		AutoFarmEasterBoss = false,
 		Priority = "",
 	},
 	ScrollsTab = {
@@ -44,11 +45,13 @@ State.scriptSettings = {
 		SelectedDungeon = "",
 		SelectedInfinityCastle = "",
 		SelectedDefenseMode = "",
+		SelectedEasterRaid = "",
 
 		SelectedRaidDifficulty = "",
 		SelectedDungeonDifficulty = "",
 		SelectedInfinityCastleDifficulty = "",
 		SelectedDefenseModeDifficulty = "",
+		SelectedEasterRaidDifficulty = "",
 
 		SelectedPlayersToJoin = { "" },
 
@@ -56,6 +59,7 @@ State.scriptSettings = {
 		DungeonToLeave = 0,
 		InfinityCastleToLeave = 0,
 		DefenseToLeave = 0,
+		EasterRaidToLeave = 0,
 
 		SelectedEquipBestInMode = "",
 		SelectedEquipBestNoMode = "",
@@ -151,6 +155,7 @@ State.PriorityMap = {
 	["Dungeon"] = 2,
 	["Infinity Castle"] = 3,
 	["Defense Mode"] = 4,
+	["Easter Raid"] = 5,
 }
 
 State.cooldowns = {
@@ -158,6 +163,7 @@ State.cooldowns = {
 	Dungeon = 0,
 	["Infinity Castle"] = 0,
 	["Defense Mode"] = 0,
+	["Easter Raid"] = 0,
 }
 
 State.MapsNum = {}
@@ -165,6 +171,7 @@ State.RaidData = {}
 State.DungeonData = {}
 State.InfinityData = {}
 State.DefenseData = {}
+State.EasterRaid = { "ChocolateKingdom" }
 
 State.gamemodeFold = workspace:WaitForChild("_MAP"):WaitForChild("Gamemode")
 State.gamemodeServer = replicatedStorage:WaitForChild("Server").Gamemode

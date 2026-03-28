@@ -78,7 +78,7 @@ local Player = getgenv().DH.Player
 local Rewards = getgenv().DH.Rewards
 local Farm = getgenv().DH.Farm
 local Gamemode = getgenv().DH.Gamemode
---local Gacha = getgenv().DH.Gacha
+local Gacha = getgenv().DH.Gacha
 local Exchange = getgenv().DH.Exchange
 local Scrolls = getgenv().DH.Scrolls
 local Potions = getgenv().DH.Potions
@@ -268,6 +268,10 @@ task.spawn(function()
 
 		if State.scriptSettings.FarmTab.AutoFarm then
 			Farm.autoFarmEnemiesNormal()
+		end
+
+		if State.scriptSettings.FarmTab.AutoFarmEasterBoss then
+			Farm.autoFarmEasterBoss()
 		end
 
 		Gamemode.autoLeaveGamemode()

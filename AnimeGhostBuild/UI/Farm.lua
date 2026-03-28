@@ -64,6 +64,16 @@ function UIFarm.build(Tabs)
 		end,
 	})
 
+	local easterSection = Tabs.Farm:AddSection("Easter Event")
+
+	easterSection:AddToggle("Auto Farm Easter Boss", {
+		Title = "Auto Farm Easter Boss",
+		Default = false,
+		Callback = function(state)
+			State.scriptSettings.FarmTab.AutoFarmEasterBoss = state
+		end,
+	})
+
 	-- OnChanged
 	selectFarmMob:OnChanged(function(Value)
 		State.scriptSettings.FarmTab.SelectMobs = Value

@@ -79,6 +79,14 @@ function UIGamemode.build(Tabs, Fluent)
 		Default = "Choose an defense map",
 	})
 
+	local selectEaster = mapsGamemode:AddDropdown("selectEaster", {
+		Title = "Easter Raid Map",
+		Description = "Select an Easter map",
+		Values = State.EasterData,
+		Multi = false,
+		Default = "Choose an easter map",
+	})
+
 	-- Difficulties
 	local diffGamemode = Tabs.Gamemode:AddSection("Difficulties")
 
@@ -109,6 +117,14 @@ function UIGamemode.build(Tabs, Fluent)
 	local selectDefenseDiff = diffGamemode:AddDropdown("selectDefenseDiff", {
 		Title = "Defense Diff",
 		Description = "Select a difficulty for defense mode",
+		Values = { "Easy" },
+		Multi = false,
+		Default = "",
+	})
+
+	local selectEasterDiff = diffGamemode:AddDropdown("selectEasterDiff", {
+		Title = "Easter Diff",
+		Description = "Select a difficulty for easter raid",
 		Values = { "Easy" },
 		Multi = false,
 		Default = "",
@@ -163,6 +179,17 @@ function UIGamemode.build(Tabs, Fluent)
 		Finished = true,
 		Callback = function(Value)
 			State.scriptSettings.GamemodesTab.DefenseModeToLeave = Value
+		end,
+	})
+
+	leaveGamemode:AddInput("easterRaidLeaveIn", {
+		Title = "Easter Raid Leave at",
+		Default = 0,
+		Placeholder = "e.g 30",
+		Numeric = true,
+		Finished = true,
+		Callback = function(Value)
+			State.scriptSettings.GamemodesTab.EasterRaidToLeave = Value
 		end,
 	})
 

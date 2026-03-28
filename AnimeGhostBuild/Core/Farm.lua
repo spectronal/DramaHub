@@ -173,3 +173,38 @@ function Farm.autoFarmEnemiesGamemode()
 		State.lastHP = currentHP
 	end
 end
+
+function Farm.autoFarmEasterBoss()
+	if not LocalPlayer:GetAttribute("InMode") then
+		local function getEasterBoss()
+			for _, v in workspace._ENEMIES.Server.GlobalBoss:GetDescendants() do
+				if
+					v:IsA("Part")
+					and v:GetAttribute("Type") == "GlobalBoss"
+					and v:GetAttribute("Event") == "Easter 2026 Event"
+					and v:GetAttribute("Dead") ~= true
+				then
+					return v
+				end
+			end
+			return nil
+		end
+
+		local boss = getEasterBoss()
+
+		if not boss then
+			if State.scriptSettings.GamemodesTab.SavedPosition then
+				Gamemode.teleportPlayerToPosition()
+			end
+			return
+		end
+
+		if LocalPlayer:GetAttribute("Event") ~= "Easter 2026 Event" then
+			Framework.Remote:Fire("TeleportSystem", "To", "Easter 2026 Event")
+			task.wait(3)
+		end
+
+		Framework.Remote:Fire("ClickSystem", "Execute", Framework.Target)
+		teleportToMob(boss)
+	end
+end
