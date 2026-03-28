@@ -182,7 +182,7 @@ function Farm.autoFarmEasterBoss()
 			for _, v in workspace._ENEMIES.Server.GlobalBoss:GetDescendants() do
 				if
 					v:IsA("Part")
-					and v:GetAttribute("Tipo") == "GlobalBoss"
+					and v:GetAttribute("Type") == "GlobalBoss"
 					and v:GetAttribute("Event") == "Easter 2026 Event"
 					and v:GetAttribute("Dead") ~= true
 				then
