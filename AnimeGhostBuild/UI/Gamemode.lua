@@ -82,7 +82,7 @@ function UIGamemode.build(Tabs, Fluent)
 	local selectEaster = mapsGamemode:AddDropdown("selectEaster", {
 		Title = "Easter Raid Map",
 		Description = "Select an Easter map",
-		Values = "ChocolateKingdom",
+		Values = { "ChocolateKingdom" },
 		Multi = false,
 		Default = "Choose an easter map",
 	})
