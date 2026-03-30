@@ -9,6 +9,7 @@ local Notify = State.Notify
 
 function Gacha.autoGachas(gachaId, Target)
 	if not Framework.PlayerData.GachaIndex[gachaId][Target] then
+		Notify("<dr> [Drama Hub] </>" .. "<w> You already have the " .. Target .. " Target! </>")
 		return
 	end
 
