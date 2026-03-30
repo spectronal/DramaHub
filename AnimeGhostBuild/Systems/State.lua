@@ -116,6 +116,7 @@ State.Janitor = Framework:GetPackage("Janitor")
 State.TimeRewardData = Framework:GetData("TimeRewardData")
 State.WeeklyRewardData = Framework:GetData("WeeklyRewardData")
 State.WeeklyRewardService = Framework:GetService("WeeklyRewardService")
+State.Notify = Framework:GetService("NotifyService")
 State.RebirthData = Framework:GetData("RebirthData")
 State.AchievementData = Framework:GetData("AchievementData")
 State.ChestData = Framework:GetData("ChestData")
@@ -166,7 +167,7 @@ State.cooldowns = {
 	["Easter Raid"] = 0,
 }
 
-State.MapsNum = { "Easter 2026 Event" }
+State.MapsNum = { "Lobby", "Easter 2026 Event" }
 State.RaidData = {}
 State.DungeonData = {}
 State.InfinityData = {}

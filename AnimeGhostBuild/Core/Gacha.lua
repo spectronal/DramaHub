@@ -5,9 +5,18 @@ local Gacha = getgenv().DH.Gacha
 local State = getgenv().DH.State
 
 local Framework = State.Framework
+local Notify = State.Notify
 
 function Gacha.autoGachas(gachaId, Target)
+	if not Framework.PlayerData.GachaIndex[gachaId][Target] then
+		return
+	end
+
 	Framework.Remote:Fire("GachaSystem", "Spin", gachaId, "Normal", {}, Target)
+
+	if Framework.PlayerData.GachaIndex[gachaId][Target] then
+		Notify("<dr> [Drama Hub] </>" .. "<w> You got " .. Target .. " Target! </>")
+	end
 end
 
 function Gacha.removeGachaAnimation()

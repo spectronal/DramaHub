@@ -9,6 +9,11 @@ function UIUpdateLogs.build(Tabs)
 
 	main:AddParagraph({
 		Title = "Patch: 30/03/2026",
+		Content = "Changes:\n - Added: Auto Gacha now stops when you got your target and Lobby for World To Teleport\n - Fixed: Cooldowns for Gamemodes \n version: 1.2.5",
+	})
+
+	main:AddParagraph({
+		Title = "Patch: 30/03/2026",
 		Content = "Changes:\n - Added Easter Boss Priority and improved modes cooldown code\n \n version: 1.2.4",
 	})
 
