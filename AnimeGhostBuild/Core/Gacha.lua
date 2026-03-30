@@ -8,15 +8,17 @@ local Framework = State.Framework
 local Notify = State.Notify
 
 function Gacha.autoGachas(gachaId, Target)
-	if not Framework.PlayerData.GachaIndex[gachaId][Target] then
-		Notify("<dr> [Drama Hub] </>" .. "<w> You already have the " .. Target .. " Target! </>")
-		return
-	end
+	for i, v in pairs(Target) do
+		if Framework.PlayerData.GachaIndex[gachaId][v] then
+			Notify("<dr> [Drama Hub] </>" .. "<w> You already have " .. v .. " Target! </>")
+			return
+		end
 
-	Framework.Remote:Fire("GachaSystem", "Spin", gachaId, "Normal", {}, Target)
+		Framework.Remote:Fire("GachaSystem", "Spin", gachaId, "Normal", {}, v)
 
-	if Framework.PlayerData.GachaIndex[gachaId][Target] then
-		Notify("<dr> [Drama Hub] </>" .. "<w> You got " .. Target .. " Target! </>")
+		if Framework.PlayerData.GachaIndex[gachaId][v] then
+			Notify("<dr> [Drama Hub] </>" .. "<w> You got " .. v .. " Target! </>")
+		end
 	end
 end
 
