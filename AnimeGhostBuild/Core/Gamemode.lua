@@ -61,7 +61,6 @@ function Gamemode.setupGamemodeData()
 
 	for maps, _ in State.MapData do
 		table.insert(State.MapsNum, maps)
-		table.insert(State.MapsNum, "Easter 2026 Event")
 	end
 
 	for i, v in pairs(State.MapData) do
@@ -98,34 +97,16 @@ end
 
 -- Cooldown Listener
 
-Framework.Remote:Connect(function(data)
-	if data[1] == "Notify" then
-		local msg = tostring(data[2])
-		local m, s = msg:match("(%d+)m%s*(%d+)s")
-		if not (m and s) then
-			return
-		end
-
-		local total = tonumber(m) * 60 + tonumber(s)
-
-		if msg:find("Raid") then
-			State.cooldowns.Raid = tick() + total
-		elseif msg:find("Dungeon") then
-			State.cooldowns.Dungeon = tick() + total
-		elseif msg:find("Infinity Castle") then
-			State.cooldowns["Infinity Castle"] = tick() + total
-		elseif msg:find("Defense Mode") then
-			State.cooldowns["Defense Mode"] = tick() + total
-		elseif msg:find("Easter") then
-			State.cooldowns["Easter Raid"] = tick() + total
-		end
+for mode, time in pairs(Framework.PlayerData.Delay) do
+	if State.cooldowns[mode] then
+		State.cooldowns[mode] = time - os.time()
 	end
-end)
+end
 
 -- Cooldown Helpers
 
 local function isOnCooldown(mode)
-	local remaining = (State.cooldowns[mode] or 0) - tick()
+	local remaining = State.cooldowns[mode]
 	if remaining > 0 then
 	end
 	return remaining > 0.5

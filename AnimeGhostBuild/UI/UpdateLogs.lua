@@ -8,6 +8,11 @@ function UIUpdateLogs.build(Tabs)
 	local main = Tabs.UpdateLogs:AddSection("Patch Notes")
 
 	main:AddParagraph({
+		Title = "Patch: 30/03/2026",
+		Content = "Changes:\n - Added Easter Boss Priority and improved modes cooldown code\n \n version: 1.2.4",
+	})
+
+	main:AddParagraph({
 		Title = "Patch: 28/03/2026",
 		Content = "Changes:\n - Added Easter Event Boss/Easter Raid/Easter World Farm\n \n version: 1.2.3",
 	})

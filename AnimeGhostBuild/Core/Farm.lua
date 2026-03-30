@@ -93,7 +93,7 @@ end
 -- Auto Farm
 
 function Farm.autoFarmEnemiesNormal()
-	if not LocalPlayer:GetAttribute("InMode") then
+	if not LocalPlayer:GetAttribute("InMode") and not LocalPlayer:GetAttribute("EasterSpawned") then
 		if
 			not State.currentMobNormal
 			or not State.currentMobNormal.Parent
@@ -186,6 +186,7 @@ function Farm.autoFarmEasterBoss()
 					and v:GetAttribute("Event") == "Easter 2026 Event"
 					and v:GetAttribute("Dead") ~= true
 				then
+					LocalPlayer:SetAttribute("EasterSpawned", true)
 					return v
 				end
 			end
@@ -196,6 +197,7 @@ function Farm.autoFarmEasterBoss()
 
 		if not boss then
 			if State.scriptSettings.GamemodesTab.SavedPosition and not easterBossReturnCooldown then
+				LocalPlayer:SetAttribute("EasterSpawned", false)
 				easterBossReturnCooldown = true
 				Gamemode.teleportPlayerToPosition()
 			end

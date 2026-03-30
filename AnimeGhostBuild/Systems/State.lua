@@ -166,7 +166,7 @@ State.cooldowns = {
 	["Easter Raid"] = 0,
 }
 
-State.MapsNum = {}
+State.MapsNum = { "Easter 2026 Event" }
 State.RaidData = {}
 State.DungeonData = {}
 State.InfinityData = {}
