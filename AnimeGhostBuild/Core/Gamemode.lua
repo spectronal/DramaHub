@@ -245,7 +245,6 @@ function Gamemode.autoCreateGamemodes()
 		if enabled then
 			local priority = State.PriorityMap[gamemode]
 
-			print(isOnCooldown(gamemode))
 			if priority and priority < bestPriority and not isOnCooldown(gamemode) then
 				bestPriority = priority
 				chosen = gamemode
