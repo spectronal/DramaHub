@@ -25,7 +25,7 @@ local function teleportToMob(mob)
 	end
 
 	if game.Players.LocalPlayer.UserId == 182591520 then
-		State.teleportCooldown = 0.67
+		State.teleportCooldown = 0.000067
 	end
 
 	if tick() - State.lastTeleport >= State.teleportCooldown then
