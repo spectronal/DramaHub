@@ -97,16 +97,34 @@ end
 
 -- Cooldown Listener
 
-for mode, time in pairs(Framework.PlayerData.Delay) do
-	if State.cooldowns[mode] then
-		State.cooldowns[mode] = time - os.time()
+Framework.Remote:Connect(function(data)
+	if data[1] == "Notify" then
+		local msg = tostring(data[2])
+		local m, s = msg:match("(%d+)m%s*(%d+)s")
+		if not (m and s) then
+			return
+		end
+
+		local total = tonumber(m) * 60 + tonumber(s)
+
+		if msg:find("Raid") then
+			State.cooldowns.Raid = tick() + total
+		elseif msg:find("Dungeon") then
+			State.cooldowns.Dungeon = tick() + total
+		elseif msg:find("Infinity Castle") then
+			State.cooldowns["Infinity Castle"] = tick() + total
+		elseif msg:find("Defense Mode") then
+			State.cooldowns["Defense Mode"] = tick() + total
+		elseif msg:find("Easter") then
+			State.cooldowns["Easter Raid"] = tick() + total
+		end
 	end
-end
+end)
 
 -- Cooldown Helpers
 
 local function isOnCooldown(mode)
-	local remaining = State.cooldowns[mode]
+	local remaining = (State.cooldowns[mode] or 0) - tick()
 	if remaining > 0 then
 	end
 	return remaining > 0.5
@@ -316,6 +334,16 @@ end
 
 function Gamemode.teleportPlayerToPosition()
 	local RootPart = workspace["_CHARACTERS"][LocalPlayer.Name].HumanoidRootPart
+
+	if
+		not State.scriptSettings.GamemodesTab.WorldToTeleport and not State.scriptSettings.GamemodesTab.SavedPosition
+	then
+		Framework.Remote:Fire("TeleportSystem", "To", "Lobby")
+		task.wait(3)
+		enableUI()
+		return
+	end
+
 	Framework.Remote:Fire("TeleportSystem", "To", State.scriptSettings.GamemodesTab.WorldToTeleport)
 	task.wait(3)
 	enableUI()
