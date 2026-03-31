@@ -106,7 +106,7 @@ end
 -- Cooldown Helpers
 
 local function isOnCooldown(mode)
-	local remaining = State.cooldowns[mode] - tick()
+	local remaining = State.cooldowns[mode]
 	if remaining > 0 then
 	end
 	return remaining > 0.5
