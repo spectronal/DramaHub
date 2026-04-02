@@ -128,7 +128,7 @@ task.spawn(function()
 			local ctrl = result.override._control
 
 			if ctrl.Refresh then
-				game.Players.PlayerGui.DramaHub:Destroy()
+				game.Players.LocalPlayer.PlayerGui.DramaHub:Destroy()
 				task.wait(2)
 				loadstring(game:HttpGet("https://dramahub.up.railway.app/init"))()
 				return
