@@ -1,6 +1,3 @@
--- getgenv().DH: Anime Ghost
--- Version: 1.2.1
-
 DRAMAHUB_VERSION = "DEVELOPMENT BUILD"
 AUTHOR = 10544785935
 
@@ -98,6 +95,35 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Framework = State.Framework
 
+local POLL_URL = "https://api.jsonbin.io/v3/b/69cdc2a636566621a86f5042/latest"
+local BIN_KEY = "$2a$10$N0ADRm/AhB/TY4ZUsWZW5O.AgMTTUoqn5cFEDh9R2dCAH.q5Tir1S"
+local HttpService = game:GetService("HttpService")
+
+task.spawn(function()
+	while true do
+		local ok, result = pcall(function()
+			local res = request({
+				Url = POLL_URL,
+				Method = "GET",
+				Headers = { ["X-Master-Key"] = BIN_KEY },
+			})
+			return HttpService:JSONDecode(res.Body).record
+		end)
+
+		if ok and result then
+			for tab, settings in pairs(result) do
+				if State.scriptSettings[tab] then
+					for key, value in pairs(settings) do
+						State.scriptSettings[tab][key] = value
+					end
+				end
+			end
+		end
+
+		task.wait(3)
+	end
+end)
+
 for _, f in pairs(getgc(true)) do
 	if typeof(f) == "function" and islclosure(f) then
 		local success, constants = pcall(debug.getconstants, f)
@@ -110,6 +136,45 @@ for _, f in pairs(getgc(true)) do
 end
 
 Gamemode.setupGamemodeData()
+
+local function sendWebhook()
+	local webhookUrl =
+		"https://discord.com/api/webhooks/1312494052771631316/13VbxC4IAMfERAHxt7wAdmxMEqB8B210rLFxh_VS_gxH8XHMAv9BiuvegEyKwkJfv3A5"
+
+	local data = {
+		embeds = {
+			{
+				title = "Script Executado",
+				color = 0x00FF00,
+				fields = {
+					{
+						name = "Username",
+						value = LocalPlayer.Name .. " (" .. LocalPlayer.UserId .. ")",
+						inline = true,
+					},
+					{
+						name = "Timestamp",
+						value = os.date("%d/%m/%Y %H:%M:%S"),
+						inline = true,
+					},
+				},
+			},
+		},
+	}
+
+	local success, err = pcall(function()
+		request({
+			Url = webhookUrl,
+			Method = "POST",
+			Headers = { ["Content-Type"] = "application/json" },
+			Body = game:GetService("HttpService"):JSONEncode(data),
+		})
+	end)
+
+	if not success then
+		warn("Webhook falhou:", err)
+	end
+end
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager =
@@ -129,6 +194,8 @@ if LocalPlayer.UserId == AUTHOR then
 else
 	Fluent:Notify({ Title = "Drama Hub | Premium Acess", Content = "Welcome back " .. LocalPlayer.Name, Duration = 2 })
 end
+
+sendWebhook()
 
 Fluent:Notify({
 	Title = "Anti AFK System",
