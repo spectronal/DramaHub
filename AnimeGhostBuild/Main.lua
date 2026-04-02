@@ -116,7 +116,7 @@ task.spawn(function()
 
 		if ok and result then
 			if result.override then
-				if result.override._control then
+				if result.override and result.override._control then
 					local ctrl = result.override._control
 
 					if ctrl.Refresh then
