@@ -94,6 +94,7 @@ local coreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Framework = State.Framework
+local Notifier = State.Notify
 
 local REPORT_URL = "https://dramahub.up.railway.app/control/report?token=SPECTRONAL_DRAMAHUB_PRIVATETOKEN"
 local HttpService = game:GetService("HttpService")
@@ -365,7 +366,7 @@ task.spawn(function()
 						Fluent:Notify({
 							Title = "Drama Hub | Administrator Message",
 							Content = "Reloading your script...",
-							Duration = 2,
+							Duration = 4,
 						})
 						task.wait(2)
 						loadstring(game:HttpGet("https://dramahub.up.railway.app/init"))()
@@ -376,6 +377,13 @@ task.spawn(function()
 						local reason = ctrl.KickReason or "Removido pelo administrador."
 						task.wait(3)
 						game.Players.LocalPlayer:Kick(reason)
+						return
+					end
+
+					if ctrl.mSender then
+						local message = ctrl.sMessage or "Oi"
+						task.wait(3)
+						Notifier("<dr> [DramaHub Administrator] </>" .. "<w> " .. message .. " </>")
 						return
 					end
 				end
