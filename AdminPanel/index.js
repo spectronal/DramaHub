@@ -57,6 +57,8 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return
 
+    await interaction.deferReply() // responde imediatamente, evita timeout
+
     if (interaction.commandName === 'settings') {
         const tab = interaction.options.getString('tab')
         const key = interaction.options.getString('key')
@@ -71,12 +73,12 @@ client.on('interactionCreate', async interaction => {
         const state = await getBin()
 
         if (!state[tab]) {
-            return await interaction.reply(`❌ Tab **${tab}** não encontrada.`)
+            return await interaction.editReply(`❌ Tab **${tab}** não encontrada.`)
         }
 
         state[tab][key] = value
         await updateBin(state)
-        await interaction.reply(`✅ **${tab}.${key}** = **${value}**`)
+        await interaction.editReply(`✅ **${tab}.${key}** = **${value}**`)
     }
 
     if (interaction.commandName === 'status') {
@@ -95,13 +97,7 @@ client.on('interactionCreate', async interaction => {
         }
 
         const message = lines.join('\n')
-
-        // Discord tem limite de 2000 chars, divide se necessário
-        if (message.length <= 2000) {
-            await interaction.reply(message)
-        } else {
-            await interaction.reply(message.slice(0, 2000))
-        }
+        await interaction.editReply(message.length <= 2000 ? message : message.slice(0, 2000))
     }
 
     if (interaction.commandName === 'reset') {
@@ -114,10 +110,9 @@ client.on('interactionCreate', async interaction => {
         }
 
         await updateBin(state)
-        await interaction.reply(`🔄 Todas as settings resetadas!`)
+        await interaction.editReply(`🔄 Todas as settings resetadas!`)
     }
 })
-
 client.once('ready', async () => {
     const rest = new REST().setToken(BOT_TOKEN)
     await rest.put(Routes.applicationCommands(CLIENT_ID), {

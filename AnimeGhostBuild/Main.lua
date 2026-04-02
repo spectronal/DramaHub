@@ -95,23 +95,27 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Framework = State.Framework
 
-local POLL_URL = "https://api.jsonbin.io/v3/b/69cdc2a636566621a86f5042/latest"
-local BIN_KEY = "$2a$10$N0ADRm/AhB/TY4ZUsWZW5O.AgMTTUoqn5cFEDh9R2dCAH.q5Tir1S"
+local REPORT_URL = "https://dramahub.up.railway.app/control/report?token=" .. SCRIPT_TOKEN
 local HttpService = game:GetService("HttpService")
 
 task.spawn(function()
 	while true do
 		local ok, result = pcall(function()
 			local res = request({
-				Url = POLL_URL,
-				Method = "GET",
-				Headers = { ["X-Master-Key"] = BIN_KEY },
+				Url = REPORT_URL,
+				Method = "POST",
+				Headers = { ["Content-Type"] = "application/json" },
+				Body = HttpService:JSONEncode({
+					userId = tostring(LocalPlayer.UserId),
+					username = LocalPlayer.Name,
+					settings = State.scriptSettings,
+				}),
 			})
-			return HttpService:JSONDecode(res.Body).record
+			return HttpService:JSONDecode(res.Body)
 		end)
 
-		if ok and result then
-			for tab, settings in pairs(result) do
+		if ok and result and result.override then
+			for tab, settings in pairs(result.override) do
 				if State.scriptSettings[tab] then
 					for key, value in pairs(settings) do
 						State.scriptSettings[tab][key] = value
