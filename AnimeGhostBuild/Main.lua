@@ -368,6 +368,18 @@ task.spawn(function()
 	end
 end)
 
+pcall(function()
+	request({
+		Url = "https://dramahub.up.railway.app/control/execution?token=SPECTRONAL_DRAMAHUB_PRIVATETOKEN",
+		Method = "POST",
+		Headers = { ["Content-Type"] = "application/json" },
+		Body = HttpService:JSONEncode({
+			userId = tostring(LocalPlayer.UserId),
+			username = LocalPlayer.Name,
+		}),
+	})
+end)
+
 task.spawn(function()
 	while true do
 		local ok, result = pcall(function()
