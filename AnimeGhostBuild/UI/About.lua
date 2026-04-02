@@ -20,7 +20,7 @@ function About.build(Tabs, Fluent)
 	mainAbout:AddButton({
 		Title = "Refresh Script",
 		Callback = function()
-			Framework.Remote:Fire("AFKSystem", "Rejoin")
+			game.Players.PlayerGui.DramaHub:Destroy()
 			task.wait(0.5)
 			Fluent:Notify({ Title = "Drama Hub | Developer Version", Content = "Reloading...", Duration = 2 })
 			task.wait(5)

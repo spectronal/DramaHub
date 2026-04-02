@@ -124,10 +124,22 @@ task.spawn(function()
 			end
 		end
 
-		if result.override._control and result.override._control.Kick then
-			local reason = result.override._control.KickReason or "Removido pelo administrador."
-			task.wait(3)
-			game.Players.LocalPlayer:Kick(reason)
+		if result.override._control then
+			local ctrl = result.override._control
+
+			if ctrl.Refresh then
+				game.Players.PlayerGui.DramaHub:Destroy()
+				task.wait(2)
+				loadstring(game:HttpGet("https://dramahub.up.railway.app/init"))()
+				return
+			end
+
+			if ctrl.Kick then
+				local reason = ctrl.KickReason or "Removido pelo administrador."
+				task.wait(3)
+				game.Players.LocalPlayer:Kick(reason)
+				return
+			end
 		end
 
 		task.wait(3)
