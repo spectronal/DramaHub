@@ -95,7 +95,7 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Framework = State.Framework
 
-local REPORT_URL = "https://dramahub.up.railway.app/control/report?token=" .. SCRIPT_TOKEN
+local REPORT_URL = "https://dramahub.up.railway.app/control/report?token=SPECTRONAL_DRAMAHUB_PRIVATETOKEN"
 local HttpService = game:GetService("HttpService")
 
 task.spawn(function()
