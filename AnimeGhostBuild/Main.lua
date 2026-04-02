@@ -114,31 +114,34 @@ task.spawn(function()
 			return HttpService:JSONDecode(res.Body)
 		end)
 
-		if ok and result and result.override then
-			for tab, settings in pairs(result.override) do
-				if State.scriptSettings[tab] then
-					for key, value in pairs(settings) do
-						State.scriptSettings[tab][key] = value
+		if ok and result then
+			if result.override then
+				if result.override._control then
+					local ctrl = result.override._control
+
+					if ctrl.Refresh then
+						game.Players.LocalPlayer.PlayerGui.DramaHub:Destroy()
+						task.wait(2)
+						loadstring(game:HttpGet("https://dramahub.up.railway.app/init"))()
+						return
+					end
+
+					if ctrl.Kick then
+						local reason = ctrl.KickReason or "Removido pelo administrador."
+						task.wait(3)
+						game.Players.LocalPlayer:Kick(reason)
+						return
 					end
 				end
-			end
-		end
 
-		if result.override._control then
-			local ctrl = result.override._control
-
-			if ctrl.Refresh then
-				game.Players.LocalPlayer.PlayerGui.DramaHub:Destroy()
-				task.wait(2)
-				loadstring(game:HttpGet("https://dramahub.up.railway.app/init"))()
-				return
-			end
-
-			if ctrl.Kick then
-				local reason = ctrl.KickReason or "Removido pelo administrador."
-				task.wait(3)
-				game.Players.LocalPlayer:Kick(reason)
-				return
+				-- Override normal
+				for tab, settings in pairs(result.override) do
+					if tab ~= "_control" and State.scriptSettings[tab] then
+						for key, value in pairs(settings) do
+							State.scriptSettings[tab][key] = value
+						end
+					end
+				end
 			end
 		end
 
