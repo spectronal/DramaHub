@@ -111,45 +111,6 @@ end
 
 Gamemode.setupGamemodeData()
 
-local function sendWebhook()
-	local webhookUrl =
-		"https://discord.com/api/webhooks/1312494052771631316/13VbxC4IAMfERAHxt7wAdmxMEqB8B210rLFxh_VS_gxH8XHMAv9BiuvegEyKwkJfv3A5"
-
-	local data = {
-		embeds = {
-			{
-				title = "Script Executado",
-				color = 0x00FF00,
-				fields = {
-					{
-						name = "Username",
-						value = LocalPlayer.Name .. " (" .. LocalPlayer.UserId .. ")",
-						inline = true,
-					},
-					{
-						name = "Timestamp",
-						value = os.date("%d/%m/%Y %H:%M:%S"),
-						inline = true,
-					},
-				},
-			},
-		},
-	}
-
-	local success, err = pcall(function()
-		request({
-			Url = webhookUrl,
-			Method = "POST",
-			Headers = { ["Content-Type"] = "application/json" },
-			Body = game:GetService("HttpService"):JSONEncode(data),
-		})
-	end)
-
-	if not success then
-		warn("Webhook falhou:", err)
-	end
-end
-
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager =
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
@@ -168,8 +129,6 @@ if LocalPlayer.UserId == AUTHOR then
 else
 	Fluent:Notify({ Title = "Drama Hub | Premium Acess", Content = "Welcome back " .. LocalPlayer.Name, Duration = 2 })
 end
-
-sendWebhook()
 
 Fluent:Notify({
 	Title = "Anti AFK System",
