@@ -124,6 +124,12 @@ task.spawn(function()
 			end
 		end
 
+		if result.override._control and result.override._control.Kick then
+			local reason = result.override._control.KickReason or "Removido pelo administrador."
+			task.wait(3)
+			game.Players.LocalPlayer:Kick(reason)
+		end
+
 		task.wait(3)
 	end
 end)
