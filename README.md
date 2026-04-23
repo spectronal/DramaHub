@@ -1,48 +1,24 @@
-# 🎭 Drama Hub
+# Drama Hub
 
-> Personal reverse engineering project for Roblox games
+Personal reverse engineering project for Roblox.
 
----
+## About
+Drama Hub is a personal project focused on reverse engineering Roblox games for learning and experimentation. The goal is to better understand game systems, mechanics, and structure.
 
-## 📌 About
+## Notice
+This project is not intended for profit. It is developed solely for study, learning, and development practice.
 
-**Drama Hub** is my personal project focused on **reverse engineering** some Roblox games.
+## Goals
+- Understand how game systems are built  
+- Improve scripting skills  
+- Explore advanced techniques  
 
-This project is developed purely for **fun and learning purposes**, exploring systems, mechanics, and structures used in different games.
+## Status
+In development
 
----
+## Disclaimer
+Use at your own risk.
+Use whatever executor with 99% sUNC and UNC.
 
-## ⚠️ Important Notice
-
-> ❗ This project is **not intended for profit**.
-
-All content here is used only for:
-- 📚 Study
-- 🧠 Learning
-- 🛠️ Development practice
-
----
-
-## 🎯 Goals
-
-- Understand how game systems are structured  
-- Improve my scripting skills  
-- Explore advanced techniques within Roblox  
-
----
-
-## 🚀 Status
-
-🧪 Actively in development
-
----
-
-## ❗Use at your own risk.
-
----
-
-## 👤 Author
-
-**Spectronal**
-
----
+## Author
+Spectronal
