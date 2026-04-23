@@ -13,7 +13,7 @@ function PlayerInterface:Build(Tabs)
         Title = "Auto Click",
         Default = false,
         Callback = function(state)
-            Settings.AutoClick.Enabled = state
+            Settings.Player.AutoClick = state
         end,
     })
 
@@ -21,7 +21,7 @@ function PlayerInterface:Build(Tabs)
         Title = "Auto Awakening",
         Default = false,
         Callback = function(state)
-            Settings.AutoAwakening.Enabled = state
+            Settings.Player.AutoAwakening = state
         end,
     })
 end
