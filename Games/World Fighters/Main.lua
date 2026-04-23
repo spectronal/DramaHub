@@ -12,15 +12,19 @@ local function import(path)
 end
 
 local Shared = import("Settings/Shared.lua")
+local Utils = import("Settings/Utils.lua")
 local Settings = import("Settings/Settings.lua")
 local Click = import("Systems/Click.lua")
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CoreGui = game:GetService("CoreGui")
-local Players = game:GetService("Players")
-local MarketplaceService = game:GetService("MarketplaceService")
-local LocalPlayer = Players.LocalPlayer
-local GameName = MarketplaceService:GetProductInfo(game.PlaceId).Name
+local Settings = getgenv().Settings
+local Utils = getgenv().Utils
+local Shared = getgenv().Shared
+
+local ReplicatedStorage = Utils.Services.ReplicatedStorage
+local CoreGui = Utils.Services.CoreGui
+local Players = Utils.Services.Players
+local LocalPlayer = Utils.Services.LocalPlayer
+local GameName = Utils.Services.GameName
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
