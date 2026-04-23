@@ -26,4 +26,3 @@ Use at your own risk and with any executor that supports the required UNC enviro
 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/spectronal/DramaHub/refs/heads/main/init.lua"))()
-</details>```
