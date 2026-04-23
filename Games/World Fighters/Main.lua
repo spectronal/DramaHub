@@ -11,11 +11,11 @@ local function import(path)
     return result
 end
 
-local Click = import("Systems/Click.lua")
-print("Click:", Click)
-print("type:", type(Click))
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Omni = require(ReplicatedStorage:WaitForChild("Omni"))
 
-local content = game:HttpGet(BASE_URL .. "Systems/Click.lua")
-print(content)
+getgenv().Shared = { Omni = Omni }
+
+local Click = import("Systems/Click.lua")
 
 Click.Attack()
