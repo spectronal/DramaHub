@@ -1,13 +1,18 @@
-getgenv().System = getgenv().System or {}
-getgenv().System.Click = {}
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 
 local Omni = require(ReplicatedStorage:WaitForChild("Omni"))
 
-local Click = getgenv().System.Click
+local Click = {}
 
 function Click.Attack()
-    Omni.Signal:Fire("General", "Attack", "Click")
+    print("Click.Attack chamado")
+    local ok, err = pcall(function()
+        Omni.Signal:Fire("General", "Attack", "Click")
+    end)
+    if not ok then
+        warn("Erro no Fire:", err)
+    end
 end
+
+return Click

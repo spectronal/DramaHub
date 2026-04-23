@@ -4,8 +4,6 @@ local function import(path)
     return loadstring(game:HttpGet(BASE_URL .. path))()
 end
 
-local Click = import("systems/Click.lua")
+local Click = import("Systems/Click.lua")
 
-local ClickSystem = getgenv().System.Click
-
-ClickSystem.Attack()
+Click.Attack()
