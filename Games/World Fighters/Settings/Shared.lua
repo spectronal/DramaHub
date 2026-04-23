@@ -1,4 +1,6 @@
+local Omni = require(game:GetService("ReplicatedStorage"):WaitForChild("Omni"))
+
 getgenv().Shared = {
-    Omni = require(game:GetService("ReplicatedStorage"):WaitForChild("Omni")),
-    
+    Omni = Omni,
+
 }
