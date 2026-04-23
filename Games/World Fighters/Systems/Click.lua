@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 
-local Omni = require(ReplicatedStorage:WaitForChild("Omni"))
+local Omni = require(ReplicatedStorage.Omni)
 
 local Click = {}
 
@@ -10,9 +10,7 @@ function Click.Attack()
     local ok, err = pcall(function()
         Omni.Signal:Fire("General", "Attack", "Click")
     end)
-    if not ok then
-        warn("Erro no Fire:", err)
-    end
+    print("ok:", ok, "err:", err)
 end
 
 return Click
