@@ -3,7 +3,10 @@ local Players = game:GetService("Players")
 
 local Omni = require(ReplicatedStorage:WaitForChild("Omni"))
 
-local Click = {}
+getgenv().System = getgenv().System or {}
+getgenv().System.Click = {}
+
+local Click = getgenv().System.Click
 
 function Click.Attack()
     Omni.Signal:Fire("General", "Attack", "Click")

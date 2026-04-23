@@ -6,4 +6,6 @@ end
 
 local Click = import("systems/Click.lua")
 
-Click.Attack()
+local ClickSystem = getgenv().System.Click
+
+ClickSystem.Attack()
