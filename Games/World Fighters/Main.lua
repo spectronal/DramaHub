@@ -76,11 +76,11 @@ PlayerInterface:Build(Tabs)
 
 task.spawn(function()
     while true do task.wait(0.01)
-        if Settings.Player.AutoClick.Enabled then
+        if Settings.Player.AutoClick then
             Player:Attack()
         end
 
-        if Settings.Player.AutoAwakening.Enabled then
+        if Settings.Player.AutoAwakening then
             Player:Awakening()
         end
     end
