@@ -1,8 +1,10 @@
 getgenv().Settings = {
-    AutoClick = {
-        Enabled = false,
-        Delay = 0.1,
+    Player = {
+        AutoClick = {
+            Enabled = false,
+        },
+        AutoAwakening = {
+            Enabled = false,
+        },
     },
-
-
 }

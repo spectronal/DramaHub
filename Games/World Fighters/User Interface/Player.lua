@@ -16,4 +16,12 @@ function PlayerInterface:Build(Tabs)
             Settings.AutoClick.Enabled = state
         end,
     })
+
+    Main:AddToggle("AutoAwakening", {
+        Title = "Auto Awakening",
+        Default = false,
+        Callback = function(state)
+            Settings.AutoAwakening.Enabled = state
+        end,
+    })
 end

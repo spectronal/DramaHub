@@ -17,7 +17,7 @@ local Utils = import("Settings/Utils.lua")
 local Settings = import("Settings/Settings.lua")
 
 -- Systems
-local Click = import("Systems/Click.lua")
+local Player = import("Systems/Player.lua")
 
 -- User Interface
 local PlayerInterface = import("User%20Interface/Player.lua")
@@ -27,7 +27,7 @@ local Settings = getgenv().Settings
 local Utils = getgenv().Utils
 local Shared = getgenv().Shared
 
-local Click = getgenv().Click
+local Player = getgenv().Player
 
 local PlayerInterface = getgenv().UserInterface.Player
 
@@ -75,10 +75,13 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 PlayerInterface:Build(Tabs)
 
 task.spawn(function()
-    while true do
-        if Settings.AutoClick.Enabled then
-            Click.Attack()
+    while true do task.wait(0.01)
+        if Settings.Player.AutoClick.Enabled then
+            Player.Attack()
         end
-        task.wait(Settings.AutoClick.Delay)
+
+        if Settings.Player.AutoAwakening.Enabled then
+            Player.Awakening()
+        end
     end
 end)
