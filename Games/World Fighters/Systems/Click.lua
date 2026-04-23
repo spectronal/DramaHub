@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 
-local Omni = require(ReplicatedStorage.Omni)
+local Omni = require(ReplicatedStorage:WaitForChild("Omni"))
 
 local Click = {}
 
