@@ -12,10 +12,9 @@ local function import(path)
 end
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Omni = require(ReplicatedStorage:WaitForChild("Omni"))
 
-getgenv().Shared = { Omni = Omni }
-
+local Shared = import("Settings/Shared.lua")
+local Settings = import("Settings/Settings.lua")
 local Click = import("Systems/Click.lua")
 
 Click.Attack()
