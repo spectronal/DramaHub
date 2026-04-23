@@ -1,12 +1,9 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
+getgenv().Click = {}
+local Shared = getgenv().Shared
+local Omni = Shared.Omni
 
-local Omni = getgenv().Shared.Omni
-
-local Click = {}
+local Click = getgenv().Click
 
 function Click.Attack()
     Omni.Signal:Fire("General", "Attack", "Click", {})
 end
-
-return Click

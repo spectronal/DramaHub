@@ -11,20 +11,32 @@ local function import(path)
     return result
 end
 
+-- Settings
 local Shared = import("Settings/Shared.lua")
 local Utils = import("Settings/Utils.lua")
 local Settings = import("Settings/Settings.lua")
+
+-- Systems
 local Click = import("Systems/Click.lua")
 
+-- User Interface
+local PlayerInterface = import("User%20Interface/Player.lua")
+
+-- Global Variables
 local Settings = getgenv().Settings
 local Utils = getgenv().Utils
 local Shared = getgenv().Shared
 
-local ReplicatedStorage = Utils.Services.ReplicatedStorage
-local CoreGui = Utils.Services.CoreGui
-local Players = Utils.Services.Players
-local LocalPlayer = Utils.Services.LocalPlayer
-local GameName = Utils.Services.GameName
+local Click = getgenv().Click
+
+local PlayerInterface = getgenv().UserInterface.Player
+
+-- Services
+local ReplicatedStorage = Shared.Services.ReplicatedStorage
+local CoreGui = Shared.Services.CoreGui
+local Players = Shared.Services.Players
+local LocalPlayer = Shared.Services.LocalPlayer
+local GameName = Shared.Services.GameName
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
@@ -49,6 +61,7 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
 	About = Window:AddTab({ Title = "About", Icon = "clipboard" }),
 	UpdateLogs = Window:AddTab({ Title = "Update Logs", Icon = "arrow-big-up" }),
+    Player = Window:AddTab({ Title = "Player", Icon = "user" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
 
@@ -58,6 +71,8 @@ SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
+
+PlayerInterface:Build(Tabs)
 
 task.spawn(function()
     while true do
