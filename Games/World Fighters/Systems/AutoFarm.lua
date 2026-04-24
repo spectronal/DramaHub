@@ -106,9 +106,15 @@ end
 function AutoFarm:FarmMob()
     if isInGamemode() then return end
 
-    if not FarmConfig.currentMobNormal or FarmConfig.currentMobNormal:GetAttribute("Health") <= 0 or not FarmConfig.currentMobNormal.Parent or FarmConfig.currentMobNormal.Parent.Parent.Name ~= Omni.Data.Map then
-        FarmConfig.currentMobNormal = getNextMob("Game")
+    local mob = FarmConfig.currentMobNormal
 
+    if not mob
+        or not mob.Parent
+        or mob:GetAttribute("Died") == true
+        or (mob:GetAttribute("Health") or 0) <= 0
+        or mob.Parent.Parent.Name ~= Omni.Data.Map
+    then
+        FarmConfig.currentMobNormal = getNextMob("Game")
         FarmConfig.lastHP = nil
         FarmConfig.stuckTime = 0
 
@@ -135,6 +141,6 @@ function AutoFarm:FarmMob()
             FarmConfig.stuckTime = 0
         end
     end
-    
+
     FarmConfig.lastHP = currentHP
 end
