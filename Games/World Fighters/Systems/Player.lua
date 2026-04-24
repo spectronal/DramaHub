@@ -33,8 +33,9 @@ function Player:CollectChests()
 
         local remaining = (lastClaim + cooldown) - currentTime
         local timeLeft = math.max(0, remaining)
+        local rounded = math.round(timeLeft)
 
-        if timeLeft <= 0 then
+        if rounded <= 0 then
             Omni.Signal:Fire("General", "Chests", "Claim", name)
         end
     end
