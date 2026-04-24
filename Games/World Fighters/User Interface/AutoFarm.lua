@@ -1,14 +1,14 @@
-getgenv().UserInterface = {}
+getgenv().UserInterface = {} or {}
 getgenv().UserInterface.AutoFarm = {}
 
 local AutoFarmInterface = getgenv().UserInterface.AutoFarm
 local Shared = getgenv().Shared
+local Settings = getgenv().Settings
+local Utils = getgenv().Utils
 
 local Inserted = Shared.FarmConfig.Inserted
 
 function AutoFarmInterface:Build(Tabs)
-    local Settings = getgenv().Settings
-    local Utils = getgenv().Utils
 
     local Main = Tabs.AutoFarm:AddSection("Enemy Configuration")
 
