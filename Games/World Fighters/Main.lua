@@ -21,8 +21,8 @@ local AutoFarm = import("Systems/AutoFarm.lua")
 local Player = import("Systems/Player.lua")
 
 -- User Interface
-local AutoFarmInterface = import("User%20Interface/AutoFarm.lua")
-local PlayerInterface = import("User%20Interface/Player.lua")
+local AutoFarmUserInterface = import("User%20Interface/AutoFarm.lua")
+local PlayerUserInterface = import("User%20Interface/Player.lua")
 
 -- Global Variables
 local Settings = getgenv().Settings
