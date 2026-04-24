@@ -42,6 +42,14 @@ local Players = Shared.Services.Players
 local LocalPlayer = Shared.Services.LocalPlayer
 local GameName = Shared.Services.GameName
 
+local actions = {
+    { setting = {"Player", "AutoClick"},                fn = function() Player:Attack() end,            rate = 0.01 },
+    { setting = {"Player", "AutoResetRewards"},         fn = function() Player:ResetRewards() end,      rate = 1   },
+    { setting = {"Player", "AutoClaimAllAchievements"}, fn = function() Player:ClaimAchievements() end, rate = 1   },
+    { setting = {"Player", "AutoCollectChests"},        fn = function() Player:CollectChests() end,     rate = 1   },
+    { setting = {"Farm", "AutoFarm"},                   fn = function() AutoFarm:FarmMob() end,         rate = 0.1 },
+}
+
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
@@ -80,22 +88,13 @@ SaveManager:BuildConfigSection(Tabs.Settings)
 AutoFarmInterface:Build(Tabs)
 PlayerInterface:Build(Tabs)
 
-task.spawn(function()
-    while true do task.wait(0.01)
-        if Settings.Player.AutoClick then
-            Player:Attack()
+for _, action in actions do
+    task.spawn(function()
+        while true do
+            task.wait(action.rate)
+            if Settings[action.setting[1]][action.setting[2]] then
+                action.fn()
+            end
         end
-
-        if Settings.Player.AutoResetRewards then
-            Player:ResetRewards()
-        end
-
-        if Settings.Player.AutoClaimAllAchievements then
-            Player:ClaimAchievements()
-        end
-
-        if Settings.Farm.AutoFarm then
-            AutoFarm:FarmMob()
-        end
-    end
-end)
+    end)
+end

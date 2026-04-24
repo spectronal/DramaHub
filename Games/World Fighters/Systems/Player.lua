@@ -24,6 +24,22 @@ function Player:ClaimAchievements()
     end
 end
 
+function Player:CollectChests()
+    local currentTime = workspace:GetServerTimeNow()
+
+    for name, chestInfo in pairs(Omni.Shared.Chests) do
+        local cooldown = chestInfo.Cooldown
+        local lastClaim = Omni.Data.Chests[name] or 0
+
+        local remaining = (lastClaim + cooldown) - currentTime
+        local timeLeft = math.max(0, remaining)
+
+        if timeLeft <= 0 then
+            Omni.Signal:Fire("General", "Chests", "Claim", name)
+        end
+    end
+end
+
 function Player:ResetRewards()
     local count = 0
 

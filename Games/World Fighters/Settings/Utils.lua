@@ -2,6 +2,7 @@ getgenv().Utils = {}
 
 local Utils = getgenv().Utils
 local Shared = getgenv().Shared
+local Settings = getgenv().Settings
 
 function Utils.GetEnemies(Types: "Clear" | "Game") 
     local Inserted = Shared.FarmConfig.Inserted
@@ -24,4 +25,10 @@ function Utils.GetEnemies(Types: "Clear" | "Game")
      end
 
     return Enemies
+end
+
+function Utils:Start(Path, Function) 
+    if Settings[Path] then
+        task.spawn(Function)
+    end
 end

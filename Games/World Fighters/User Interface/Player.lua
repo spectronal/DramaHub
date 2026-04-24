@@ -34,4 +34,12 @@ function PlayerInterface:Build(Tabs)
         end,
     })
 
+    Main2:AddToggle("AutoClaimChests", {
+        Title = "Auto Claim Chests",
+        Default = false,
+        Callback = function(state)
+            Settings.Player.AutoClaimChests = state
+        end,
+    })
+
 end
