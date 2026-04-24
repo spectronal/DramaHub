@@ -106,7 +106,7 @@ end
 function AutoFarm:FarmMob()
     if isInGamemode() then return end
 
-    if not FarmConfig.currentMobNormal or not FarmConfig.currentMobNormal:GetAttribute("Died") or not FarmConfig.currentMobNormal.Parent or FarmConfig.currentMobNormal.Parent.Parent.Name ~= Omni.Data.Map then
+    if not FarmConfig.currentMobNormal or FarmConfig.currentMobNormal:GetAttribute("Health") <= 0 or not FarmConfig.currentMobNormal.Parent or FarmConfig.currentMobNormal.Parent.Parent.Name ~= Omni.Data.Map then
         FarmConfig.currentMobNormal = getNextMob("Game")
 
         FarmConfig.lastHP = nil
@@ -119,8 +119,7 @@ function AutoFarm:FarmMob()
         end
     end
 
-    local enemies = Omni.Cache:Get({ "EnemiesOnRangeIds" }) or {}
-    Omni.Signal:Fire("General", "Attack", "Click", enemies)
+    Omni.Signal:Fire("General", "Attack", "Click", FarmConfig.currentMobNormal:GetAttribute("ID"))
 
     local currentHP = FarmConfig.currentMobNormal:GetAttribute("Health")
 
