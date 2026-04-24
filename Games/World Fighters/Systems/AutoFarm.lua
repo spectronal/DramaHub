@@ -87,7 +87,7 @@ end
 
 local function isInGamemode() 
     local gamemodeMaps = {}
-    for _, maps in pairs(ReplicatedStorage.Omni.Shared.Gamemodes) do
+    for _, maps in pairs(ReplicatedStorage.Omni.Shared.Gamemodes:GetChildren()) do
         table.insert(gamemodeMaps, maps)
     end
 
