@@ -15,18 +15,12 @@ function AutoFarmInterface:Build(Tabs)
         Multi = true,
         Values = Utils.GetEnemies("Game"),
         Default = {},
-        Callback = function(state)
-            Settings.Farm.SelectedEnemy = state
-        end,
     })
 
     local PriorityDropdown = Main:AddDropdown("Priority", {
         Title = "Priority",
         Values = {"Strongest > Weakest", "Weakest > Strongest"},
         Default = "Strongest > Weakest",
-        Callback = function(state)
-            Settings.Farm.Priority = state
-        end,
     })
 
     Main:AddButton({
