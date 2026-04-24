@@ -106,7 +106,7 @@ end
 function AutoFarm:FarmMob()
     if isInGamemode() then return end
 
-    if not FarmConfig.currentMobNormal or not FarmConfig.currentMobNormal.Parent or FarmConfig.currentMobNormal.Parent.Parent.Name ~= Omni.Data.Map then
+    if not FarmConfig.currentMobNormal or not FarmConfig.currentMobNormal:GetAttribute("Died") or not FarmConfig.currentMobNormal.Parent or FarmConfig.currentMobNormal.Parent.Parent.Name ~= Omni.Data.Map then
         FarmConfig.currentMobNormal = getNextMob("Game")
 
         FarmConfig.lastHP = nil
