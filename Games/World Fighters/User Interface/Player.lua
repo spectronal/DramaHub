@@ -1,4 +1,4 @@
-getgenv().UserInterface = {} or {}
+getgenv().UserInterface = getgenv().UserInterface or {}
 getgenv().UserInterface.Player = {}
 
 local PlayerInterface = getgenv().UserInterface.Player
