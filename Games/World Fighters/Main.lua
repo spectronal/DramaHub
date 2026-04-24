@@ -30,6 +30,7 @@ local Utils = getgenv().Utils
 local Shared = getgenv().Shared
 
 local Player = getgenv().Player
+local AutoFarm = getgenv().AutoFarm
 
 local AutoFarmInterface = getgenv().UserInterface.AutoFarm
 local PlayerInterface = getgenv().UserInterface.Player

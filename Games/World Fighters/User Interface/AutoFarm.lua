@@ -47,3 +47,5 @@ function AutoFarmInterface:Build(Tabs)
         Settings.Farm.Priority = Value
     end)
 end
+
+Utils.GetEnemies("Game")
