@@ -13,7 +13,7 @@ function AutoFarmInterface:Build(Tabs)
     local EnemiesDropdown = Main:AddDropdown("Select Enemies", {
         Title = "Select Enemies",
         Multi = true,
-        Values = Utils.GetEnemies("Game"),
+        Values = Shared.FarmConfig.Enemies,
         Default = {},
     })
 

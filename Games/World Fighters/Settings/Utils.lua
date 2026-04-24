@@ -5,9 +5,9 @@ local Shared = getgenv().Shared
 
 function Utils.GetEnemies(Types: "Clear" | "Game") 
     local Inserted = Shared.FarmConfig.Inserted
+    local Enemies = Shared.FarmConfig.Enemies
 
     local EnemiesFolder = workspace:WaitForChild("Server"):WaitForChild("Enemies")
-    local Enemies = {}
 
     if Types == "Game" then
         for _, world in pairs(EnemiesFolder.World:GetDescendants()) do

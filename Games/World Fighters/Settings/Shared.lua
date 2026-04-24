@@ -28,6 +28,7 @@ Shared.Utils = {
 
 Shared.FarmConfig = {
     Inserted = {},
+    Enemies = {},
     lastTeleport = 0,
     teleportCooldown = 0.2,
     stuckTime = 0,
