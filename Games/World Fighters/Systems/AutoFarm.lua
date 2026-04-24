@@ -45,7 +45,7 @@ local function getNextMob(from: "Gamemode" | "Game")
     if from == "Game" then
         for _, mob in pairs(workspace.Server.Enemies.World:GetDescendants()) do
             if mob:IsA("Part") and mob.Name ~= "Test Dummy" and mob.Parent.Parent.Name == Omni.Data.Map then
-                if table.find(Settings.Farm.SelectedEnemies, mob.Name) then
+                if table.find(Settings.Farm.SelectedEnemy, mob.Name) then
                     table.insert(mobList, mob)
                 end
             end
