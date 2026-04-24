@@ -86,16 +86,12 @@ task.spawn(function()
             Player:Attack()
         end
 
-        if Settings.Player.AutoAwakening then
-            Player:Awakening()
-        end
-
         if Settings.Player.AutoResetRewards then
-            Player:ClaimResetRewards()
+            Player:ResetRewards()
         end
 
         if Settings.Player.AutoClaimAllAchievements then
-            Player:ClaimAllAchievements()
+            Player:ClaimAchievements()
         end
 
         if Settings.Farm.AutoFarm then

@@ -3,7 +3,6 @@ getgenv().Settings = {
         AutoClick = false,
         AutoClaimAllAchievements = false,
         AutoResetRewards = false,
-        AutoCollectIndexBuffs = false,
     },
 
     Farm = {
