@@ -1,11 +1,10 @@
+getgenv().UserInterface = {} or {}
 getgenv().UserInterface.AutoFarm = {}
 
 local AutoFarmInterface = getgenv().UserInterface.AutoFarm
 local Shared = getgenv().Shared
 local Settings = getgenv().Settings
 local Utils = getgenv().Utils
-
-local Inserted = Shared.FarmConfig.Inserted
 
 function AutoFarmInterface:Build(Tabs)
 
@@ -30,10 +29,13 @@ function AutoFarmInterface:Build(Tabs)
         end,
     })
 
-    Main:AddButton("Refresh Enemies", function()
-        Utils.GetEnemies("Clear")
-        EnemiesDropdown:SetValue(Utils.GetEnemies("Game"))
-    end)
+    Main:AddButton({
+        Title = "Refresh Enemies",
+        Callback = function()
+            Utils.GetEnemies("Clear")
+            EnemiesDropdown:SetValue(Utils.GetEnemies("Game"))
+        end
+    })
 
     Main:AddToggle("AutoFarm", {
         Title = "Auto Farm",
