@@ -25,6 +25,7 @@ local AutoFarmUserInterface = import("User%20Interface/AutoFarm.lua")
 local PlayerUserInterface = import("User%20Interface/Player.lua")
 
 -- Global Variables
+getgenv().UserInterface = {} or {}
 local Settings = getgenv().Settings
 local Utils = getgenv().Utils
 local Shared = getgenv().Shared
