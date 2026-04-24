@@ -10,9 +10,9 @@ function AutoFarmInterface:Build(Tabs)
     local Settings = getgenv().Settings
     local Utils = getgenv().Utils
 
-    local Main = Tabs.Player:AddSection("Enemy Configuration")
+    local Main = Tabs.AutoFarm:AddSection("Enemy Configuration")
 
-    local EnemiesDropdown =Main:AddDropdown("Select Enemies", {
+    local EnemiesDropdown = Main:AddDropdown("Select Enemies", {
         Title = "Select Enemies",
         Multi = true,
         Values = Utils.GetEnemies("Game"),
