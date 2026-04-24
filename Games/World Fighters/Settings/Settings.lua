@@ -9,11 +9,11 @@ getgenv().Settings = {
     Farm = {
         AutoFarm = false,
         Priority = "Strongest > Weakest",
-        SelectedEnemy = {},
+        SelectedEnemy = {""},
     },
 
     Gamemodes = {
-        GamemodesTarget = {},
+        GamemodesTarget = {""},
         Priority = "Strongest > Weakest",
 
         AutoFarmMobs = false,
