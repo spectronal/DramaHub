@@ -46,7 +46,7 @@ local actions = {
     { setting = {"Player", "AutoClick"},                fn = function() Player:Attack() end,            rate = 0.01 },
     { setting = {"Player", "AutoResetRewards"},         fn = function() Player:ResetRewards() end,      rate = 1   },
     { setting = {"Player", "AutoClaimAllAchievements"}, fn = function() Player:ClaimAchievements() end, rate = 1   },
-    { setting = {"Player", "AutoCollectChests"},        fn = function() Player:CollectChests() end,     rate = 1   },
+    { setting = {"Player", "AutoClaimChests"},        fn = function() Player:ClaimChest() end,     rate = 1   },
     { setting = {"Farm", "AutoFarm"},                   fn = function() AutoFarm:FarmMob() end,         rate = 0.1 },
 }
 

@@ -38,7 +38,7 @@ function PlayerInterface:Build(Tabs)
         Title = "Auto Claim Chests",
         Default = false,
         Callback = function(state)
-            Settings.Player.AutoCollectChests = state
+            Settings.Player.AutoClaimChests = state
         end,
     })
 

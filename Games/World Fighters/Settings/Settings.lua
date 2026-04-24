@@ -3,7 +3,7 @@ getgenv().Settings = {
         AutoClick = false,
         AutoClaimAllAchievements = false,
         AutoResetRewards = false,
-        AutoCollectChests = false,
+        AutoClaimChests = false,
     },
 
     Farm = {

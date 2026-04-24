@@ -24,7 +24,7 @@ function Player:ClaimAchievements()
     end
 end
 
-function Player:CollectChests()
+function Player:ClaimChest()
     local currentTime = workspace:GetServerTimeNow()
 
     for name, chestInfo in pairs(Omni.Shared.Chests) do
