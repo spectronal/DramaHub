@@ -4,7 +4,6 @@ getgenv().UserInterface.Player = {}
 local PlayerInterface = getgenv().UserInterface.Player
 
 function PlayerInterface:Build(Tabs)
-    local ClickSystem = getgenv().Click
     local Settings = getgenv().Settings
 
     local Main = Tabs.Player:AddSection("Main")
@@ -17,11 +16,22 @@ function PlayerInterface:Build(Tabs)
         end,
     })
 
-    Main:AddToggle("AutoAwakening", {
-        Title = "Auto Awakening",
+    local Main2 = Tabs.Player:AddSection("")
+
+    Main2:AddToggle("AutoResetRewards", {
+        Title = "Auto Reset Rewards",
         Default = false,
         Callback = function(state)
-            Settings.Player.AutoAwakening = state
+            Settings.Player.AutoResetRewards = state
         end,
     })
+
+    Main2:AddToggle("AutoClaimAllAchievements", {
+        Title = "Auto Claim All Achievements",
+        Default = false,
+        Callback = function(state)
+            Settings.Player.AutoClaimAllAchievements = state
+        end,
+    })
+
 end

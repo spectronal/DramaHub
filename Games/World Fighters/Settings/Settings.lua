@@ -1,6 +1,8 @@
 getgenv().Settings = {
     Player = {
         AutoClick = false,
-        AutoAwakening = false
+        AutoClaimAllAchievements = false,
+        AutoResetRewards = false,
+        AutoCollectIndexBuffs = false,
     },
 }

@@ -1,13 +1,37 @@
 getgenv().Player = {}
 local Shared = getgenv().Shared
-local Omni = Shared.Omni
-
 local Player = getgenv().Player
 
+local Omni = Shared.Omni
+
 function Player:Attack()
-    Omni.Signal:Fire("General", "Attack", "Click", {})
+    local enemies = Omni.Cache:Get({ "EnemiesOnRangeIds" }) or {}
+    Omni.Signal:Fire("General", "Attack", "Click", enemies)
 end
 
-function Player:Awakening()
-    Omni.Signal:Fire("General", "Awakening", "Click", {})
+function Player:ClaimAchievements()
+    for _, category in Omni.Shared.Achievements.List do
+        for _, achievement in category do
+
+            local claimed = Omni.Data.Achievements[achievement.Name] == true
+
+            local _,_, progress = Omni.Shared.Achievements.GetInformation(Omni.Data, achievement)
+
+            if progress == 1 and not claimed then
+                Omni.Signal:Fire("General", "Achievements", "ClaimAll")        
+            end
+        end
+    end
+end
+
+function Player:ResetRewards()
+    local count = 0
+
+    for i, v in pairs(Omni.Data.TimeRewards.Claimed) do
+        count += 1
+    end
+
+    if count >= 7 then
+        Omni.Signal:Fire("General", "TimeRewards", "Reset")
+    end
 end

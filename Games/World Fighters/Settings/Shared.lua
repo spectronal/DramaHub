@@ -1,3 +1,5 @@
+local HttpService = game:GetService("HttpService")
+
 local Omni = require(game:GetService("ReplicatedStorage"):WaitForChild("Omni"))
 
 getgenv().Shared = {}
@@ -15,5 +17,6 @@ Shared.Services = {
     LocalPlayer = game:GetService("Players").LocalPlayer,
     GameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name,
     RunService = game:GetService("RunService"),
-    TweenService = game:GetService("TweenService")
+    TweenService = game:GetService("TweenService"),
+    HttpService = game:GetService("HttpService")
 }
