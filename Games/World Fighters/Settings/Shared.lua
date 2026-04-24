@@ -20,3 +20,18 @@ Shared.Services = {
     TweenService = game:GetService("TweenService"),
     HttpService = game:GetService("HttpService")
 }
+
+Shared.Utils = {
+    HumanoidRootPart = game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart") or nil,
+    Humanoid = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid") or nil,
+}
+
+Shared.FarmConfig = {
+    Inserted = {},
+    lastTeleport = 0,
+    teleportCooldown = 0.2,
+    stuckTime = 0,
+    currentMobGamemode = nil,
+    currentMobNormal = nil,
+    lastHP = nil,
+}

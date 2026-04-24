@@ -17,9 +17,11 @@ local Utils = import("Settings/Utils.lua")
 local Settings = import("Settings/Settings.lua")
 
 -- Systems
+local AutoFarm = import("Systems/AutoFarm.lua")
 local Player = import("Systems/Player.lua")
 
 -- User Interface
+local AutoFarmInterface = import("User%20Interface/AutoFarm.lua")
 local PlayerInterface = import("User%20Interface/Player.lua")
 
 -- Global Variables
@@ -29,6 +31,7 @@ local Shared = getgenv().Shared
 
 local Player = getgenv().Player
 
+local AutoFarmInterface = getgenv().UserInterface.AutoFarm
 local PlayerInterface = getgenv().UserInterface.Player
 
 -- Services
@@ -61,6 +64,7 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
 	About = Window:AddTab({ Title = "About", Icon = "clipboard" }),
 	UpdateLogs = Window:AddTab({ Title = "Update Logs", Icon = "arrow-big-up" }),
+    AutoFarm = Window:AddTab({ Title = "Auto Farm", Icon = "bot" }),
     Player = Window:AddTab({ Title = "Player", Icon = "user" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
@@ -72,6 +76,7 @@ InterfaceManager:SetLibrary(Fluent)
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
+AutoFarmInterface:Build(Tabs)
 PlayerInterface:Build(Tabs)
 
 task.spawn(function()
@@ -82,6 +87,18 @@ task.spawn(function()
 
         if Settings.Player.AutoAwakening then
             Player:Awakening()
+        end
+
+        if Settings.Player.AutoResetRewards then
+            Player:ClaimResetRewards()
+        end
+
+        if Settings.Player.AutoClaimAllAchievements then
+            Player:ClaimAllAchievements()
+        end
+
+        if Settings.Farm.AutoFarm then
+            AutoFarm:FarmMob()
         end
     end
 end)
