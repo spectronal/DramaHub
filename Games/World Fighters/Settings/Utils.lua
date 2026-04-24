@@ -12,9 +12,9 @@ function Utils.GetEnemies(Types: "Clear" | "Game")
     if Types == "Game" then
         for _, world in pairs(EnemiesFolder.World:GetDescendants()) do
             for _, enemy in pairs(world:GetDescendants()) do
-                if enemy:IsA("Part") and not table.find(Inserted, enemy) then
-                    table.insert(Inserted, tostring(enemy))
-                    table.insert(Enemies, tostring(enemy))
+                if enemy:IsA("Part") and not table.find(Inserted, enemy.Name) then
+                    table.insert(Inserted, enemy.Name)
+                    table.insert(Enemies, enemy.Name)
                 end
             end
         end
